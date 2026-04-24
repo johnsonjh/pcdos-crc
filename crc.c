@@ -135,7 +135,7 @@ psyserror (n)
   i = 0;
 
   do {
-    tmp [i++] = (char)('0' + pdiv10 (&u));
+    tmp [i++] = (char)('0' + pdiv10 (& u));
   } while (u != 0 && i < (int)sizeof (tmp));
 
   if (neg)
