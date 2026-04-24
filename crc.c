@@ -397,15 +397,14 @@ ulongbits ()
 
 #ifdef ANSI_COMPILER
 static crc_t
-compute_crc_fb (FILE * fp, const crc_t * tbl, int cb, int ub,
+compute_crc_fb (FILE * fp, const crc_t * tbl, int cb,
                 crc_t mask32, crc_t inmask, int pad)
 #else
 static crc_t
-compute_crc_fb (fp, tbl, cb, ub, mask32, inmask, pad)
+compute_crc_fb (fp, tbl, cb, mask32, inmask, pad)
   FILE * fp;
   const crc_t * tbl;
   int cb;
-  int ub;
   crc_t mask32;
   crc_t inmask;
   int pad;
@@ -421,10 +420,6 @@ compute_crc_fb (fp, tbl, cb, ub, mask32, inmask, pad)
   int ch;
   long nread;
   long pos;
-
-#ifndef multics
-  (void)ub;
-#endif
 
   crc = 0;
   buf = 0;
@@ -587,7 +582,7 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
     return crc;
   }
 
-  return compute_crc_fb (fp, tbl, use_cb, ub, mask32, inmask, pad); /* //-V1107 */
+  return compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad); /* //-V1107 */
 }
 
 /******************************************************************************/
