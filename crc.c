@@ -10,6 +10,10 @@
 /*
  * If you are NOT using an ANSI C89 conforming compiler (e.g., K&R, "C86")
  * then COMMENT OUT the following define, otherwise, leave it as it is.
+ *
+ * If your C preprocessor doesn't deal with indentation, flatten with sed:
+ *   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
+ *
  * NOTE: Multics C is automatically detected and requires no adjustments.
  */
 
