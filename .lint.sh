@@ -11,6 +11,7 @@ test -x "${OLINT:?}" && {
   "${OLINT:?}" -std=c89 -errshort=tags -errtags=yes crc.c
 }
 
+printf '%s\n' ""
 CLANG_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
     -Wno-unused-macros -Wno-reserved-macro-identifier \
     -Wno-date-time -Wno-deprecated-non-prototype \
