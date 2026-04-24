@@ -594,8 +594,9 @@ done:
       crc ^= tbl [idx];
       crc &= mask32;
     } else {
-      (void)fprintf (stderr, "WARNING: File ended with %d dangling bit%s (not a full character).\n",
-                     bib, bib == 1 ? "" : "s");
+      (void)fprintf (stderr,
+        "WARNING: File ended with %d dangling bit%s (not a full character).\n",
+        bib, bib == 1 ? "" : "s");
     }
   }
 
@@ -628,14 +629,16 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
   long i;
 
   if (NULL == fp) {
-    (void)fprintf (stderr, "FATAL: compute_crc called with NULL file pointer.\n");
+    (void)fprintf (stderr,
+                   "FATAL: compute_crc called with NULL file pointer.\n");
     exit (1);
   }
 
   crc = 0;
 
   if (ub < 32) {
-    (void)fprintf (stderr, "FATAL: Need >=32-bit crc_t type, have %d bits.\n", ub);
+    (void)fprintf (stderr, "FATAL: Need >=32-bit crc_t type, have %d bits.\n",
+                   ub);
     exit (1);
   }
 
@@ -702,10 +705,12 @@ usage (progname, cb)
   (void)fprintf (stderr, "  --help, -h  Show this help\n");
 
   if (8 != cb)
-    (void)fprintf (stderr, "\nNOTE: This system has an %d-bit character size.\n", cb);
+    (void)fprintf (stderr,
+      "\nNOTE: This system has an %d-bit character size.\n", cb);
 
   if (8 < cb)
-    (void)fprintf (stderr, "Use '--bits=8' to process 8-bit input data on this system.\n");
+    (void)fprintf (stderr,
+      "Use '--bits=8' to process 8-bit input data on this system.\n");
 }
 
 /******************************************************************************/
@@ -737,7 +742,8 @@ main (argc, argv)
     crc_t v = (crc_t)~0;
 
     if (v == (v >> 1)) { /* //-V547 */
-      (void)fprintf (stderr, "FATAL: Broken compiler: logical right-shift is not logical.\n");
+      (void)fprintf (stderr,
+        "FATAL: Broken compiler: logical right-shift is not logical.\n");
       return 1;
     }
   }
@@ -750,7 +756,8 @@ main (argc, argv)
   mask32 = (crc_t)0xFFFFFFFF;
 
   if ((cb < 8) || (cb > 32)) {
-    (void)fprintf (stderr, "FATAL: Unsupported %d-bit character size (must be 8-32).\n", cb);
+    (void)fprintf (stderr,
+      "FATAL: Unsupported %d-bit character size (must be 8-32).\n", cb);
     return 1;
   }
 
@@ -795,7 +802,9 @@ main (argc, argv)
   use_cb = (process_bits > 0) ? process_bits : cb;
 
   if ((use_cb < 1) || (use_cb > (ub - 8))) { /* //-V560 */
-    (void)fprintf (stderr, "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n", use_cb, ub);
+    (void)fprintf (stderr,
+      "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n",
+      use_cb, ub);
     return 1;
   }
 
@@ -804,7 +813,8 @@ main (argc, argv)
   fp = fopen (filename, "rb");
 
   if (NULL == fp) {
-    (void)fprintf (stderr, "FATAL: Error reading %s (Error %d", filename, errno);
+    (void)fprintf (stderr, "FATAL: Error reading %s (Error %d",
+                   filename, errno);
 #ifdef ANSI_COMPILER
     (void)fprintf (stderr, ": %s", strerror (errno));
 #else
@@ -816,7 +826,8 @@ main (argc, argv)
     return 1;
   }
 
-  crcval = compute_crc (fp, crc_table, cb, ub, use_cb, mask32, inmask, pad); /* //-V1107 */
+  crcval = compute_crc (fp, crc_table, cb, ub, /* //-V1107 */
+                        use_cb, mask32, inmask, pad);
 
   (void)fclose (fp);
 
