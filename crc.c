@@ -428,9 +428,8 @@ compute_crc_fb (fp, tbl, cb, mask32, inmask, pad)
   nread = 0;
 
   for (;;) {
-    if (ferror (fp)) {
+    if (ferror (fp))
       fatal_err ("Error reading file", errno); /* //-V1107 */
-    }
 
     while (bib < 8) {
       if (pos >= nread) {
@@ -451,9 +450,8 @@ compute_crc_fb (fp, tbl, cb, mask32, inmask, pad)
         }
 
         if (0 == nread) {
-          if (ferror (fp)) {
+          if (ferror (fp))
             fatal_err ("Error reading file", errno); /* //-V1107 */
-          }
 
           goto done;
         }
@@ -478,7 +476,7 @@ compute_crc_fb (fp, tbl, cb, mask32, inmask, pad)
     crc &= mask32;
 
     buf >>= 8;
-    bib -= 8;
+    bib  -= 8;
   }
 
 done:
@@ -540,9 +538,8 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
 
   if ((8 == use_cb) && (8 == cb)) {
     for (;;) {
-      if (ferror (fp)) {
+      if (ferror (fp))
         fatal_err ("Error reading file", errno); /* //-V1107 */
-      }
 
       if (feof (fp))
         break;
@@ -561,9 +558,8 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
       }
 
       if (0 == nread) {
-        if (ferror (fp)) {
+        if (ferror (fp))
           fatal_err ("Error reading file", errno); /* //-V1107 */
-        }
 
         break;
       }
