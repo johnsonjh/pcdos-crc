@@ -2,6 +2,7 @@
  * IBM PC-DOS-compatible CRC calculator
  * Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
  * SPDX-License-Identifier: MIT-0
+ * scspell-id: 41561dd2-3fff-11f1-8e90-80ee73e9b8e7
  */
 
 /******************************************************************************/
@@ -9,6 +10,7 @@
 /*
  * If you are NOT using an ANSI C89 conforming compiler (e.g., K&R, "C86")
  * then COMMENT OUT the following define, otherwise, leave it as it is.
+ * NOTE: Multics C is automatically detected and requires no adjustments.
  */
 
 #define ANSI_COMPILER
@@ -19,7 +21,10 @@
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
 # endif
-# define size_t long
+# ifdef USE_PSYSERROR
+#  undef USE_PSYSERROR
+# endif
+# define USE_PSYSERROR
 # include <types.h>
 # include <values.h>
 #endif
@@ -36,7 +41,9 @@
 /******************************************************************************/
 
 #ifndef ANSI_COMPILER
-# undef const
+# ifdef const
+#  undef const
+# endif
 # define const /* //-V1059 */
 #endif
 
@@ -50,11 +57,104 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
+#ifdef USE_PSYSERROR
+static int
+# ifdef ANSI_COMPILER
+pdiv10 (unsigned int * u)
+# else
+pdiv10 (u)
+  unsigned int * u;
+# endif
+{
+  unsigned int q;
+  unsigned int r;
+
+  q = 0;
+  r = * u;
+
+  while (r >= 10) {
+    r -= 10;
+    q++;
+  }
+
+  * u = q;
+
+  return (int)r;
+}
+#endif
+
+/******************************************************************************/
+
+#ifdef USE_PSYSERROR
+
+extern char * sys_errlist [];
+extern int sys_nerr;
+
+static char *
+# ifdef ANSI_COMPILER
+psyserror (int n)
+# else
+psyserror (n)
+  int n;
+# endif
+{
+  static char buf [64];
+  char tmp [48];
+  char * p;
+  char * q;
+  unsigned int u;
+  int i;
+  int neg;
+
+  if (n >= 0 && n < sys_nerr) {
+    p = sys_errlist [n];
+
+    if (p != (char *)0)
+      return p;
+  }
+
+    q   = buf;
+  * q++ = 'E';
+  * q++ = 'r';
+  * q++ = 'r';
+  * q++ = 'o';
+  * q++ = 'r';
+  * q++ = ' ';
+
+  neg = 0;
+
+  if (n < 0) {
+    neg = 1;
+    u = (unsigned int)(-(n + 1)) + 1;
+  } else
+    u = (unsigned int)n;
+
+  i = 0;
+
+  do {
+    tmp [i++] = (char)('0' + pdiv10 (&u));
+  } while (u != 0 && i < (int)sizeof (tmp));
+
+  if (neg)
+    * q++ = '-';
+
+  while (i > 0) {
+    i--;
+    * q++ = tmp [i];
+  }
+
+  * q = '\0';
+
+  return buf;
+}
+#endif
+
+/******************************************************************************/
+
 static void
+#ifdef ANSI_COMPILER
 fatal_err (const char * m, int e)
 #else
-static void
 fatal_err (m, e)
   const char * m;
   int e;
@@ -63,18 +163,22 @@ fatal_err (m, e)
   (void)fprintf (stderr, "FATAL: %s (Error %d", m, e);
 #ifdef ANSI_COMPILER
   (void)fprintf (stderr, ": %s", strerror (e));
+#else
+# ifdef USE_PSYSERROR
+  (void)fprintf (stderr, ": %s", psyserror (e));
+# endif
 #endif
   (void)fprintf (stderr, ")\n");
+
   exit (1);
 }
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
 static void
+#ifdef ANSI_COMPILER
 init_crc_table (crc_t * tbl)
 #else
-static void
 init_crc_table (tbl)
   crc_t * tbl;
 #endif
@@ -339,11 +443,10 @@ init_crc_table (tbl)
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
 static int
+#ifdef ANSI_COMPILER
 charbits (void)
 #else
-static int
 charbits ()
 #endif
 {
@@ -367,12 +470,11 @@ charbits ()
 
 /******************************************************************************/
 
+static int
 #ifdef ANSI_COMPILER
-static int
-ulongbits (void)
+crc_t_bits (void)
 #else
-static int
-ulongbits ()
+crc_t_bits ()
 #endif
 {
   crc_t v;
@@ -395,12 +497,11 @@ ulongbits ()
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
 static crc_t
+#ifdef ANSI_COMPILER
 compute_crc_fb (FILE * fp, const crc_t * tbl, int cb,
                 crc_t mask32, crc_t inmask, int pad)
 #else
-static crc_t
 compute_crc_fb (fp, tbl, cb, mask32, inmask, pad)
   FILE * fp;
   const crc_t * tbl;
@@ -439,13 +540,13 @@ compute_crc_fb (fp, tbl, cb, mask32, inmask, pad)
         {
           int c;
           nread = 0;
-          while (nread < (long)sizeof rbuf) {
-            c = fgetc(fp);
+          while (nread < (long)sizeof (rbuf)) {
+            c = fgetc (fp);
 
             if (c == EOF)
               break;
 
-            rbuf[nread++] = (unsigned char)c;
+            rbuf [nread++] = (unsigned char)c;
           }
         }
 
@@ -501,12 +602,11 @@ done:
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
 static crc_t
+#ifdef ANSI_COMPILER
 compute_crc (FILE * fp, const crc_t * tbl, int cb, int ub, int use_cb,
              crc_t mask32, crc_t inmask, int pad)
 #else
-static crc_t
 compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
   FILE * fp;
   const crc_t * tbl;
@@ -525,14 +625,14 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
   long i;
 
   if (NULL == fp) {
-    (void)fprintf (stderr, "FATAL: compute_crc called with NULL FILE *\n");
+    (void)fprintf (stderr, "FATAL: compute_crc called with NULL file pointer.\n");
     exit (1);
   }
 
   crc = 0;
 
   if (ub < 32) {
-    (void)fprintf (stderr, "FATAL: Need >=32-bit unsigned type, have %d bits\n", ub);
+    (void)fprintf (stderr, "FATAL: Need >=32-bit crc_t type, have %d bits.\n", ub);
     exit (1);
   }
 
@@ -547,13 +647,13 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
       {
         int c;
         nread = 0;
-        while (nread < (long)sizeof rbuf) {
-          c = fgetc(fp);
+        while (nread < (long)sizeof (rbuf)) {
+          c = fgetc (fp);
 
           if (c == EOF)
             break;
 
-          rbuf[nread++] = (unsigned char)c;
+          rbuf [nread++] = (unsigned char)c;
         }
       }
 
@@ -583,11 +683,10 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
 static void
+#ifdef ANSI_COMPILER
 usage (const char * progname, int cb)
 #else
-static void
 usage (progname, cb)
   const char * progname;
   int cb;
@@ -608,11 +707,10 @@ usage (progname, cb)
 
 /******************************************************************************/
 
-#ifdef ANSI_COMPILER
 int
+#ifdef ANSI_COMPILER
 main (int argc, char * argv [])
 #else
-int
 main (argc, argv)
   int argc;
   char * argv [];
@@ -641,15 +739,15 @@ main (argc, argv)
     }
   }
 
-  init_crc_table (crc_table);
+  init_crc_table (crc_table); /* //-V1107 */
 
   cb = charbits ();
-  ub = ulongbits ();
+  ub = crc_t_bits ();
 
   mask32 = (crc_t)0xFFFFFFFF;
 
   if ((cb < 8) || (cb > 32)) {
-    (void)fprintf (stderr, "FATAL: Unsupported %d-bit character size (must be 8-32)\n", cb);
+    (void)fprintf (stderr, "FATAL: Unsupported %d-bit character size (must be 8-32).\n", cb);
     return 1;
   }
 
@@ -670,13 +768,13 @@ main (argc, argv)
       process_bits = atoi (argv [i] + 7);
     } else if (0 == strcmp (argv [i], "--pad")) {
       pad = 1;
-    } else if ('-' == argv [i][0]) {
-      (void)fprintf (stderr, "FATAL: Unknown option: %s\n", argv [i]);
+    } else if ('-' == argv [i] [0]) {
+      (void)fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [i]);
       usage (progname, cb); /* //-V1107 */
       return 1;
     } else {
       if (NULL != filename) {
-        (void)fprintf (stderr, "FATAL: Only one filename is allowed\n");
+        (void)fprintf (stderr, "FATAL: Only one filename is allowed.\n");
         usage (progname, cb); /* //-V1107 */
         return 1;
       }
@@ -686,7 +784,7 @@ main (argc, argv)
   }
 
   if (NULL == filename) {
-    (void)fprintf (stderr, "FATAL: No filename provided\n");
+    (void)fprintf (stderr, "FATAL: No filename provided.\n");
     usage (progname, cb); /* //-V1107 */
     return 1;
   }
@@ -694,7 +792,7 @@ main (argc, argv)
   use_cb = (process_bits > 0) ? process_bits : cb;
 
   if ((use_cb < 1) || (use_cb > (ub - 8))) { /* //-V560 */
-    (void)fprintf (stderr, "FATAL: Unsupported %d-bit processing with %d-bit unsigned type\n", use_cb, ub);
+    (void)fprintf (stderr, "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n", use_cb, ub);
     return 1;
   }
 
@@ -703,11 +801,15 @@ main (argc, argv)
   fp = fopen (filename, "rb");
 
   if (NULL == fp) {
-    (void)fprintf (stderr, "FATAL: Error %d reading %s", errno, filename);
+    (void)fprintf (stderr, "FATAL: Error reading %s (Error %d", filename, errno);
 #ifdef ANSI_COMPILER
     (void)fprintf (stderr, ": %s", strerror (errno));
+#else
+# ifdef USE_PSYSERROR
+    (void)fprintf (stderr, ": %s", psyserror (errno));
+# endif
 #endif
-    (void)fprintf (stderr, "\n");
+    (void)fprintf (stderr, ").\n");
     return 1;
   }
 
