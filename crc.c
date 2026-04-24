@@ -90,7 +90,6 @@ pdiv10 (u)
 /******************************************************************************/
 
 #ifdef USE_PSYSERROR
-
 extern char * sys_errlist [];
 extern int sys_nerr;
 
