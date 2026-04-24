@@ -5,6 +5,11 @@ rm -f a.out crc log.pvs compile_commands.json
 rm -rf ./pvsreport
 
 printf '%s\n' ""
+command -v shellcheck && {
+  shellcheck -o any,all .lint.sh
+}
+
+printf '%s\n' ""
 OLINT="/opt/oracle/developerstudio12.6/bin/lint"
 test -x "${OLINT:?}" && {
   "${OLINT:?}" -V
