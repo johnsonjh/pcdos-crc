@@ -8,8 +8,8 @@
 /******************************************************************************/
 
 /*
- * If you are NOT using an ANSI C89 conforming compiler (e.g., K&R, "C86")
- * then COMMENT OUT the following define, otherwise, leave it as it is.
+ * If you are NOT using an ANSI C89-conforming compiler (e.g., K&R, "C86"),
+ * then COMMENT OUT the "#define ANSI_COMPILER".  Otherwise leave it as-is.
  *
  * If your C preprocessor doesn't deal with indentation, flatten with sed:
  *   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
