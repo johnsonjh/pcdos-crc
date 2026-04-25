@@ -56,7 +56,7 @@ command -v shfmt > /dev/null 2>&1 && {
 OLINT="/opt/oracle/developerstudio12.6/bin/lint"
 test -x "${OLINT:?}" && {
   "${OLINT:?}" -fd -std=c89 crc.c
-  "${OLINT:?}" -DLINT_NOANSI crc.c
+  "${OLINT:?}" -DNOANSI crc.c
 }
 :
 :
@@ -112,7 +112,7 @@ command -v clang > /dev/null 2>&1 && {
    -Wno-missing-noreturn -Wno-deprecated-non-prototype \
    -Wno-strict-prototypes -Werror"
   # shellcheck disable=SC2086
-  clang -DLINT_NOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
+  clang -DNOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
 }
 rm -f a.out
 :
@@ -122,7 +122,7 @@ rm -f a.out
 command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
     command -v clang > /dev/null 2>&1 && {
-      env CC=clang CFLAGS="-DLINT_NOANSI ${CLANG_NOANSI_CFLAGS:?}" \
+      env CC=clang CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
         bear -- scan-build \
         --use-cc=clang \
         --status-bugs make crc

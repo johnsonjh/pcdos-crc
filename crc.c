@@ -33,7 +33,7 @@
 
 /******************************************************************************/
 
-#ifdef LINT_NOANSI
+#ifdef NOANSI
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
 # endif
