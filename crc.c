@@ -623,7 +623,7 @@ main (argc, argv)
 #endif
 {
   FILE * fp;
-  crc_t crc_table [256];
+  static crc_t crc_table [256];
   crc_t crcval;
   crc_t mask32;
   crc_t inmask;
