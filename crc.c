@@ -1,5 +1,5 @@
 /*
- * IBM PC-DOS-compatible CRC calculator
+ * IBM PC-DOS CRC.EXE-compatible CRC calculator
  * Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
  * SPDX-License-Identifier: MIT-0
  * scspell-id: 41561dd2-3fff-11f1-8e90-80ee73e9b8e7
