@@ -574,7 +574,7 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
       }
     }
 
-    (void)clearerr (fp);
+    clearerr (fp);
     return crc;
   }
 
