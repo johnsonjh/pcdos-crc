@@ -1,63 +1,162 @@
 #!/bin/sh
-set -ex
-
+# Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
+# SPDX-License-Identifier: MIT-0
+# scspell-id: 9637d8e2-40d4-11f1-ab65-80ee73e9b8e7
+if [ -n "${ZSH_VERSION-}" ]; then
+  emulate sh
+  setopt sh_word_split
+fi
+set -eux
+:
+:
+: Cleanup
+: :::::::
 rm -f a.out crc log.pvs compile_commands.json
 rm -rf ./pvsreport
-
-printf '%s\n' ""
-command -v shellcheck && {
+:
+:
+: codespell
+: :::::::::
+command -v codespell > /dev/null 2>&1 && {
+  codespell .
+}
+:
+:
+: reuse
+: :::::
+command -v reuse > /dev/null 2>&1 && {
+  reuse lint -q || reuse lint
+}
+:
+:
+: diff
+: :::::
+command -v diff > /dev/null 2>&1 && {
+  diff LICENSES/MIT-0.txt LICENSE
+}
+:
+:
+: ShellCheck
+: ::::::::::
+command -v shellcheck > /dev/null 2>&1 && {
   shellcheck -o any,all .lint.sh
 }
-
-printf '%s\n' ""
+:
+:
+: shfmt
+: :::::
+command -v shfmt > /dev/null 2>&1 && {
+  shfmt -bn -sr -fn -i 2 -s -d .lint.sh
+}
+:
+:
+: Oracle Lint - ANSI and non-ANSI
+: :::::::::::::::::::::::::::::::
 OLINT="/opt/oracle/developerstudio12.6/bin/lint"
 test -x "${OLINT:?}" && {
-  "${OLINT:?}" -V
-  "${OLINT:?}" -std=c89 -errshort=tags -errtags=yes crc.c
+  "${OLINT:?}" -fd -std=c89 crc.c
+  "${OLINT:?}" -DLINT_NOANSI crc.c
 }
-
-printf '%s\n' ""
-CLANG_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
-    -Wno-unused-macros -Wno-reserved-macro-identifier \
-    -Wno-date-time -Wno-deprecated-non-prototype \
-    -Wno-strict-prototypes -Wno-old-style-definition \
-    -Wno-missing-noreturn -Werror"
-
-printf '%s\n' ""
-command -v clang && {
+:
+:
+: : Clang - ANSI
+: : ::::::::::::
+command -v clang > /dev/null 2>&1 && {
+  CLANG_ANSI_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
+   -Wno-missing-noreturn -Werror"
   # shellcheck disable=SC2086
-  "$(command -v clang)" ${CLANG_CFLAGS:?} crc.c
+  clang ${CLANG_ANSI_CFLAGS:?} crc.c
 }
 rm -f a.out
-
-printf '%s\n' ""
-command -v bear && {
-  command -v scan-build && {
-   command -v clang && {
-     env CC="$(command -v clang || :)" CFLAGS="${CLANG_CFLAGS:?}" \
+:
+:
+: Clang Analyzer - ANSI
+: :::::::::::::::::::::
+command -v bear > /dev/null 2>&1 && {
+  command -v scan-build > /dev/null 2>&1 && {
+    command -v clang > /dev/null 2>&1 && {
+      env CC=clang CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
         bear -- scan-build \
-	  --use-cc="$(command -v clang || :)" \
-	  --status-bugs make crc
+        --use-cc=clang \
+        --status-bugs make crc
       rm -f crc
     }
   }
 }
-
-printf '%s\n' ""
-command -v pvs-studio-analyzer && {
-  command -v plog-converter && {
-    test -f compile_commands.json && {
-      pvs-studio-analyzer analyze --intermodular \
-        -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
-      plog-converter -a "GA:1,2,3" -t fullhtml log.pvs -o pvsreport
+:
+:
+: PVS-Studio Analyzer - ANSI
+: ::::::::::::::::::::::::::
+command -v clang > /dev/null 2>&1 && {
+  command -v bear > /dev/null 2>&1 && {
+    command -v pvs-studio-analyzer > /dev/null 2>&1 && {
+      command -v plog-converter > /dev/null 2>&1 && {
+        test -f compile_commands.json && {
+          rm -f log.pvs
+          pvs-studio-analyzer analyze --intermodular \
+            -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
+          plog-converter -a "GA:1,2,3" -t markdown log.pvs -w \
+            || plog-converter -a "GA:1,2,3" -t fullhtml log.pvs -w -o pvsreport
+        }
+      }
     }
   }
 }
-
-printf '%s\n' ""
-command -v cppcheck && {
+:
+:
+: Clang - non-ANSI
+: ::::::::::::::::
+command -v clang > /dev/null 2>&1 && {
+  CLANG_NOANSI_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
+   -Wno-missing-noreturn -Wno-deprecated-non-prototype \
+   -Wno-strict-prototypes -Werror"
+  # shellcheck disable=SC2086
+  clang -DLINT_NOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
+}
+rm -f a.out
+:
+:
+: Clang Analyzer - non-ANSI
+: :::::::::::::::::::::::::
+command -v bear > /dev/null 2>&1 && {
+  command -v scan-build > /dev/null 2>&1 && {
+    command -v clang > /dev/null 2>&1 && {
+      env CC=clang CFLAGS="-DLINT_NOANSI ${CLANG_NOANSI_CFLAGS:?}" \
+        bear -- scan-build \
+        --use-cc=clang \
+        --status-bugs make crc
+      rm -f crc
+    }
+  }
+}
+:
+:
+: PVS-Studio Analyzer - non-ANSI
+: ::::::::::::::::::::::::::::::
+command -v clang > /dev/null 2>&1 && {
+  command -v bear > /dev/null 2>&1 && {
+    command -v pvs-studio-analyzer > /dev/null 2>&1 && {
+      command -v plog-converter > /dev/null 2>&1 && {
+        test -f compile_commands.json && {
+          rm -f log.pvs
+          pvs-studio-analyzer analyze --intermodular \
+            -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
+          plog-converter -a "GA:1,2,3" -t markdown log.pvs -w \
+            || plog-converter -a "GA:1,2,3" -t fullhtml log.pvs -w -o pvsreport
+        }
+      }
+    }
+  }
+}
+:
+:
+: Cppcheck
+: ::::::::
+command -v cppcheck > /dev/null 2>&1 && {
   cppcheck --force --check-level=exhaustive crc.c
 }
-
-printf '%s\n' ""
+:
+:
+: Finish
+: ::::::
 rm -f a.out crc log.pvs compile_commands.json
