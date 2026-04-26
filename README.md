@@ -69,7 +69,7 @@ input only up to the last full character.
 
 #### Fallback mode
 
-When using a non-8-bit character size (via `--bits`) **or when running on a
+When using a non-8-bit character size via `--bits` **or when running on a
 system with a non-8-bit character size**, the program operates in a bit-by-bit
 "fallback" mode.  In this mode:
 * The `--pad` option is used **only** to zero-fill any remaining bits of the
@@ -90,7 +90,7 @@ that does not deal with indentation, you can "flatten" the source using POSIX
 sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
 ```
 
-### Multics
+### Building for Multics
 
 To build a binary for Multics using Multics C:
 ```
@@ -130,7 +130,7 @@ number of component segments of the MSF.  This CRC program does not provide
 special treatment for MSFs; each component segment should be processed
 independently.
 
-### CP/M
+### Building for CP/M-80
 
 To build a binary for CP/M-80, use a recent version of z88dk:
 ```
@@ -169,14 +169,14 @@ because accessing the LRBC metadata requires the use of non-portable
 programming constructs (direct BDOS function calls) the LRBC is not currently
 utilized.
 
-### ELKS
+### Building for ELKS
 
 To build a binary for ELKS using IA16-GCC:
 ```
 ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
 ```
 
-### DOS
+### Building for MS-DOS
 
 To build a binary for MS-DOS using IA16-GCC:
 ```
