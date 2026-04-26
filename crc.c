@@ -59,7 +59,15 @@
 
 /******************************************************************************/
 
-static const char hexdigits [] = "0123456789ABCDEF";
+#ifndef EXIT_SUCCESS
+# define EXIT_SUCCESS 0
+#endif
+
+/******************************************************************************/
+
+#ifndef EXIT_FAILURE
+# define EXIT_FAILURE 1
+#endif
 
 /******************************************************************************/
 
@@ -72,6 +80,10 @@ typedef crc_t counter_bits_t;
 typedef unsigned long crc_t;
 typedef unsigned long counter_bits_t;
 #endif
+
+/******************************************************************************/
+
+static const char hexdigits [] = "0123456789ABCDEF";
 
 /******************************************************************************/
 
@@ -276,7 +288,7 @@ fatal_err (m, n, e)
 #endif
   (void)fprintf (stderr, ")\n");
 
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 /******************************************************************************/
@@ -433,8 +445,8 @@ charbits ()
   unsigned char last_c;
   int bits;
 
-  bits = 0;
-  c = 1;
+  bits   = 0;
+  c      = 1;
   last_c = 0;
 
   while (c > last_c) {
@@ -460,8 +472,8 @@ crc_t_bits ()
   crc_t last_v;
   int bits;
 
-  bits = 0;
-  v = 1;
+  bits   = 0;
+  v      = 1;
   last_v = 0;
 
   while (v > last_v) {
@@ -499,7 +511,7 @@ crc_update_bytes (crc, tbl, mask32, buf, n)
   for (i = 0; i < n; i++) {
     {
       crc_t t;
-      t = crc;
+      t   = crc;
       t >>= 24;
       idx = t;
     }
@@ -509,7 +521,7 @@ crc_update_bytes (crc, tbl, mask32, buf, n)
 
     {
       crc_t t;
-      t = crc;
+      t   = crc;
       t <<= 8;
       crc = t;
     }
@@ -558,11 +570,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
   long pos;
   counter_bits_t remaining_bits;
 
-  crc = 0;
-  buf = 0;
-  bib = 0;
-  pos = 0;
+  crc   = 0;
+  buf   = 0;
+  bib   = 0;
+  pos   = 0;
   nread = 0;
+
   remaining_bits = limit_bits;
 
   for (;;) {
@@ -587,6 +600,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
           int c;
 
           nread = 0;
+
           while (nread < (long)sizeof (rbuf)) {
             c = fgetc (fp);
 
@@ -610,14 +624,14 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
       ch = rbuf [pos];
       pos++;
 
-      tmp = (crc_t)(unsigned char)ch;
+      tmp  = (crc_t)(unsigned char)ch;
       tmp &= inmask;
 
       {
         crc_t t;
         int shift;
 
-        t = tmp;
+        t     = tmp;
         shift = bib;
 
         while (shift > 0) {
@@ -655,7 +669,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
 
     {
       crc_t t;
-      t = crc;
+      t   = crc;
       t >>= 24;
       idx = t;
     }
@@ -665,7 +679,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
 
     {
       crc_t t;
-      t = crc;
+      t   = crc;
       t <<= 8;
       crc = t;
     }
@@ -689,7 +703,7 @@ done:
 
       {
         crc_t t;
-        t = crc;
+        t   = crc;
         t >>= 24;
         idx = t;
       }
@@ -699,7 +713,7 @@ done:
 
       {
         crc_t t;
-        t = crc;
+        t   = crc;
         t <<= 8;
         crc = t;
       }
@@ -766,7 +780,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
   if (fp == (FILE *)0) {
     (void)fprintf (stderr,
       "FATAL: compute_crc called with NULL file pointer.\n");
-    exit (1);
+    exit (EXIT_FAILURE);
   }
 
   crc = 0;
@@ -774,7 +788,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
   if (ub < 32) {
     (void)fprintf (stderr,
       "FATAL: Need >=32-bit crc_t type, have %d bits.\n", ub);
-    exit (1);
+    exit (EXIT_FAILURE);
   }
 
   remaining_bits = limit_bits;
@@ -801,6 +815,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
 
       if (ferror (fp))
         fatal_err ("Error reading ", filename, errno); /* //-V1107 */
+
       if (nread == 0)
         break;
 
@@ -889,7 +904,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
           (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
           (void)fprintf (stderr, "trailing %lu bit%s ignored in 8-bit mode.\n",
             (unsigned long)remaining_bits, (remaining_bits == 1 ? "" : "s"));
-          (void)fprintf (stderr, "         (Result is calculated only up to the last full character).\n");
+          (void)fprintf (stderr,"         ");
+          (void)fprintf (stderr,
+            "Result calculated only up to the last full character.\n");
         }
       } else {
         counter_bits_t used_bits = limit_bits - remaining_bits;
@@ -898,8 +915,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
           "WARNING: File ended after %lu bit%s, but --limit=%lu requested.\n",
           (unsigned long)used_bits, (used_bits == 1 ? "" : "s"),
           (unsigned long)limit_bits);
-        (void)fprintf (stderr,
-          "         Use --pad to zero-fill the remaining bit%s.\n",
+        (void)fprintf (stderr, "         ");
+        (void)fprintf (stderr, "Use --pad to zero-fill the remaining bit%s.\n",
           (remaining_bits == 1 ? "" : "s"));
       }
     }
@@ -976,7 +993,7 @@ main (argc, argv)
     if (v == (v >> 1)) { /* //-V547 */
       (void)fprintf (stderr,
         "FATAL: Broken compiler: logical right-shift is not logical.\n");
-      return 1;
+      return EXIT_FAILURE;
     }
   }
 
@@ -990,7 +1007,7 @@ main (argc, argv)
   if ((cb < 8) || (cb > 32)) {
     (void)fprintf (stderr,
       "FATAL: Unsupported %d-bit character size (must be 8-32).\n", cb);
-    return 1;
+    return EXIT_FAILURE;
   }
 
   max_ul_bits = counter_bits ();
@@ -1010,7 +1027,7 @@ main (argc, argv)
 
   if (argc < 2) {
     usage (progname, cb); /* //-V1107 */
-    return 1;
+    return EXIT_FAILURE;
   }
 
   for (j = 1; j < argc; j++) {
@@ -1025,7 +1042,7 @@ main (argc, argv)
       if (process_bits <= 0) {
         (void)fprintf (stderr,
           "FATAL: --bits must be a positive integer greater than zero.\n");
-        return 1;
+        return EXIT_FAILURE;
       }
 
     } else if (0 == strcmp (argv [j], "--pad") ||
@@ -1034,21 +1051,22 @@ main (argc, argv)
     } else if (0 == strncmp (argv [j], "--limit=", 8) ||
                0 == strncmp (argv [j], "--LIMIT=", 8)) {
       limit_bits = parse_limit (argv [j] + 8, max_limit); /* //-V1107 */
+
       if (limit_bits == 0 || limit_bits > max_limit) {
         (void)fprintf (stderr,
           "FATAL: --limit must be between 1 and %lu bits.\n",
             (unsigned long)max_limit);
-        return 1;
+        return EXIT_FAILURE;
       }
     } else if ('-' == argv [j] [0]) {
       (void)fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j]);
       usage (progname, cb); /* //-V1107 */
-      return 1;
+      return EXIT_FAILURE;
     } else {
       if (NULL != filename) {
         (void)fprintf (stderr, "FATAL: Only one filename is allowed.\n");
         usage (progname, cb); /* //-V1107 */
-        return 1;
+        return EXIT_FAILURE;
       }
 
       filename = argv [j];
@@ -1058,7 +1076,7 @@ main (argc, argv)
   if (NULL == filename) {
     (void)fprintf (stderr, "FATAL: No filename provided.\n");
     usage (progname, cb); /* //-V1107 */
-    return 1;
+    return EXIT_FAILURE;
   }
 
   use_cb = (process_bits > 0) ? process_bits : cb;
@@ -1067,17 +1085,15 @@ main (argc, argv)
     (void)fprintf (stderr,
       "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n",
       use_cb, ub);
-    return 1;
+    return EXIT_FAILURE;
   }
 
   inmask = ((crc_t)1 << use_cb) - (crc_t)1;
 
   fp = fopen (filename, "rb");
 
-  if (NULL == fp) {
+  if (NULL == fp)
     fatal_err ("Error opening ", filename, errno); /* //-V1107 */
-    return 1;
-  }
 
   crcval = compute_crc ( /* //-V1107 */
     fp, filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, limit_bits);
