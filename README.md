@@ -62,7 +62,7 @@ sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
 ### Multics
 
 To build a binary for Multics using Multics C:
-```sh
+```
 >sl3p>cc>e>cc -lg -of crc crc.c
 ```
 
@@ -101,7 +101,7 @@ input file.
 ### CP/M
 
 To build a binary for CP/M-80, use a recent version of z88dk:
-```sh
+```
 zcc +cpm -O3 -vn crc.c -o CRC.COM -DBUFSIZ=128 -DNOANSI
 ```
 
@@ -137,20 +137,20 @@ should always constrain processing to the actual number of significant bits.
 ### ELKS
 
 To build a binary for ELKS using IA16-GCC:
-```sh
+```
 ia16-elf-gcc -std=c89 -Os -mregparmcall -melks crc.c -o crc
 ```
 
 ### DOS
 
 To build a binary for MS-DOS using IA16-GCC:
-```sh
+```
 ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny crc.c -o crc.com
 ```
 
 ## License
 
-This software is distributed under the terms and conditions of the permissive
+This software is distributed under the terms of the permissive
 [MIT No Attribution (MIT-0)](LICENSE) license.
 
 <!--
