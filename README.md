@@ -35,7 +35,7 @@ The only current requirements are:
 
 It has been tested on various exotic and retro platforms including **Multics**
 (Multics C), **CP/M-80** (z88dk), **MS-DOS** (IA16-GCC, Watcom, Microsoft C),
-**ELKS** (IA16-GCC), and **Atari ST** (EmuTOS/TOS/MINT using CrossMINT) and
+**ELKS** (IA16-GCC), and **Atari ST** (TOS or MINT using CrossMINT) and
 should be able to be built anywhere else with little to no porting effort
 required.
 
@@ -71,11 +71,11 @@ input only up to the last full character.
 
 When using a non-8-bit character size (via `--bits`) **or when running on a
 system with a non-8-bit character size**, the program operates in a bit-by-bit
-"fallback" mode. In this mode:
+"fallback" mode.  In this mode:
 * The `--pad` option is used **only** to zero-fill any remaining bits of the
   *final character* if the file input ends mid-character.
-* The program **does not** synthesize data to reach a specified `--limit`. If
-  the file ends before the limit is reached, a warning is displayed.
+* The program **does not** synthesize data to reach a specified `--limit`.
+  If the file ends before the limit is reached, a warning is displayed.
 
 ## Building
 
@@ -114,8 +114,8 @@ Use '--bits=8' to process 8-bit input data on this system.
 
 For example, assume `DATA.DAT` is a file of 174,344 bits (21,793 8-bit octets)
 which produces a CRC of `0D03ABFA` on MS-DOS or UNIX systems.  On a Multics
-system, this file will be stored as 196,137 bits (21,793 9-bit nonets).  The
-CRC on such a system will be calculated based on processing the file as a
+system, this file will be stored as 196,137 bits (21,793 9-bit nonets).
+The CRC on such a system will be calculated based on processing the file as a
 stream of bits, handing off octets (of 8-bits each) to the CRC routines, which
 includes the unused 9th bit in each character.  This means the CRC calculated
 will not match that of the DOS or UNIX system unless the `--bits=8` option is
@@ -124,6 +124,12 @@ used to specify that only 8 bits per character should be considered.
 As an additional hint, if the processing of a file ends with "dangling" bits
 (not a full character) then a warning message is displayed.
 
+The Multics filesystem includes the concept of multi-segment files (MSFs), which
+are indicated by a directory tagged with a non-zero bit count equal to the
+number of component segments of the MSF.  This CRC program does not provide
+special treatment for MSFs; each component segment should be processed
+independently.
+
 ### CP/M
 
 To build a binary for CP/M-80, use a recent version of z88dk:
@@ -131,8 +137,11 @@ To build a binary for CP/M-80, use a recent version of z88dk:
 zcc +cpm -O3 -vn crc.c -o CRC.COM -DBUFSIZ=128 -DNOANSI
 ```
 
-On CP/M-80 systems, files do not have exact sizes but are stored on disk
-in fixed-size records of 1024 bits (*i.e.,* 128 8-bit octets) each.  Files
+If you need to verify files on CP/M that were created on other systems, you
+should always constrain processing to the actual number of significant bits.
+
+On CP/M-80 systems, files do not have exact sizes but are stored on disk in
+fixed-size records of 1024 bits (*i.e.,* 128 8-bit octets) each.  Files
 transferred from other systems that are not a multiple of the CP/M record size
 will be padded with undefined data to fill a complete record, and there is no
 universal EOF marker that can be used to find the true end of file.
@@ -160,21 +169,18 @@ because accessing the LRBC metadata requires the use of non-portable
 programming constructs (direct BDOS function calls) the LRBC is not currently
 utilized.
 
-If you need to verify files on CP/M that were created on other systems, you
-should always constrain processing to the actual number of significant bits.
-
 ### ELKS
 
 To build a binary for ELKS using IA16-GCC:
 ```
-ia16-elf-gcc -std=c89 -Os -mregparmcall -melks crc.c -o crc
+ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
 ```
 
 ### DOS
 
 To build a binary for MS-DOS using IA16-GCC:
 ```
-ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny crc.c -o crc.com
+ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny -o crc.com crc.c
 ```
 
 ## License
