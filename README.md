@@ -98,12 +98,13 @@ To build a binary for Multics using Multics C:
 >sl3p>cc>e>cc -lg -of crc crc.c
 ```
 
-Multics can be considered to run on exotic platform, the Honeywell 6000-series
-36-bit "large systems" mainframe.  This system uses 9 bits per character, where
-most systems use 8 bits per character.  Multics stores data in big-endian
-format, that is, "foreign" 8-bit data would be stored in the first most
-significant positions (starting at bit 1 and ending with bit 8) and the 9th
-or least most significant bit would remain unused in each character.
+Multics can be considered to run on an exotic platform, the Honeywell
+6000-series of 36-bit "large systems" mainframes.  This system uses 9 bits
+per character, where most systems use 8 bits per character.  Multics stores
+data in big-endian format, that is, "foreign" 8-bit data would be stored in
+the first most significant positions (starting at bit 1 and ending with
+bit 8) and the 9th or least most significant bit would remain unused in
+each character.
 
 When run on Multics or any other environment not using an 8-bit character
 size, some instructional text will be appended to the `--help` output:
