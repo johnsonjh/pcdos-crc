@@ -904,7 +904,7 @@ usage (progname, cb)
 
   if (8 != cb)
     (void)fprintf (stderr,
-      "\nNOTE: This system has an %d-bit character size.\n", cb);
+      "\nNOTE: This system has a character size of %d-bits.\n", cb);
 
   if (8 < cb)
     (void)fprintf (stderr,

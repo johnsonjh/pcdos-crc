@@ -77,7 +77,7 @@ When run on Multics or any other environment not using an 8-bit character
 size, some instructional text will be appended to the `--help` output:
 
 ```
-NOTE: This system has an 9-bit character size.
+NOTE: This system has a character size of 9-bits.
 Use '--bits=8' to process 8-bit input data on this system.
 ```
 
@@ -118,9 +118,11 @@ to process using the `--limit` flag.
 
 For example, assume `DATA.DAT` is file of 174,344 bits (21,793 8-bit octets)
 which produces a CRC of `0D03ABFA` on MS-DOS or UNIX systems.  On a CP/M-80
-system the file will utilize 171 records of storage.  Since 21793 octets is not
-a multiple of 128, the same CRC calculated will not match unless constrained
-to process only 174,344 bits (*i.e.*, `CRC --limit=174344 DATA.DAT`).
+system this file will utilize 171 records of storage.  Since 21,793 octets is
+not a multiple of 128, the CRC calculation will not match unless constrained
+to process only 174,344 bits (*i.e.*, `CRC --limit=174344 DATA.DAT`).  With
+no limit applied, all 175,104 bits (171 records × 128 octets × 8 bits) on
+disk would be processed.
 
 CP/M-80 3.0 added a new filesystem metadata field: Last Record Byte Count (or
 LRBC).  Unfortunately, the LRBC is stored as a number between 0 and 255, with
@@ -128,8 +130,9 @@ no official documented interpretation.  The DRI ISX software uses this field
 to indicate the number of **unused** octets in the last record, while DRI
 DOS-PLUS uses the field to indicate the number of **used** octets in the last
 record, with a count of zero indicating 128.  Because of this ambiguity and
-because accessing records requires the use of non-portable programming
-constructs (direct BDOS function calls) the LRBC is not currently utilized.
+because accessing the LRBC metadata requires the use of non-portable
+programming constructs (direct BDOS function calls) the LRBC is not currently
+utilized.
 
 If you need to verify files on CP/M that were created on other systems, you
 should always constrain processing to the actual number of significant bits.
