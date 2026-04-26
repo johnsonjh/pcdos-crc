@@ -12,7 +12,7 @@ IBM PC‑DOS `CRC.EXE` utility.
 It was carefully constructed to be portable and correct on every platform
 with a C compiler, such as:
 
-* ancient pre‑ANSI / “C86” / K&R C compilers,
+* ancient pre‑ANSI / "C86" / K&R C compilers,
 * environments providing deficient `stdio` implementations,
 * environments with broken (or completely missing) division or modulo
   math operations,
