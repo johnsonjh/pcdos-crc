@@ -34,11 +34,13 @@ The only current requirements are:
 * a minimal, but working, `stdio` implementation (supporting at least
   `fprintf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, and `clearerr`).
 
-It has been tested on various exotic and retro platforms including **Multics**
-(Multics C), **CP/M-80** (z88dk), **MS-DOS** (IA16-GCC, Watcom, Microsoft C,
-DJGPP), **ELKS** (IA16-GCC), **Atari ST** (TOS/MINT using CrossMINT), and Ch,
-and should be able to be built anywhere else with little to no porting effort
-required.
+It has been tested on various exotic and retro platforms including
+**Multics** (Multics C), **CP/M-80** ([z88dk](https://z88dk.org/)),
+**MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), Watcom,
+Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)), **ELKS** (IA16-GCC),
+**Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
+and [SoftIntegration Ch](https://www.softintegration.com/), and should be able
+to be built anywhere else with little to no porting effort required.
 
 ## Usage
 
@@ -134,7 +136,8 @@ independently.
 
 ### Building for CP/M-80
 
-To build a binary for CP/M-80, use a recent version of z88dk:
+To build a binary for CP/M-80, use a recent version
+of [z88dk](https://z88dk.org/):
 ```
 zcc +cpm -O3 -vn crc.c -o CRC.COM -DBUFSIZ=128 -DNOANSI
 ```
