@@ -49,6 +49,33 @@ Options:
   --help, -h  Show the help and usage text
 ```
 
+### Interaction of `--limit` and `--pad`
+
+The behavior of these options depends on the CRC processing mode:
+
+| Mode | `limit` > file size (without `pad`) | `limit` > file size (with `pad`) |
+| :--- | :--- | :--- |
+| **8-bit mode** (default) | Warns and stops at end of file. | **Zero-fills up to the limit.** |
+| **Fallback mode** (`--bits` ≠ 8) | Warns and stops at end of file. | Warns and stops at end of file. |
+
+#### 8-bit mode (default)
+
+When processing 8-bit characters on a system with 8-bit characters, the
+`--pad` option allows the program to synthesize zero-filled data to reach
+the specified `--limit`.  If the `--limit` is **not** a multiple of 8, any
+trailing bits are **discarded** and the resulting CRC is calculated using
+input only up to the last full character.
+
+#### Fallback mode
+
+When using a non-8-bit character size (via `--bits`) **or when running on a
+system with a non-8-bit character size**, the program operates in a bit-by-bit
+"fallback" mode. In this mode:
+* The `--pad` option is used **only** to zero-fill any remaining bits of the
+  *final character* if the file input ends mid-character.
+* The program **does not** synthesize data to reach a specified `--limit`. If
+  the file ends before the limit is reached, a warning is displayed.
+
 ## Building
 
 The `crc.c` source code should build easily anywhere.  If you are using a
@@ -95,11 +122,6 @@ used to specify that only 8 bits per character should be considered.
 
 As an additional hint, if the processing of a file ends with "dangling" bits
 (not a full character) then a warning message is displayed.
-
-Optionally, the `--pad` option can be used to zero-fill any remaining bits to
-intentionally allow processing streams that end mid-character, or if a
-`--limit` was specified that is more than the number of bits provided by the
-input file.
 
 ### CP/M
 
