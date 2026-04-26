@@ -50,6 +50,10 @@
 
 /******************************************************************************/
 
+static const char hexdigits [] = "0123456789ABCDEF";
+
+/******************************************************************************/
+
 #ifndef ANSI_COMPILER
 # ifdef const
 #  undef const
@@ -101,13 +105,14 @@ counter_bits ()
 static counter_bits_t
 #ifdef ANSI_COMPILER
 parse_limit (
-  const char * s)
+  const char * s,
+  const counter_bits_t max_v)
 #else
-parse_limit (s)
+parse_limit (s, max_v)
   const char * s;
+  const counter_bits_t max_v;
 #endif
 {
-  static const char digits [] = "0123456789";
   counter_bits_t v;
   int c;
   int i;
@@ -120,13 +125,32 @@ parse_limit (s)
   while ((c = * s++) != '\0') {
     i = 0;
 
-    while (digits [i] != '\0' && digits [i] != c)
+    while (i < 10 && hexdigits [i] != c)
       i++;
 
-    if (digits [i] == '\0')
+    if (i >= 10)
       return 0;
 
-    v = v * 10 + (counter_bits_t)i;
+    if (v & ~(max_v >> 3))
+      return 0;
+
+    {
+      counter_bits_t t8;
+      counter_bits_t t2;
+
+      t8 = v << 3;
+      t2 = v << 1;
+
+      if (max_v - t8 < t2)
+        return 0;
+
+      v = t8 + t2;
+    }
+
+    if (v > (max_v - (counter_bits_t)i))
+      return 0;
+
+    v += (counter_bits_t)i;
   }
 
   return v;
@@ -170,13 +194,12 @@ extern int sys_nerr;
 static char *
 # ifdef ANSI_COMPILER
 psyserror (
-  int n)
+  const int n)
 # else
 psyserror (n)
-  int n;
+  const int n;
 # endif
 {
-  static const char digits [] = "0123456789";
   static char buf [64];
   char tmp [48];
   char * p;
@@ -211,7 +234,7 @@ psyserror (n)
   i = 0;
 
   do {
-    tmp [i++] = digits [pdiv10 (& u)];
+    tmp [i++] = hexdigits [pdiv10 (& u)];
   } while (u != 0 && i < (int)sizeof (tmp));
 
   if (neg)
@@ -234,14 +257,16 @@ static void
 #ifdef ANSI_COMPILER
 fatal_err (
   const char * m,
-  int e)
+  const char * n,
+  const int e)
 #else
-fatal_err (m, e)
+fatal_err (m, n, e)
   const char * m;
-  int e;
+  const char * n;
+  const int e;
 #endif
 {
-  (void)fprintf (stderr, "FATAL: %s (Error %d", m, e);
+  (void)fprintf (stderr, "FATAL: %s%s (Error %d", m, n, e);
 #ifdef ANSI_COMPILER
   (void)fprintf (stderr, ": %s", strerror (e));
 #else
@@ -456,16 +481,16 @@ static crc_t
 crc_update_bytes (
   crc_t crc,
   const crc_t * tbl,
-  crc_t mask32,
+  const crc_t mask32,
   const unsigned char * buf,
-  long n)
+  const long n)
 #else
 crc_update_bytes (crc, tbl, mask32, buf, n)
   crc_t crc;
   const crc_t * tbl;
-  crc_t mask32;
+  const crc_t mask32;
   const unsigned char * buf;
-  long n;
+  const long n;
 #endif
 {
   long i;
@@ -502,21 +527,23 @@ static crc_t
 #ifdef ANSI_COMPILER
 compute_crc_fb (
   FILE * fp,
+  const char * filename,
   const crc_t * tbl,
-  int use_cb,
-  crc_t mask32,
-  crc_t inmask,
-  int pad,
-  counter_bits_t limit_bits)
+  const int use_cb,
+  const crc_t mask32,
+  const crc_t inmask,
+  const int pad,
+  const counter_bits_t limit_bits)
 #else
-compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad, limit_bits)
+compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
   FILE * fp;
+  const char * filename;
   const crc_t * tbl;
-  int use_cb;
-  crc_t mask32;
-  crc_t inmask;
-  int pad;
-  counter_bits_t limit_bits;
+  const int use_cb;
+  const crc_t mask32;
+  const crc_t inmask;
+  const int pad;
+  const counter_bits_t limit_bits;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
@@ -572,7 +599,7 @@ compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad, limit_bits)
         }
 
         if (ferror (fp))
-          fatal_err ("Error reading file", errno); /* //-V1107 */
+          fatal_err ("Error reading ", filename, errno); /* //-V1107 */
 
         if (nread == 0)
           goto done;
@@ -707,25 +734,27 @@ static crc_t
 #ifdef ANSI_COMPILER
 compute_crc (
   FILE * fp,
+  const char * filename,
   const crc_t * tbl,
-  int cb,
-  int ub,
-  int use_cb,
-  crc_t mask32,
-  crc_t inmask,
-  int pad,
-  counter_bits_t limit_bits)
+  const int cb,
+  const int ub,
+  const int use_cb,
+  const crc_t mask32,
+  const crc_t inmask,
+  const int pad,
+  const counter_bits_t limit_bits)
 #else
-compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
+compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
   FILE * fp;
+  const char * filename;
   const crc_t * tbl;
-  int cb;
-  int ub;
-  int use_cb;
-  crc_t mask32;
-  crc_t inmask;
-  int pad;
-  counter_bits_t limit_bits;
+  const int cb;
+  const int ub;
+  const int use_cb;
+  const crc_t mask32;
+  const crc_t inmask;
+  const int pad;
+  const counter_bits_t limit_bits;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
@@ -771,8 +800,7 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
       }
 
       if (ferror (fp))
-        fatal_err ("Error reading file", errno); /* //-V1107 */
-
+        fatal_err ("Error reading ", filename, errno); /* //-V1107 */
       if (nread == 0)
         break;
 
@@ -861,6 +889,7 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
           (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
           (void)fprintf (stderr, "trailing %lu bit%s ignored in 8-bit mode.\n",
             (unsigned long)remaining_bits, (remaining_bits == 1 ? "" : "s"));
+          (void)fprintf (stderr, "         (Result is calculated only up to the last full character).\n");
         }
       } else {
         counter_bits_t used_bits = limit_bits - remaining_bits;
@@ -879,7 +908,7 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
   }
 
   return compute_crc_fb ( /* //-V1107 */
-    fp, tbl, use_cb, mask32, inmask, pad, limit_bits);
+    fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits);
 }
 
 /******************************************************************************/
@@ -1004,7 +1033,7 @@ main (argc, argv)
       pad = 1;
     } else if (0 == strncmp (argv [j], "--limit=", 8) ||
                0 == strncmp (argv [j], "--LIMIT=", 8)) {
-      limit_bits = parse_limit (argv [j] + 8); /* //-V1107 */
+      limit_bits = parse_limit (argv [j] + 8, max_limit); /* //-V1107 */
       if (limit_bits == 0 || limit_bits > max_limit) {
         (void)fprintf (stderr,
           "FATAL: --limit must be between 1 and %lu bits.\n",
@@ -1046,26 +1075,16 @@ main (argc, argv)
   fp = fopen (filename, "rb");
 
   if (NULL == fp) {
-    (void)fprintf (stderr, "FATAL: Error reading %s (Error %d",
-                   filename, errno);
-#ifdef ANSI_COMPILER
-    (void)fprintf (stderr, ": %s", strerror (errno));
-#else
-# ifdef USE_PSYSERROR
-    (void)fprintf (stderr, ": %s", psyserror (errno));
-# endif
-#endif
-    (void)fprintf (stderr, ").\n");
+    fatal_err ("Error opening ", filename, errno); /* //-V1107 */
     return 1;
   }
 
-  crcval = compute_crc (fp, crc_table, cb, ub, use_cb, mask32, /* //-V1107 */
-    inmask, pad, limit_bits);
+  crcval = compute_crc ( /* //-V1107 */
+    fp, filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, limit_bits);
 
   (void)fclose (fp);
 
   {
-    static const char hexdigits [] = "0123456789ABCDEF";
     crc_t v = (crc_t)crcval;
     char buf [9];
     int i;
