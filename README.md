@@ -12,26 +12,29 @@ IBM PC‑DOS `CRC.EXE` utility.
 It was carefully constructed to be portable and correct on every platform
 with a C compiler, such as:
 
-* ancient pre‑ANSI / “C86” / K&R C compilers
+* ancient pre‑ANSI / “C86” / K&R C compilers,
 * environments providing deficient `stdio` implementations,
 * environments with broken (or completely missing) division or modulo
   math operations,
 * systems with byte sizes other than 8 bits (*e.g.*, DEC PDP‑10),
-* systems where `NULL` is not equal to zero (*e.g.*, Honeywell 6000‑series),
-* and systems using non‑ASCII character sets (*e.g.*, IBM mainframes).
+* systems where `NULL` is not equal to zero (*e.g.*,
+  Honeywell 600/6000‑series),
+* systems using one's‑complement integer representation (*e.g.*, Unisys
+  ClearPath Dorado / OS 2200), and
+* systems using non‑ASCII character sets (*e.g.*, IBM mainframes).
 
 The only current requirements are:
 
 * the C compiler must provide some storage type with a width at least as wide
   as the 32‑bit CRC,
-* a character type with a width of at least 8 but no more than 32 bits,
-* and a minimal, but working, `stdio` implementation (supporting at least
+* a character type with a width of at least 8 but no more than 32 bits, and
+* a minimal, but working, `stdio` implementation (supporting at least
   `fprintf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, and `clearerr`).
 
-It has been tested on various exotic and retro platforms including Multics
-(Multics C), CP/M-80 (z88dk), MS-DOS (IA16-GCC, Watcom, Microsoft C), and
-ELKS (IA16-GCC), and should be able to be built anywhere else with little
-to not porting effort required.
+It has been tested on various exotic and retro platforms including **Multics**
+(Multics C), **CP/M-80** (z88dk), **MS-DOS** (IA16-GCC, Watcom, Microsoft C),
+and **ELKS** (IA16-GCC), and should be able to be built anywhere else with
+little to no porting effort required.
 
 ## Usage
 
