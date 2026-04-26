@@ -94,13 +94,9 @@ counter_bits (void)
 counter_bits ()
 #endif
 {
-  counter_bits_t v;
-  counter_bits_t last;
-  counter_bits_t bits;
-
-  bits = 0;
-  v = 1;
-  last = 0;
+  counter_bits_t v = 1;
+  counter_bits_t last = 0;
+  counter_bits_t bits = 0;
 
   while (v > last) {
     bits++;
@@ -180,11 +176,8 @@ pdiv10 (u)
   unsigned int * u;
 # endif
 {
-  unsigned int q;
-  unsigned int r;
-
-  q = 0;
-  r = * u;
+  unsigned int q = 0;
+  unsigned int r = * u;
 
   while (r >= 10) {
     r -= 10;
@@ -227,7 +220,7 @@ psyserror (n)
       return p;
   }
 
-    q   = buf;
+  q = buf;
   * q++ = 'E';
   * q++ = 'r';
   * q++ = 'r';
@@ -245,9 +238,9 @@ psyserror (n)
 
   i = 0;
 
-  do {
+  do
     tmp [i++] = hexdigits [pdiv10 (& u)];
-  } while (u != 0 && i < (int)sizeof (tmp));
+  while (u != 0 && i < (int)sizeof (tmp));
 
   if (neg)
     * q++ = '-';
@@ -468,13 +461,9 @@ crc_t_bits (void)
 crc_t_bits ()
 #endif
 {
-  crc_t v;
-  crc_t last_v;
-  int bits;
-
-  bits   = 0;
-  v      = 1;
-  last_v = 0;
+  crc_t v = 1;
+  crc_t last_v = 0;
+  int bits = 0;
 
   while (v > last_v) {
     bits++;
@@ -560,30 +549,20 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
 {
   unsigned char rbuf [BUFSIZ];
   unsigned char oct;
-  crc_t crc;
-  crc_t buf;
+  crc_t crc = 0;
+  crc_t buf = 0;
   crc_t idx;
   crc_t tmp;
-  int bib;
+  int bib = 0;
   int ch;
-  long nread;
-  long pos;
-  counter_bits_t remaining_bits;
-
-  crc   = 0;
-  buf   = 0;
-  bib   = 0;
-  pos   = 0;
-  nread = 0;
-
-  remaining_bits = limit_bits;
+  long nread = 0;
+  long pos = 0;
+  counter_bits_t remaining_bits = limit_bits;
 
   for (;;) {
     while (bib < 8) {
       if (limit_bits != 0 && remaining_bits != 0) {
-        counter_bits_t uc;
-
-        uc = (counter_bits_t)use_cb;
+        counter_bits_t uc = (counter_bits_t)use_cb;
 
         if (remaining_bits < uc) {
           (void)fprintf (stderr,
@@ -598,7 +577,6 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
 
         {
           int c;
-
           nread = 0;
 
           while (nread < (long)sizeof (rbuf)) {
@@ -628,11 +606,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
       tmp &= inmask;
 
       {
-        crc_t t;
-        int shift;
-
-        t     = tmp;
-        shift = bib;
+        crc_t t = tmp;
+        int shift = bib;
 
         while (shift > 0) {
           t <<= 1;
@@ -646,9 +621,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
       bib += use_cb;
 
       if (limit_bits != 0 && remaining_bits != 0) {
-        counter_bits_t step;
-
-        step = (counter_bits_t)use_cb;
+        counter_bits_t step = (counter_bits_t)use_cb;
 
         if (remaining_bits <= step)
           remaining_bits = 0;
@@ -660,28 +633,25 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
         break;
     }
 
-    if (limit_bits != 0 && remaining_bits == 0) {
+    if (limit_bits != 0 && remaining_bits == 0)
       if (bib < 8)
         break;
-    }
 
     oct = (unsigned char)(buf & (crc_t)0xFF);
 
     {
-      crc_t t;
-      t   = crc;
-      t >>= 24;
-      idx = t;
+      crc_t t = crc;
+      t   >>= 24;
+      idx   = t;
     }
 
     idx ^= (crc_t)oct;
     idx &= (crc_t)0xFF;
 
     {
-      crc_t t;
-      t   = crc;
-      t <<= 8;
-      crc = t;
+      crc_t t = crc;
+      t   <<= 8;
+      crc   = t;
     }
 
     crc ^= tbl [idx];
@@ -690,10 +660,9 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
     buf >>= 8;
     bib -= 8;
 
-    if (limit_bits != 0 && remaining_bits == 0) {
+    if (limit_bits != 0 && remaining_bits == 0)
       if (bib == 0)
         break;
-    }
   }
 
 done:
@@ -772,9 +741,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
 #endif
 {
   unsigned char rbuf [BUFSIZ];
-  crc_t crc;
+  crc_t crc = 0;
   long nread;
-  counter_bits_t remaining_bits;
+  counter_bits_t remaining_bits = limit_bits;
   long bytes_to_process;
 
   if (fp == (FILE *)0) {
@@ -783,15 +752,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
     exit (EXIT_FAILURE);
   }
 
-  crc = 0;
-
   if (ub < 32) {
     (void)fprintf (stderr,
       "FATAL: Need >=32-bit crc_t type, have %d bits.\n", ub);
     exit (EXIT_FAILURE);
   }
-
-  remaining_bits = limit_bits;
 
   if (use_cb == 8 && cb == 8) {
     for (;;) {
@@ -822,11 +787,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
       bytes_to_process = nread;
 
       if (remaining_bits != 0) {
-        counter_bits_t b;
-        counter_bits_t count;
-
-        b = remaining_bits;
-        count = 0;
+        counter_bits_t b = remaining_bits;
+        counter_bits_t count = 0;
 
         while (b >= 8 && count < (counter_bits_t)nread) {
           b -= 8;
@@ -843,16 +805,12 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
 
       if (remaining_bits != 0 && bytes_to_process < nread) {
         if (pad != 0) {
-          unsigned char final_byte;
+          unsigned char final_byte = rbuf [bytes_to_process];
           unsigned char mask;
-          int shift;
-
-          final_byte = rbuf [bytes_to_process];
-          shift = 8 - (int)remaining_bits;
+          int shift = 8 - (int)remaining_bits;
 
           if (shift > 0) {
-              unsigned char m;
-              m = 0xFF;
+              unsigned char m = 0xFF;
               m <<= shift;
               mask = m;
           } else
