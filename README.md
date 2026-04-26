@@ -22,7 +22,8 @@ with a C compiler, such as:
   ClearPath Dorado / OS 2200),
 * systems with byte sizes other than 8 bits (*e.g.*, DEC PDP‑10, H6000,
   Unisys), and
-* systems using non‑ASCII character sets (*e.g.*, IBM mainframes, Unisys MCP).
+* systems using non‑ASCII character sets (*e.g.*, IBM mainframes, Unisys MCP),
+  and even non-EBCDIC character sets!
 
 The only current requirements are:
 
