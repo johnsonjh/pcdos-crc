@@ -35,9 +35,10 @@ The only current requirements are:
   `fprintf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, and `clearerr`).
 
 It has been tested on various exotic and retro platforms including **Multics**
-(Multics C), **CP/M-80** (z88dk), **MS-DOS** (IA16-GCC, Watcom, Microsoft C),
-**ELKS** (IA16-GCC), and **Atari ST** (TOS/MINT using CrossMINT) and should
-be able to be built anywhere else with little to no porting effort required.
+(Multics C), **CP/M-80** (z88dk), **MS-DOS** (IA16-GCC, Watcom, Microsoft C,
+DJGPP), **ELKS** (IA16-GCC), and **Atari ST** (TOS/MINT using CrossMINT) and
+should be able to be built anywhere else with little to no porting effort
+required.
 
 ## Usage
 
