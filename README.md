@@ -55,8 +55,9 @@ The `crc.c` source code should build easily anywhere.  If you are using a
 non-ANSI C compiler, you should define `NOANSI` (*i.e.*, `-DNOANSI`) or
 modify the code to comment out the `#define ANSI_COMPILER` directive.
 
-If you are trying to build in marginal environment using a C preprocessor that
-does not deal with indentation, you can "flatten" the source using POSIX `sed`:
+If you are trying to build in a marginal environment using a C preprocessor
+that does not deal with indentation, you can "flatten" the source using POSIX
+`sed`:
 ```sh
 sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
 ```
@@ -69,11 +70,11 @@ To build a binary for Multics using Multics C:
 ```
 
 Multics can be considered to run on exotic platform, the Honeywell 6000-series
-36-bit large system mainframe.  This system uses 9 bits per character, where
-most systems use 8 bits per character.  Multics stores data in "big-endian"
+36-bit "large systems" mainframe.  This system uses 9 bits per character, where
+most systems use 8 bits per character.  Multics stores data in big-endian
 format, that is, "foreign" 8-bit data would be stored in the first most
 significant positions (starting at bit 1 and ending with bit 8) and the 9th
-or least most significant bit would remain unused.
+or least most significant bit would remain unused in each character.
 
 When run on Multics or any other environment not using an 8-bit character
 size, some instructional text will be appended to the `--help` output:
