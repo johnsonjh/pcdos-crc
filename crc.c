@@ -100,9 +100,10 @@ counter_bits ()
 
   while (v > last) {
     bits++;
+
     last = v;
-    v <<= 1;
-    v  |= 1;
+    v  <<= 1;
+    v   |= 1;
   }
 
   return bits;
@@ -444,9 +445,10 @@ charbits ()
 
   while (c > last_c) {
     bits++;
+
     last_c = c;
-    c <<= 1;
-    c  |= 1;
+    c    <<= 1;
+    c     |= 1;
   }
 
   return bits;
@@ -461,15 +463,16 @@ crc_t_bits (void)
 crc_t_bits ()
 #endif
 {
-  crc_t v = 1;
+  crc_t v      = 1;
   crc_t last_v = 0;
-  int bits = 0;
+  int bits     = 0;
 
   while (v > last_v) {
     bits++;
+
     last_v = v;
-    v <<= 1;
-    v  |= 1;
+    v    <<= 1;
+    v     |= 1;
   }
 
   return bits;
@@ -496,25 +499,20 @@ crc_update_bytes (crc, tbl, mask32, buf, n)
 {
   long i;
   crc_t idx;
+  crc_t t;
 
   for (i = 0; i < n; i++) {
-    {
-      crc_t t;
-      t   = crc;
-      t >>= 24;
-      idx = t;
-    }
+    t   = crc;
+    t >>= 24;
 
+    idx  = t;
     idx ^= (crc_t)buf [i];
     idx &= (crc_t)0xFF;
 
-    {
-      crc_t t;
-      t   = crc;
-      t <<= 8;
-      crc = t;
-    }
+    t   = crc;
+    t <<= 8;
 
+    crc  = t;
     crc ^= tbl [idx];
     crc &= mask32;
   }
@@ -553,8 +551,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
   crc_t buf = 0;
   crc_t idx;
   crc_t tmp;
+  crc_t t;
+  crc_t t2;
   int bib = 0;
   int ch;
+  int c;
+  int shift;
   long nread = 0;
   long pos = 0;
   counter_bits_t remaining_bits = limit_bits;
@@ -575,19 +577,16 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
         if (feof (fp))
           goto done;
 
-        {
-          int c;
-          nread = 0;
+        nread = 0;
 
-          while (nread < (long)sizeof (rbuf)) {
-            c = fgetc (fp);
+        while (nread < (long)sizeof (rbuf)) {
+          c = fgetc (fp);
 
-            if (c == EOF)
-              break;
+          if (c == EOF)
+            break;
 
-            rbuf [nread] = (unsigned char)c;
-            nread++;
-          }
+          rbuf [nread] = (unsigned char)c;
+          nread++;
         }
 
         if (ferror (fp))
@@ -605,17 +604,15 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
       tmp  = (crc_t)(unsigned char)ch;
       tmp &= inmask;
 
-      {
-        crc_t t = tmp;
-        int shift = bib;
+      t2    = tmp;
+      shift = bib;
 
-        while (shift > 0) {
-          t <<= 1;
-          shift--;
-        }
-
-        tmp = t;
+      while (shift > 0) {
+        t2 <<= 1;
+        shift--;
       }
+
+      tmp = t2;
 
       buf |= tmp;
       bib += use_cb;
@@ -639,21 +636,17 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, limit_bits)
 
     oct = (unsigned char)(buf & (crc_t)0xFF);
 
-    {
-      crc_t t = crc;
-      t   >>= 24;
-      idx   = t;
-    }
+    t   = crc;
+    t >>= 24;
 
+    idx  = t;
     idx ^= (crc_t)oct;
     idx &= (crc_t)0xFF;
 
-    {
-      crc_t t = crc;
-      t   <<= 8;
-      crc   = t;
-    }
+    t   = crc;
+    t <<= 8;
 
+    crc = t;
     crc ^= tbl [idx];
     crc &= mask32;
 
@@ -670,22 +663,16 @@ done:
     if (pad != 0) {
       oct = (unsigned char)(buf & (crc_t)0xFF);
 
-      {
-        crc_t t;
-        t   = crc;
-        t >>= 24;
-        idx = t;
-      }
+      t   = crc;
+      t >>= 24;
+      idx = t;
 
       idx ^= (crc_t)oct;
       idx &= (crc_t)0xFF;
 
-      {
-        crc_t t;
-        t   = crc;
-        t <<= 8;
-        crc = t;
-      }
+      t   = crc;
+      t <<= 8;
+      crc = t;
 
       crc ^= tbl [idx];
       crc &= mask32;
@@ -745,6 +732,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
   long nread;
   counter_bits_t remaining_bits = limit_bits;
   long bytes_to_process;
+  int c;
 
   if (fp == (FILE *)0) {
     (void)fprintf (stderr,
@@ -764,18 +752,15 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
       if (feof (fp))
         break;
 
-      {
-        int c;
-        nread = 0;
+      nread = 0;
 
-        while (nread < (long)sizeof (rbuf)) {
-          c = fgetc (fp);
+      while (nread < (long)sizeof (rbuf)) {
+        c = fgetc (fp);
 
-          if (c == EOF)
-            break;
+        if (c == EOF)
+          break;
 
-          rbuf [nread++] = (unsigned char)c;
-        }
+        rbuf [nread++] = (unsigned char)c;
       }
 
       if (ferror (fp))
@@ -787,7 +772,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
       bytes_to_process = nread;
 
       if (remaining_bits != 0) {
-        counter_bits_t b = remaining_bits;
+        counter_bits_t b     = remaining_bits;
         counter_bits_t count = 0;
 
         while (b >= 8 && count < (counter_bits_t)nread) {
@@ -810,9 +795,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
           int shift = 8 - (int)remaining_bits;
 
           if (shift > 0) {
-              unsigned char m = 0xFF;
-              m <<= shift;
-              mask = m;
+              mask   = 0xFF;
+              mask <<= shift;
           } else
             mask = (unsigned char)0xFF;
 
@@ -931,36 +915,35 @@ main (argc, argv)
   FILE * fp;
   static crc_t crc_table [256];
   crc_t crcval;
-  crc_t mask32;
+  crc_t mask32 = (crc_t)0xFFFFFFFF;
   crc_t inmask;
-  char * filename;
-  int process_bits;
+  crc_t v;
+  char * filename = NULL;
+  char buf [9];
+  int process_bits = 0;
   int use_cb;
-  int pad;
+  int pad = 0;
   int j;
+  counter_bits_t i;
   int cb;
   int ub;
-  counter_bits_t limit_bits;
+  counter_bits_t limit_bits = 0;
   counter_bits_t max_ul_bits;
-  counter_bits_t max_limit;
+  counter_bits_t max_limit = 0;
   const char * progname = (argv [0] && * argv [0]) ? argv [0] : "crc";
 
-  {
-    crc_t v = (crc_t)~0;
+  v = (crc_t)~0;
 
-    if (v == (v >> 1)) { /* //-V547 */
-      (void)fprintf (stderr,
-        "FATAL: Broken compiler: logical right-shift is not logical.\n");
-      return EXIT_FAILURE;
-    }
+  if (v == (v >> 1)) { /* //-V547 */
+    (void)fprintf (stderr,
+      "FATAL: Broken compiler: logical right-shift is not logical.\n");
+    return EXIT_FAILURE;
   }
 
   init_crc_table (crc_table); /* //-V1107 */
 
   cb = charbits ();
   ub = crc_t_bits ();
-
-  mask32 = (crc_t)0xFFFFFFFF;
 
   if ((cb < 8) || (cb > 32)) {
     (void)fprintf (stderr,
@@ -969,19 +952,9 @@ main (argc, argv)
   }
 
   max_ul_bits = counter_bits ();
-  max_limit = 0;
 
-  {
-    counter_bits_t i;
-
-    for (i = 0; i < max_ul_bits; i++)
-      max_limit = (max_limit << 1) | 1;
-  }
-
-  filename = NULL;
-  process_bits = 0;
-  pad = 0;
-  limit_bits = 0;
+  for (i = 0; i < max_ul_bits; i++)
+    max_limit = (max_limit << 1) | 1;
 
   if (argc < 2) {
     usage (progname, cb); /* //-V1107 */
@@ -993,8 +966,10 @@ main (argc, argv)
         0 == strcmp (argv [j], "--HELP") || 0 == strcmp (argv [j], "-H")) {
       usage (progname, cb); /* //-V1107 */
       return 0;
-    } else if (0 == strncmp (argv [j], "--bits=", 7) ||
-               0 == strncmp (argv [j], "--BITS=", 7)) {
+    }
+
+    if (0 == strncmp (argv [j], "--bits=", 7) ||
+        0 == strncmp (argv [j], "--BITS=", 7)) {
       process_bits = atoi (argv [j] + 7);
 
       if (process_bits <= 0) {
@@ -1003,11 +978,17 @@ main (argc, argv)
         return EXIT_FAILURE;
       }
 
-    } else if (0 == strcmp (argv [j], "--pad") ||
-               0 == strcmp (argv [j], "--PAD")) {
+      continue;
+    }
+
+    if (0 == strcmp (argv [j], "--pad") ||
+        0 == strcmp (argv [j], "--PAD")) {
       pad = 1;
-    } else if (0 == strncmp (argv [j], "--limit=", 8) ||
-               0 == strncmp (argv [j], "--LIMIT=", 8)) {
+      continue;
+    }
+
+    if (0 == strncmp (argv [j], "--limit=", 8) ||
+        0 == strncmp (argv [j], "--LIMIT=", 8)) {
       limit_bits = parse_limit (argv [j] + 8, max_limit); /* //-V1107 */
 
       if (limit_bits == 0 || limit_bits > max_limit) {
@@ -1016,19 +997,23 @@ main (argc, argv)
             (unsigned long)max_limit);
         return EXIT_FAILURE;
       }
-    } else if ('-' == argv [j] [0]) {
+
+      continue;
+    }
+
+    if ('-' == argv [j] [0]) {
       (void)fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j]);
       usage (progname, cb); /* //-V1107 */
       return EXIT_FAILURE;
-    } else {
-      if (NULL != filename) {
-        (void)fprintf (stderr, "FATAL: Only one filename is allowed.\n");
-        usage (progname, cb); /* //-V1107 */
-        return EXIT_FAILURE;
-      }
-
-      filename = argv [j];
     }
+
+    if (NULL != filename) {
+      (void)fprintf (stderr, "FATAL: Only one filename is allowed.\n");
+      usage (progname, cb); /* //-V1107 */
+      return EXIT_FAILURE;
+    }
+
+    filename = argv [j];
   }
 
   if (NULL == filename) {
@@ -1058,20 +1043,16 @@ main (argc, argv)
 
   (void)fclose (fp);
 
-  {
-    crc_t v = (crc_t)crcval;
-    char buf [9];
-    int i;
+  v = (crc_t)crcval;
 
-    for (i = 7; i >= 0; --i) {
-      buf [i] = hexdigits [(int)(v & 0xF)];
-      v >>= 4;
-    }
-
-    buf [8] = '\0';
-
-    (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
+  for (j = 7; j >= 0; --j) {
+    buf [j] = hexdigits [(int)(v & 0xF)];
+    v >>= 4;
   }
+
+  buf [8] = '\0';
+
+  (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
 
   return 0;
 }
