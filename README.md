@@ -43,7 +43,7 @@ required.
 ## Usage
 
 ```
-Usage: CRC [options] <file>
+Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
   --bits=N    Process N bits per character
   --pad       Pad trailing bits with zeros

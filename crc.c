@@ -883,7 +883,8 @@ usage (progname, cb)
   int cb;
 #endif
 {
-  (void)fprintf (stderr, "Usage: %s [options] <file>\n", progname);
+  (void)fprintf (stderr, "Usage: %s [option(s)...] <file> [file(s)...]\n",
+    progname);
   (void)fprintf (stderr, "Options:\n");
   (void)fprintf (stderr, "  --bits=N    Process N bits per character\n");
   (void)fprintf (stderr, "  --pad       Pad trailing bits with zeros\n");
@@ -923,6 +924,8 @@ main (argc, argv)
   int process_bits = 0;
   int use_cb;
   int pad = 0;
+  int stop = 0;
+  int found = 0;
   int j;
   counter_bits_t i;
   int cb;
@@ -962,14 +965,21 @@ main (argc, argv)
   }
 
   for (j = 1; j < argc; j++) {
-    if (0 == strcmp (argv [j], "--help") || 0 == strcmp (argv [j], "-h") ||
-        0 == strcmp (argv [j], "--HELP") || 0 == strcmp (argv [j], "-H")) {
+    if (0 == stop && 0 == strcmp (argv [j], "--")) {
+      stop = 1;
+      continue;
+    }
+
+    if (0 == stop && (0 == strcmp (argv [j], "--help") ||
+                      0 == strcmp (argv [j], "--HELP") ||
+                      0 == strcmp (argv [j], "-h") ||
+                      0 == strcmp (argv [j], "-H"))) {
       usage (progname, cb); /* //-V1107 */
       return 0;
     }
 
-    if (0 == strncmp (argv [j], "--bits=", 7) ||
-        0 == strncmp (argv [j], "--BITS=", 7)) {
+    if (0 == stop && (0 == strncmp (argv [j], "--bits=", 7) ||
+                      0 == strncmp (argv [j], "--BITS=", 7))) {
       process_bits = atoi (argv [j] + 7);
 
       if (process_bits <= 0) {
@@ -981,14 +991,14 @@ main (argc, argv)
       continue;
     }
 
-    if (0 == strcmp (argv [j], "--pad") ||
-        0 == strcmp (argv [j], "--PAD")) {
+    if (0 == stop && (0 == strcmp (argv [j], "--pad") ||
+                      0 == strcmp (argv [j], "--PAD"))) {
       pad = 1;
       continue;
     }
 
-    if (0 == strncmp (argv [j], "--limit=", 8) ||
-        0 == strncmp (argv [j], "--LIMIT=", 8)) {
+    if (0 == stop && (0 == strncmp (argv [j], "--limit=", 8) ||
+                      0 == strncmp (argv [j], "--LIMIT=", 8))) {
       lim_bits = parse_limit (argv [j] + 8, max_limit); /* //-V1107 */
 
       if (lim_bits == 0 || lim_bits > max_limit) {
@@ -1001,22 +1011,16 @@ main (argc, argv)
       continue;
     }
 
-    if ('-' == argv [j] [0]) {
+    if (0 == stop && '-' == argv [j] [0]) {
       (void)fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j]);
       usage (progname, cb); /* //-V1107 */
       return EXIT_FAILURE;
     }
 
-    if (NULL != filename) {
-      (void)fprintf (stderr, "FATAL: Only one filename is allowed.\n");
-      usage (progname, cb); /* //-V1107 */
-      return EXIT_FAILURE;
-    }
-
-    filename = argv [j];
+    found++;
   }
 
-  if (NULL == filename) {
+  if (0 == found) {
     (void)fprintf (stderr, "FATAL: No filename provided.\n");
     usage (progname, cb); /* //-V1107 */
     return EXIT_FAILURE;
@@ -1033,26 +1037,40 @@ main (argc, argv)
 
   inmask = ((crc_t)1 << use_cb) - (crc_t)1;
 
-  fp = fopen (filename, "rb");
+  stop = 0;
 
-  if (NULL == fp)
-    fatal_err ("Error opening ", filename, errno); /* //-V1107 */
+  for (j = 1; j < argc; j++) {
+    if (0 == stop && 0 == strcmp (argv [j], "--")) {
+      stop = 1;
+      continue;
+    }
 
-  crcval = compute_crc ( /* //-V1107 */
-    fp, filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+    if (0 == stop && '-' == argv [j] [0])
+      continue;
 
-  (void)fclose (fp);
+    filename = argv [j];
 
-  v = (crc_t)crcval;
+    fp = fopen (filename, "rb");
 
-  for (j = 7; j >= 0; --j) {
-    buf [j] = hexdigits [(int)(v & 0xF)];
-    v >>= 4;
+    if (NULL == fp)
+      fatal_err ("Error opening ", filename, errno); /* //-V1107 */
+
+    crcval = compute_crc ( /* //-V1107 */
+      fp, filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+
+    (void)fclose (fp);
+
+    v = (crc_t)crcval;
+
+    for (i = 0; i < 8; i++) {
+      buf [7 - i] = hexdigits [(int)(v & 0xF)];
+      v >>= 4;
+    }
+
+    buf [8] = '\0';
+
+    (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
   }
-
-  buf [8] = '\0';
-
-  (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
 
   return 0;
 }
