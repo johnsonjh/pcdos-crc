@@ -41,7 +41,8 @@ It has been tested on various exotic and retro platforms including
 **MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), Watcom,
 Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)), **ELKS** (IA16-GCC),
 **Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
-and [SoftIntegration **Ch**](https://www.softintegration.com/), and should be
+and systems supported by
+[SoftIntegration **Ch**](https://www.softintegration.com/), but should be
 able to be built anywhere else with little to no porting effort required.
 
 ## Usage
