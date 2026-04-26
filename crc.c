@@ -59,11 +59,78 @@
 
 /******************************************************************************/
 
+/* NOTE: counter_bits_t must be no wider than an unsigned long. */
+
 #ifdef multics
 typedef unsigned int crc_t;
+typedef crc_t counter_bits_t;
 #else
 typedef unsigned long crc_t;
+typedef unsigned long counter_bits_t;
 #endif
+
+/******************************************************************************/
+
+static counter_bits_t
+#ifdef ANSI_COMPILER
+counter_bits (void)
+#else
+counter_bits ()
+#endif
+{
+  counter_bits_t v;
+  counter_bits_t last;
+  counter_bits_t bits;
+
+  bits = 0;
+  v = 1;
+  last = 0;
+
+  while (v > last) {
+    bits++;
+    last = v;
+    v <<= 1;
+    v  |= 1;
+  }
+
+  return bits;
+}
+
+/******************************************************************************/
+
+static counter_bits_t
+#ifdef ANSI_COMPILER
+parse_limit (
+  const char * s)
+#else
+parse_limit (s)
+  const char * s;
+#endif
+{
+  static const char digits [] = "0123456789";
+  counter_bits_t v;
+  int c;
+  int i;
+
+  v = 0;
+
+  if (s == (const char *)0)
+    return 0;
+
+  while ((c = * s++) != '\0') {
+    i = 0;
+
+    while (digits [i] != '\0' && digits [i] != c)
+      i++;
+
+    if (digits [i] == '\0')
+      return 0;
+
+    v = v * 10 + (counter_bits_t)i;
+  }
+
+  return v;
+}
 
 /******************************************************************************/
 
@@ -386,21 +453,70 @@ crc_t_bits ()
 
 static crc_t
 #ifdef ANSI_COMPILER
+crc_update_bytes (
+  crc_t crc,
+  const crc_t * tbl,
+  crc_t mask32,
+  const unsigned char * buf,
+  long n)
+#else
+crc_update_bytes (crc, tbl, mask32, buf, n)
+  crc_t crc;
+  const crc_t * tbl;
+  crc_t mask32;
+  const unsigned char * buf;
+  long n;
+#endif
+{
+  long i;
+  crc_t idx;
+
+  for (i = 0; i < n; i++) {
+    {
+      crc_t t;
+      t = crc;
+      t >>= 24;
+      idx = t;
+    }
+
+    idx ^= (crc_t)buf [i];
+    idx &= (crc_t)0xFF;
+
+    {
+      crc_t t;
+      t = crc;
+      t <<= 8;
+      crc = t;
+    }
+
+    crc ^= tbl [idx];
+    crc &= mask32;
+  }
+
+  return crc;
+}
+
+/******************************************************************************/
+
+static crc_t
+#ifdef ANSI_COMPILER
 compute_crc_fb (
   FILE * fp,
   const crc_t * tbl,
   int use_cb,
   crc_t mask32,
   crc_t inmask,
-  int pad)
+  int pad,
+  counter_bits_t limit_bits)
 #else
-compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad)
+compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad, limit_bits)
   FILE * fp;
   const crc_t * tbl;
   int use_cb;
   crc_t mask32;
   crc_t inmask;
   int pad;
+  counter_bits_t limit_bits;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
@@ -413,26 +529,36 @@ compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad)
   int ch;
   long nread;
   long pos;
+  counter_bits_t remaining_bits;
 
   crc = 0;
   buf = 0;
   bib = 0;
   pos = 0;
   nread = 0;
+  remaining_bits = limit_bits;
 
-  /*
-   * Note: Bits are packed LSB-first into 'buf' and extracted low-to-high (LSB
-   * first). If padding is enabled, trailing bits are zero-filled in the high
-   * positions of the final byte.
-   */
   for (;;) {
     while (bib < 8) {
+      if (limit_bits != 0 && remaining_bits != 0) {
+        counter_bits_t uc;
+
+        uc = (counter_bits_t)use_cb;
+
+        if (remaining_bits < uc) {
+          (void)fprintf (stderr,
+            "WARNING: --limit ended mid-character; use --pad if needed.\n");
+          goto done;
+        }
+      }
+
       if (pos >= nread) {
         if (feof (fp))
           goto done;
 
         {
           int c;
+
           nread = 0;
           while (nread < (long)sizeof (rbuf)) {
             c = fgetc (fp);
@@ -440,48 +566,117 @@ compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad)
             if (c == EOF)
               break;
 
-            rbuf [nread++] = (unsigned char)c;
+            rbuf [nread] = (unsigned char)c;
+            nread++;
           }
         }
 
         if (ferror (fp))
           fatal_err ("Error reading file", errno); /* //-V1107 */
 
-        if (0 == nread) {
+        if (nread == 0)
           goto done;
-        }
 
         pos = 0;
       }
 
-      ch = rbuf [pos++];
-      tmp   = (crc_t)(unsigned char)ch;
-      tmp  &= inmask;
-      tmp <<= bib;
-      buf  |= tmp;
-      bib  += use_cb;
+      ch = rbuf [pos];
+      pos++;
+
+      tmp = (crc_t)(unsigned char)ch;
+      tmp &= inmask;
+
+      {
+        crc_t t;
+        int shift;
+
+        t = tmp;
+        shift = bib;
+
+        while (shift > 0) {
+          t <<= 1;
+          shift--;
+        }
+
+        tmp = t;
+      }
+
+      buf |= tmp;
+      bib += use_cb;
+
+      if (limit_bits != 0 && remaining_bits != 0) {
+        counter_bits_t step;
+
+        step = (counter_bits_t)use_cb;
+
+        if (remaining_bits <= step)
+          remaining_bits = 0;
+        else
+          remaining_bits = remaining_bits - step;
+      }
+
+      if (remaining_bits == 0)
+        break;
     }
 
-    oct  = (unsigned char)(buf & (crc_t)0xFF);
-    idx  = (crc >> 24);
+    if (limit_bits != 0 && remaining_bits == 0) {
+      if (bib < 8)
+        break;
+    }
+
+    oct = (unsigned char)(buf & (crc_t)0xFF);
+
+    {
+      crc_t t;
+      t = crc;
+      t >>= 24;
+      idx = t;
+    }
+
     idx ^= (crc_t)oct;
     idx &= (crc_t)0xFF;
-    crc  = (crc << 8);
+
+    {
+      crc_t t;
+      t = crc;
+      t <<= 8;
+      crc = t;
+    }
+
     crc ^= tbl [idx];
     crc &= mask32;
 
     buf >>= 8;
-    bib  -= 8;
+    bib -= 8;
+
+    if (limit_bits != 0 && remaining_bits == 0) {
+      if (bib == 0)
+        break;
+    }
   }
 
 done:
   if (bib > 0) {
-    if (0 != pad) {
-      oct  = (unsigned char)(buf & (crc_t)0xFF);
-      idx  = (crc >> 24);
+    if (pad != 0) {
+      oct = (unsigned char)(buf & (crc_t)0xFF);
+
+      {
+        crc_t t;
+        t = crc;
+        t >>= 24;
+        idx = t;
+      }
+
       idx ^= (crc_t)oct;
       idx &= (crc_t)0xFF;
-      crc  = (crc << 8);
+
+      {
+        crc_t t;
+        t = crc;
+        t <<= 8;
+        crc = t;
+      }
+
       crc ^= tbl [idx];
       crc &= mask32;
     } else {
@@ -489,6 +684,18 @@ done:
         "WARNING: File ended with %d dangling bit%s (not a full character).\n",
         bib, bib == 1 ? "" : "s");
     }
+  }
+
+  if (limit_bits != 0 && remaining_bits != 0) {
+    counter_bits_t used_bits;
+
+    used_bits = limit_bits - remaining_bits;
+
+    (void)fprintf (stderr,
+      "WARNING: File ended after %lu bits, but --limit=%lu was requested.\n",
+      (unsigned long)used_bits, (unsigned long)limit_bits);
+    (void)fprintf (stderr,
+      "         Use --pad to zero-fill remaining bits.\n");
   }
 
   return crc;
@@ -506,9 +713,10 @@ compute_crc (
   int use_cb,
   crc_t mask32,
   crc_t inmask,
-  int pad)
+  int pad,
+  counter_bits_t limit_bits)
 #else
-compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
+compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad, limit_bits)
   FILE * fp;
   const crc_t * tbl;
   int cb;
@@ -517,36 +725,41 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
   crc_t mask32;
   crc_t inmask;
   int pad;
+  counter_bits_t limit_bits;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
   crc_t crc;
-  crc_t idx;
   long nread;
-  long i;
+  counter_bits_t remaining_bits;
+  long bytes_to_process;
 
-  if (NULL == fp) {
+  if (fp == (FILE *)0) {
     (void)fprintf (stderr,
-                   "FATAL: compute_crc called with NULL file pointer.\n");
+      "FATAL: compute_crc called with NULL file pointer.\n");
     exit (1);
   }
 
   crc = 0;
 
   if (ub < 32) {
-    (void)fprintf (stderr, "FATAL: Need >=32-bit crc_t type, have %d bits.\n",
-                   ub);
+    (void)fprintf (stderr,
+      "FATAL: Need >=32-bit crc_t type, have %d bits.\n", ub);
     exit (1);
   }
 
-  if ((8 == use_cb) && (8 == cb)) {
+  remaining_bits = limit_bits;
+
+  if (use_cb == 8 && cb == 8) {
     for (;;) {
+
       if (feof (fp))
         break;
 
       {
         int c;
         nread = 0;
+
         while (nread < (long)sizeof (rbuf)) {
           c = fgetc (fp);
 
@@ -560,25 +773,113 @@ compute_crc (fp, tbl, cb, ub, use_cb, mask32, inmask, pad)
       if (ferror (fp))
         fatal_err ("Error reading file", errno); /* //-V1107 */
 
-      if (0 == nread) {
+      if (nread == 0)
+        break;
+
+      bytes_to_process = nread;
+
+      if (remaining_bits != 0) {
+        counter_bits_t b;
+        counter_bits_t count;
+
+        b = remaining_bits;
+        count = 0;
+
+        while (b >= 8 && count < (counter_bits_t)nread) {
+          b -= 8;
+          count++;
+        }
+
+        bytes_to_process = (long)count;
+        remaining_bits = b;
+      }
+
+      if (bytes_to_process > 0)
+        crc = crc_update_bytes (crc, tbl, mask32, rbuf, /* //-V1107 */
+          bytes_to_process);
+
+      if (remaining_bits != 0 && bytes_to_process < nread) {
+        if (pad != 0) {
+          unsigned char final_byte;
+          unsigned char mask;
+          int shift;
+
+          final_byte = rbuf [bytes_to_process];
+          shift = 8 - (int)remaining_bits;
+
+          if (shift > 0) {
+              unsigned char m;
+              m = 0xFF;
+              m <<= shift;
+              mask = m;
+          } else
+            mask = (unsigned char)0xFF;
+
+          final_byte &= mask;
+
+          crc = crc_update_bytes ( /* //-V1107 */
+            crc, tbl, mask32, & final_byte, (long)1);
+
+          remaining_bits = 0;
+        } else {
+          (void)fprintf (stderr, "WARNING: Input --limit caused truncation ");
+          (void)fprintf (stderr, "mid-character; use --pad if needed.\n");
+
+          remaining_bits = 0;
+        }
+
         break;
       }
 
-      for (i = 0; i < nread; i++) {
-        idx  = (crc >> 24);
-        idx ^= (crc_t)rbuf [i];
-        idx &= (crc_t)0xFF;
-        crc  = (crc << 8);
-        crc ^= tbl [idx];
-        crc &= mask32;
-      }
+      if (remaining_bits == 0 && limit_bits != 0)
+        break;
     }
 
     clearerr (fp);
+
+    if (limit_bits != 0 && remaining_bits != 0) {
+      if (pad != 0) {
+        unsigned char zbuf [32];
+        long k;
+
+        for (k = 0; k < (long)sizeof (zbuf); k++)
+          zbuf [k] = 0;
+
+        while (remaining_bits >= 8) {
+          long chunk = 0;
+
+          while (chunk < (long)sizeof (zbuf) && remaining_bits >= 8) {
+            chunk++;
+            remaining_bits -= 8;
+          }
+
+          crc = crc_update_bytes ( /* //-V1107 */
+            crc, tbl, mask32, zbuf, chunk);
+        }
+
+        if (remaining_bits > 0) {
+          (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
+          (void)fprintf (stderr, "trailing %lu bit%s ignored in 8-bit mode.\n",
+            (unsigned long)remaining_bits, (remaining_bits == 1 ? "" : "s"));
+        }
+      } else {
+        counter_bits_t used_bits = limit_bits - remaining_bits;
+
+        (void)fprintf (stderr,
+          "WARNING: File ended after %lu bit%s, but --limit=%lu requested.\n",
+          (unsigned long)used_bits, (used_bits == 1 ? "" : "s"),
+          (unsigned long)limit_bits);
+        (void)fprintf (stderr,
+          "         Use --pad to zero-fill the remaining bit%s.\n",
+          (remaining_bits == 1 ? "" : "s"));
+      }
+    }
+
     return crc;
   }
 
-  return compute_crc_fb (fp, tbl, use_cb, mask32, inmask, pad); /* //-V1107 */
+  return compute_crc_fb ( /* //-V1107 */
+    fp, tbl, use_cb, mask32, inmask, pad, limit_bits);
 }
 
 /******************************************************************************/
@@ -598,7 +899,8 @@ usage (progname, cb)
   (void)fprintf (stderr, "Options:\n");
   (void)fprintf (stderr, "  --bits=N    Process N bits per character\n");
   (void)fprintf (stderr, "  --pad       Pad trailing bits with zeros\n");
-  (void)fprintf (stderr, "  --help, -h  Show this help\n");
+  (void)fprintf (stderr, "  --limit=N   Stop processing after N bits\n");
+  (void)fprintf (stderr, "  --help, -h  Show the help and usage text\n");
 
   if (8 != cb)
     (void)fprintf (stderr,
@@ -634,6 +936,9 @@ main (argc, argv)
   int j;
   int cb;
   int ub;
+  counter_bits_t limit_bits;
+  counter_bits_t max_ul_bits;
+  counter_bits_t max_limit;
   const char * progname = (argv [0] && * argv [0]) ? argv [0] : "crc";
 
   {
@@ -659,9 +964,20 @@ main (argc, argv)
     return 1;
   }
 
+  max_ul_bits = counter_bits ();
+  max_limit = 0;
+
+  {
+    counter_bits_t i;
+
+    for (i = 0; i < max_ul_bits; i++)
+      max_limit = (max_limit << 1) | 1;
+  }
+
   filename = NULL;
   process_bits = 0;
   pad = 0;
+  limit_bits = 0;
 
   if (argc < 2) {
     usage (progname, cb); /* //-V1107 */
@@ -669,13 +985,32 @@ main (argc, argv)
   }
 
   for (j = 1; j < argc; j++) {
-    if (0 == strcmp (argv [j], "--help") || 0 == strcmp (argv [j], "-h")) {
+    if (0 == strcmp (argv [j], "--help") || 0 == strcmp (argv [j], "-h") ||
+        0 == strcmp (argv [j], "--HELP") || 0 == strcmp (argv [j], "-H")) {
       usage (progname, cb); /* //-V1107 */
       return 0;
-    } else if (0 == strncmp (argv [j], "--bits=", 7)) {
+    } else if (0 == strncmp (argv [j], "--bits=", 7) ||
+               0 == strncmp (argv [j], "--BITS=", 7)) {
       process_bits = atoi (argv [j] + 7);
-    } else if (0 == strcmp (argv [j], "--pad")) {
+
+      if (process_bits <= 0) {
+        (void)fprintf (stderr,
+          "FATAL: --bits must be a positive integer greater than zero.\n");
+        return 1;
+      }
+
+    } else if (0 == strcmp (argv [j], "--pad") ||
+               0 == strcmp (argv [j], "--PAD")) {
       pad = 1;
+    } else if (0 == strncmp (argv [j], "--limit=", 8) ||
+               0 == strncmp (argv [j], "--LIMIT=", 8)) {
+      limit_bits = parse_limit (argv [j] + 8); /* //-V1107 */
+      if (limit_bits == 0 || limit_bits > max_limit) {
+        (void)fprintf (stderr,
+          "FATAL: --limit must be between 1 and %lu bits.\n",
+            (unsigned long)max_limit);
+        return 1;
+      }
     } else if ('-' == argv [j] [0]) {
       (void)fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j]);
       usage (progname, cb); /* //-V1107 */
@@ -724,14 +1059,14 @@ main (argc, argv)
     return 1;
   }
 
-  crcval = compute_crc (fp, crc_table, cb, ub, /* //-V1107 */
-                        use_cb, mask32, inmask, pad);
+  crcval = compute_crc (fp, crc_table, cb, ub, use_cb, mask32, /* //-V1107 */
+    inmask, pad, limit_bits);
 
   (void)fclose (fp);
 
   {
     static const char hexdigits [] = "0123456789ABCDEF";
-    unsigned long v = (unsigned long)crcval;
+    crc_t v = (crc_t)crcval;
     char buf [9];
     int i;
 
@@ -749,5 +1084,5 @@ main (argc, argv)
 }
 
 /******************************************************************************/
-/* vim: set ft=c ts=2 sw=2 tw=0 ai expandtab : */
+/* vim: set ft=c ts=2 sw=2 tw=0 ai expandtab cc=80 : */
 /******************************************************************************/
