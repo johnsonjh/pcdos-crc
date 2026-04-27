@@ -31,8 +31,8 @@ The only current requirements are:
 * the C compiler must provide some storage type with a width at least as wide
   as the 32‑bit CRC,
 * a character type with a width of at least 8 but no more than 32 bits, and
-* a minimal, but working, `stdio` implementation (supporting at least
-  `fprintf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, and `clearerr`).
+* a minimal `stdio` implementation (providing support for `fprintf`,
+  `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, and `clearerr`).
 
 It has been tested on various exotic and retro platforms including
 **Multics**
