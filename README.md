@@ -98,7 +98,7 @@ sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
 
 ### Building for Multics
 
-To build a binary for Multics using
+To build a binary for [Multics](https://multics-wiki.swenson.org/) using
 [Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf):
 ```
 >sl3p>cc>e>cc -lg -of crc crc.c
