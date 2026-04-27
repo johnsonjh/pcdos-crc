@@ -180,7 +180,7 @@ utilized.
 
 ### Building for ELKS
 
-To build a binary for ELKS using IA16-GCC:
+To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
 ```
 ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
 ```
