@@ -152,7 +152,7 @@ zcc +cpm -O3 -vn crc.c -o CRC.COM -DBUFSIZ=128 -DNOANSI
 
 #### CP/M-80 notes
 
-If you need to verify files on CP/M that were created on other systems, you
+If you need to verify CRCs on CP/M that were created on other systems, you
 should always constrain processing to the actual number of significant bits.
 
 On CP/M-80 systems, files do not have exact sizes but are stored on disk in
