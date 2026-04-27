@@ -75,7 +75,7 @@
 
 #ifdef multics
 typedef unsigned int crc_t;
-typedef crc_t counter_bits_t;
+typedef unsigned int counter_bits_t;
 #else
 typedef unsigned long crc_t;
 typedef unsigned long counter_bits_t;
