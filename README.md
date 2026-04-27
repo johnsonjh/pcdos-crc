@@ -67,11 +67,11 @@ The behavior of these options depends on the CRC processing mode:
 
 #### 8-bit mode (default)
 
-When processing 8-bit characters on a system with 8-bit characters, the
-`--pad` option allows the program to synthesize zero-filled data to reach
-the specified `--limit`.  If the `--limit` is **not** a multiple of 8, any
-trailing bits are **discarded** and the resulting CRC is calculated using
-input only up to the last full character.
+When processing 8-bit characters on a system with a native 8-bit characters
+size, the `--pad` option allows the program to synthesize zero-filled data
+to reach the specified `--limit`.  If the `--limit` is **not** a multiple
+of 8, any trailing bits are **discarded** and the resulting CRC is calculated
+using input only up to the last full character.
 
 #### Fallback mode
 
