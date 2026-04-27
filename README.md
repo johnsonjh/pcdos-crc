@@ -96,6 +96,8 @@ that does not deal with indentation, you can "flatten" the source using POSIX
 sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
 ```
 
+## Platform specifics
+
 ### Building for Multics
 
 To build a binary for [Multics](https://multics-wiki.swenson.org/) using
@@ -103,6 +105,8 @@ To build a binary for [Multics](https://multics-wiki.swenson.org/) using
 ```
 >sl3p>cc>e>cc -lg -of crc crc.c
 ```
+
+### Multics notes
 
 Multics can be considered to run on an exotic platform, the Honeywell
 6000-series of 36-bit "large systems" mainframes.  This system uses 9 bits
@@ -145,6 +149,8 @@ of [z88dk](https://z88dk.org/):
 ```
 zcc +cpm -O3 -vn crc.c -o CRC.COM -DBUFSIZ=128 -DNOANSI
 ```
+
+### CP/M-80 notes
 
 If you need to verify files on CP/M that were created on other systems, you
 should always constrain processing to the actual number of significant bits.
