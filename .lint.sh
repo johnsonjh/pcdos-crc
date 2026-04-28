@@ -158,6 +158,21 @@ command -v cppcheck > /dev/null 2>&1 && {
 }
 :
 :
+: NetBSD Lint
+: :::::::::::
+case "$(uname -s 2> /dev/null || :)" in
+NetBSD)
+  {
+    command -v lint > /dev/null 2>&1 && {
+      lint -a -aa -b -c -e -g -h -P -r -u -z crc.c 2>&1 \
+        | grep -Ev '(^lint: cannot find llib-lc\.ln$|^crc\.c:$)' || :
+    }
+  }
+  ;;
+*) : ;;
+esac
+:
+:
 : Finish
 : ::::::
 rm -f a.out crc log.pvs compile_commands.json
