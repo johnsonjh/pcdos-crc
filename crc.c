@@ -453,7 +453,7 @@ charbits ()
     bits++;
 
     last_c = c;
-    c    <<= 1;
+    c      = (unsigned char)(c << 1);
     c     |= 1;
   }
 
@@ -806,7 +806,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
           if (shift > 0) {
               mask   = 0xFF;
-              mask <<= shift;
+              mask   = (unsigned char)(mask << shift);
           } else
             mask = (unsigned char)0xFF;
 
