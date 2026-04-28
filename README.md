@@ -146,14 +146,14 @@ independently.
 
 To build a binary for CP/M-80, use a recent version
 of [z88dk](https://z88dk.org/):
-```sh
+```
 zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com -DBUFSIZ=128 -DNOANSI
 ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
 Docker container to build without needing to locally compile and install
 the current `z88dk`:
-```sh
+```
 docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk \
 zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com -DBUFSIZ=128 -DNOANSI
 ```
