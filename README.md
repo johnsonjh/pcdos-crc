@@ -147,7 +147,7 @@ independently.
 To build a binary for CP/M-80, use a recent version
 of [z88dk](https://z88dk.org/):
 ```
-zcc +cpm -O3 -vn crc.c -o CRC.COM -DBUFSIZ=128 -DNOANSI
+zcc +cpm -O3 -vn crc.c -clib=8080 -o CRC.COM -DBUFSIZ=128 -DNOANSI
 ```
 
 #### CP/M-80 notes
