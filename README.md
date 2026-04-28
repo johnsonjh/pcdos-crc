@@ -146,9 +146,20 @@ independently.
 
 To build a binary for CP/M-80, use a recent version
 of [z88dk](https://z88dk.org/):
+```sh
+zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com -DBUFSIZ=128 -DNOANSI
 ```
-zcc +cpm -O3 -vn crc.c -clib=8080 -o CRC.COM -DBUFSIZ=128 -DNOANSI
+
+If you are using a Linux system with Docker you can use the `z88dk/z88dk`
+Docker container to build without needing to locally compile and install
+the current `z88dk`:
+```sh
+docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk \
+zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com -DBUFSIZ=128 -DNOANSI
 ```
+
+Binaries built with `-clib=ixiy` (instead of `-clib=8080`) will execute
+approximately 25% faster but require a CP/M machine with a Z80 processor.
 
 #### CP/M-80 notes
 
@@ -187,14 +198,14 @@ utilized.
 ### Building for ELKS
 
 To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
-```
+```sh
 ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
 ```
 
 ### Building for MS-DOS
 
 To build a binary for MS-DOS using IA16-GCC:
-```
+```sh
 ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny -o crc.com crc.c
 ```
 
