@@ -50,6 +50,11 @@
 
 /******************************************************************************/
 
+static int g_anyerr  = 0;
+static int g_fileerr = 0;
+
+/******************************************************************************/
+
 #ifndef ANSI_COMPILER
 # ifdef const
 #  undef const
@@ -261,18 +266,18 @@ psyserror (n)
 
 static void
 #ifdef ANSI_COMPILER
-fatal_err (
+error_msg (
   const char * m,
   const char * n,
   const int e)
 #else
-fatal_err (m, n, e)
+error_msg (m, n, e)
   const char * m;
   const char * n;
   const int e;
 #endif
 {
-  (void)fprintf (stderr, "FATAL: %s%s (Error %d", m, n, e);
+  (void)fprintf (stderr, "ERROR: %s%s (Error %d", m, n, e);
 #ifdef ANSI_COMPILER
   (void)fprintf (stderr, ": %s", strerror (e));
 #else
@@ -282,7 +287,8 @@ fatal_err (m, n, e)
 #endif
   (void)fprintf (stderr, ")\n");
 
-  exit (EXIT_FAILURE);
+  g_anyerr  = 1;
+  g_fileerr = 1;
 }
 
 /******************************************************************************/
@@ -589,8 +595,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
           nread++;
         }
 
-        if (ferror (fp))
-          fatal_err ("Error reading ", filename, errno); /* //-V1107 */
+        if (ferror (fp)) {
+          error_msg ("Error reading ", filename, errno); /* //-V1107 */
+          goto done;
+        }
 
         if (nread == 0)
           goto done;
@@ -763,8 +771,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
         rbuf [nread++] = (unsigned char)c;
       }
 
-      if (ferror (fp))
-        fatal_err ("Error reading ", filename, errno); /* //-V1107 */
+      if (ferror (fp)) {
+        error_msg ("Error reading ", filename, errno); /* //-V1107 */
+        return (crc_t)0;
+      }
 
       if (nread == 0)
         break;
@@ -1050,15 +1060,21 @@ main (argc, argv)
 
     filename = argv [j];
 
+    g_fileerr = 0;
     fp = fopen (filename, "rb");
 
-    if (NULL == fp)
-      fatal_err ("Error opening ", filename, errno); /* //-V1107 */
+    if (NULL == fp) {
+      error_msg ("Error opening ", filename, errno); /* //-V1107 */
+      continue;
+    }
 
     crcval = compute_crc ( /* //-V1107 */
       fp, filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
 
     (void)fclose (fp);
+
+    if (g_fileerr)
+      continue;
 
     v = (crc_t)crcval;
 
@@ -1072,7 +1088,7 @@ main (argc, argv)
     (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
   }
 
-  return 0;
+  return g_anyerr ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
 /******************************************************************************/
