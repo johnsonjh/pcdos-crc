@@ -53,10 +53,9 @@ command -v shfmt > /dev/null 2>&1 && {
 :
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
-OLINT="/opt/oracle/developerstudio12.6/bin/lint"
-test -x "${OLINT:?}" && {
-  "${OLINT:?}" -fd -std=c89 crc.c
-  "${OLINT:?}" -DNOANSI crc.c
+command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
+  /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 crc.c
+  /opt/oracle/developerstudio12.6/bin/lint -DNOANSI crc.c
 }
 :
 :
@@ -77,9 +76,7 @@ command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
     command -v clang > /dev/null 2>&1 && {
       env CC=clang CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
-        bear -- scan-build \
-        --use-cc=clang \
-        --status-bugs make crc
+        bear -- scan-build --use-cc=clang --status-bugs make crc
       rm -f crc
     }
   }
@@ -123,9 +120,7 @@ command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
     command -v clang > /dev/null 2>&1 && {
       env CC=clang CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
-        bear -- scan-build \
-        --use-cc=clang \
-        --status-bugs make crc
+        bear -- scan-build --use-cc=clang --status-bugs make crc
       rm -f crc
     }
   }
