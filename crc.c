@@ -50,8 +50,11 @@
 
 /******************************************************************************/
 
-static int g_anyerr  = 0;
-static int g_fileerr = 0;
+#ifdef __Z88DK
+# ifdef __CPM__
+#  include <unistd.h>
+# endif
+#endif
 
 /******************************************************************************/
 
@@ -85,6 +88,11 @@ typedef unsigned int counter_bits_t;
 typedef unsigned long crc_t;
 typedef unsigned long counter_bits_t;
 #endif
+
+/******************************************************************************/
+
+static int g_anyerr  = 0;
+static int g_fileerr = 0;
 
 /******************************************************************************/
 
@@ -884,6 +892,67 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
 static void
 #ifdef ANSI_COMPILER
+process_file (
+  const char * filename,
+  const crc_t * tbl,
+  const int cb,
+  const int ub,
+  const int use_cb,
+  const crc_t mask32,
+  const crc_t inmask,
+  const int pad,
+  const counter_bits_t lim_bits)
+#else
+process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
+  const char * filename;
+  const crc_t * tbl;
+  const int cb;
+  const int ub;
+  const int use_cb;
+  const crc_t mask32;
+  const crc_t inmask;
+  const int pad;
+  const counter_bits_t lim_bits;
+#endif
+{
+  FILE * fp;
+  crc_t crcval;
+  char buf [9];
+  counter_bits_t i;
+  crc_t v;
+
+  g_fileerr = 0;
+  fp = fopen (filename, "rb");
+
+  if (NULL == fp) {
+    error_msg ("Error opening ", filename, errno); /* //-V1107 */
+    return;
+  }
+
+  crcval = compute_crc ( /* //-V1107 */
+    fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+
+  (void)fclose (fp);
+
+  if (g_fileerr)
+    return;
+
+  v = (crc_t)crcval;
+
+  for (i = 0; i < 8; i++) {
+    buf [7 - i] = hexdigits [(int)(v & 0xF)];
+    v >>= 4;
+  }
+
+  buf [8] = '\0';
+
+  (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
+}
+
+/******************************************************************************/
+
+static void
+#ifdef ANSI_COMPILER
 usage (
   const char * progname,
   int cb)
@@ -923,14 +992,11 @@ main (argc, argv)
   char * argv [];
 #endif
 {
-  FILE * fp;
   static crc_t crc_table [256];
-  crc_t crcval;
   crc_t mask32 = (crc_t)0xFFFFFFFF;
   crc_t inmask;
   crc_t v;
   char * filename = NULL;
-  char buf [9];
   int process_bits = 0;
   int use_cb;
   int pad = 0;
@@ -1060,32 +1126,26 @@ main (argc, argv)
 
     filename = argv [j];
 
-    g_fileerr = 0;
-    fp = fopen (filename, "rb");
-
-    if (NULL == fp) {
-      error_msg ("Error opening ", filename, errno); /* //-V1107 */
-      continue;
+#ifdef __Z88DK
+# ifdef __CPM__
+    if (strchr (filename, '*') != NULL ||
+        strchr (filename, '?') != NULL) {
+      int x;
+      if (0 == (x = dir_move_first ()))
+        while (0 == x) {
+          if (wcmatch (filename, dir_get_entry_name ()))
+            if (!dir_get_entry_type ())
+              process_file (dir_get_entry_name (), /* //-V1107 */
+                crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+          x = dir_move_next ();
+      }
+    } else
+# endif
+#endif
+    {
+      process_file (filename, /* //-V1107 */
+        crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
     }
-
-    crcval = compute_crc ( /* //-V1107 */
-      fp, filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
-
-    (void)fclose (fp);
-
-    if (g_fileerr)
-      continue;
-
-    v = (crc_t)crcval;
-
-    for (i = 0; i < 8; i++) {
-      buf [7 - i] = hexdigits [(int)(v & 0xF)];
-      v >>= 4;
-    }
-
-    buf [8] = '\0';
-
-    (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
   }
 
   return g_anyerr ? EXIT_FAILURE : EXIT_SUCCESS;

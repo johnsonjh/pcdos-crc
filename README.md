@@ -163,6 +163,8 @@ approximately 25% faster but require a CP/M machine with a Z80 processor.
 
 #### CP/M-80 notes
 
+CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
+
 If you need to verify CRCs on CP/M that were created on other systems, you
 should always constrain processing to the actual number of significant bits.
 
