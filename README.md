@@ -144,22 +144,19 @@ independently.
 
 ### Building for CP/M-80
 
-To build a binary for CP/M-80, use a recent version
+To build a binary for CP/M-80 for Z80 systems, use a recent version
 of [z88dk](https://z88dk.org/):
 ```
-zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com -DBUFSIZ=128 -DNOANSI
+zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com -DBUFSIZ=128 -DNOANSI
 ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
 Docker container to build without needing to locally compile and install
 the current `z88dk`:
 ```
-docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk \
-zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com -DBUFSIZ=128 -DNOANSI
+docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
+zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com -DBUFSIZ=128 -DNOANSI
 ```
-
-Binaries built with `-clib=ixiy` (instead of `-clib=8080`) will execute
-approximately 25% faster but require a CP/M machine with a Z80 processor.
 
 #### CP/M-80 notes
 
@@ -195,7 +192,7 @@ DOS-PLUS uses the field to indicate the number of **used** octets in the last
 record, with a count of zero indicating 128.  Because of this ambiguity and
 because accessing the LRBC metadata requires the use of non-portable
 programming constructs (direct BDOS function calls) the LRBC is not currently
-utilized.
+utilized, but might be supported in a future release.
 
 ### Building for ELKS
 
