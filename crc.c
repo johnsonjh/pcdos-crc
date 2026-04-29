@@ -912,8 +912,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     return crc;
   }
 
-  return compute_crc_fb (
-    fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits);
+  return compute_crc_fb (fp,
+    filename, tbl, use_cb, mask32, inmask, pad, lim_bits);
 }
 
 /******************************************************************************/
@@ -956,8 +956,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     return;
   }
 
-  crcval = compute_crc (
-    fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+  crcval = compute_crc (fp,
+    filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
 
   (void)fclose (fp);
 
@@ -1155,7 +1155,7 @@ main (argc, argv)
       if (0 == (x = dir_move_first ()))
         while (0 == x) {
           if (wcmatch (filename, dir_get_entry_name ()))
-            if (!dir_get_entry_type ())
+            if (! dir_get_entry_type ())
               process_file (dir_get_entry_name (),
                 crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
           x = dir_move_next ();
@@ -1164,8 +1164,8 @@ main (argc, argv)
 # endif
 #endif
     {
-      process_file (
-        filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+      process_file (filename,
+        crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
     }
   }
 
