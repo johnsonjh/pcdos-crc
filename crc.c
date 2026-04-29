@@ -15,7 +15,7 @@
  * If your C preprocessor doesn't deal with indentation, flatten with sed:
  *   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
  *
- * To build on a PDP-10 system running TOPS-20 using the KCC compiler:
+ * If you are using the KCC compiler on a PDP-10 system running TOPS-20:
  *   sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
  *       -e 's|^[[:space:]]*#[[:space:]]*|#|' \
  *       -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
