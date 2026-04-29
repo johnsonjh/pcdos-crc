@@ -183,8 +183,7 @@ parse_limit (s, max_v)
 #endif
 {
   counter_bits_t v;
-  int c;
-  int i;
+  int c, i;
 
   v = 0;
 
@@ -268,11 +267,9 @@ psyserror (n)
 {
   static char buf [64];
   char tmp [48];
-  char * p;
-  char * q;
+  char * p, * q;
+  int i, neg;
   unsigned int u;
-  int i;
-  int neg;
 
   if (n >= 0 && n < sys_nerr) {
     p = sys_errlist [n];
@@ -559,8 +556,7 @@ crc_update_bytes (crc, tbl, mask32, buf, n)
 #endif
 {
   long i;
-  crc_t idx;
-  crc_t t;
+  crc_t idx, t;
 
   for (i = 0; i < n; i++) {
     t   = crc;
@@ -608,16 +604,11 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
 {
   unsigned char rbuf [BUFSIZ];
   unsigned char oct;
+  int ch, c, shift;
+  crc_t idx, tmp, t, t2;
   crc_t crc = 0;
   crc_t buf = 0;
-  crc_t idx;
-  crc_t tmp;
-  crc_t t;
-  crc_t t2;
   int bib = 0;
-  int ch;
-  int c;
-  int shift;
   long nread = 0;
   long pos = 0;
   counter_bits_t rem_bits = lim_bits;
@@ -791,11 +782,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 #endif
 {
   unsigned char rbuf [BUFSIZ];
-  crc_t crc = 0;
-  long nread;
-  counter_bits_t rem_bits = lim_bits;
-  long bytes_to_process;
+  long nread, bytes_to_process;
   int c;
+  crc_t crc = 0;
+  counter_bits_t rem_bits = lim_bits;
 
   if (fp == (FILE *)0) {
     (void)fprintf (stderr,
@@ -960,10 +950,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 #endif
 {
   FILE * fp;
-  crc_t crcval;
   char buf [9];
+  crc_t crcval, v;
   counter_bits_t i;
-  crc_t v;
 
   g_fileerr = 0;
   fp = fopen (filename, "rb");
@@ -1038,20 +1027,15 @@ main (argc, argv)
 {
   static crc_t crc_table [256];
   crc_t mask32 = (crc_t)0xFFFFFFFF;
-  crc_t inmask;
-  crc_t v;
+  crc_t inmask, v;
+  int use_cb, j, cb, ub;
+  counter_bits_t i, max_ul_bits;
   char * filename = NULL;
   int process_bits = 0;
-  int use_cb;
   int pad = 0;
   int stop = 0;
   int found = 0;
-  int j;
-  counter_bits_t i;
-  int cb;
-  int ub;
   counter_bits_t lim_bits = 0;
-  counter_bits_t max_ul_bits;
   counter_bits_t max_limit = 0;
   const char * progname = (argv [0] && * argv [0]) ? argv [0] : "crc";
 
