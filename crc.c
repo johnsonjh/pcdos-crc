@@ -182,10 +182,8 @@ parse_limit (s, max_v)
   const counter_bits_t max_v;
 #endif
 {
-  counter_bits_t v;
   int c, i;
-
-  v = 0;
+  counter_bits_t v = 0;
 
   if (s == (const char *)0)
     return 0;
@@ -493,13 +491,9 @@ charbits (void)
 charbits ()
 #endif
 {
-  unsigned char c;
-  unsigned char last_c;
-  int bits;
-
-  bits   = 0;
-  c      = 1;
-  last_c = 0;
+  unsigned char c      = 1;
+  unsigned char last_c = 0;
+  int bits             = 0;
 
   while (c > last_c) {
     bits++;
@@ -1026,10 +1020,11 @@ main (argc, argv)
 #endif
 {
   static crc_t crc_table [256];
-  crc_t mask32 = (crc_t)0xFFFFFFFF;
-  crc_t inmask, v;
+  crc_t inmask;
   int use_cb, j, cb, ub;
   counter_bits_t i, max_ul_bits;
+  crc_t mask32 = (crc_t)0xFFFFFFFF;
+  crc_t v = (crc_t)~0;
   char * filename = NULL;
   int process_bits = 0;
   int pad = 0;
@@ -1038,8 +1033,6 @@ main (argc, argv)
   counter_bits_t lim_bits = 0;
   counter_bits_t max_limit = 0;
   const char * progname = (argv [0] && * argv [0]) ? argv [0] : "crc";
-
-  v = (crc_t)~0;
 
   if (v == (v >> 1)) { /* //-V547 */
     (void)fprintf (stderr,
