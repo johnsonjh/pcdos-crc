@@ -38,6 +38,23 @@
 
 /******************************************************************************/
 
+#ifdef __Z88DK
+# ifdef __CPM__
+#  include <unistd.h>
+#  ifdef ANSI_COMPILER
+#   undef ANSI_COMPILER
+#  endif
+#  ifdef USE_PSYSERROR
+#   undef USE_PSYSERROR
+#  endif
+#  ifndef BUFSIZ
+#   define BUFSIZ 128
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef NOANSI
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
@@ -52,14 +69,6 @@
 #endif
 #include <errno.h>
 #include <string.h>
-
-/******************************************************************************/
-
-#ifdef __Z88DK
-# ifdef __CPM__
-#  include <unistd.h>
-# endif
-#endif
 
 /******************************************************************************/
 

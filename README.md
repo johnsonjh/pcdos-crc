@@ -86,8 +86,8 @@ system with a non-8-bit character size**, the program operates in a bit-by-bit
 ## Building
 
 The `crc.c` source code should build easily anywhere.  If you are using a
-non-ANSI C compiler, you should define `NOANSI` (*i.e.*, `-DNOANSI`) or
-modify the code to comment out the `#define ANSI_COMPILER` directive.
+non-ANSI C compiler, you may need to define `NOANSI` (*i.e.*, `-DNOANSI`)
+or modify the source to comment out the `#define ANSI_COMPILER` directive.
 
 If you are trying to build in a marginal environment using a C preprocessor
 that does not deal with indentation, you can "flatten" the source using POSIX
@@ -147,7 +147,7 @@ independently.
 To build a binary for CP/M-80 for Z80 systems, use a recent version
 of [z88dk](https://z88dk.org/):
 ```
-zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com -DBUFSIZ=128 -DNOANSI
+zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
 ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
@@ -155,7 +155,7 @@ Docker container to build without needing to locally compile and install
 the current `z88dk`:
 ```
 docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com -DBUFSIZ=128 -DNOANSI
+  zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
 ```
 
 #### CP/M-80 notes
