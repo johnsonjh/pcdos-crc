@@ -153,6 +153,13 @@ command -v cppcheck > /dev/null 2>&1 && {
 }
 :
 :
+: Ch
+: ::
+command -v ch > /dev/null 2>&1 && {
+  ch -w -n crc.c
+}
+:
+:
 : NetBSD Lint
 : :::::::::::
 case "$(uname -s 2> /dev/null || :)" in
