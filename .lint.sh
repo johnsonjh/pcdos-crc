@@ -160,6 +160,13 @@ command -v ch > /dev/null 2>&1 && {
 }
 :
 :
+: Cppi
+: ::
+command -v cppi > /dev/null 2>&1 && {
+  cppi -ac crc.c
+}
+:
+:
 : NetBSD Lint
 : :::::::::::
 case "$(uname -s 2> /dev/null || :)" in
