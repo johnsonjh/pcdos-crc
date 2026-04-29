@@ -209,11 +209,8 @@ parse_limit (s, max_v)
       return 0;
 
     {
-      counter_bits_t t8;
-      counter_bits_t t2;
-
-      t8 = v << 3;
-      t2 = v << 1;
+      const counter_bits_t t8 = v << 3;
+      const counter_bits_t t2 = v << 1;
 
       if ((max_v - t8) < t2)
         return 0;
@@ -354,10 +351,10 @@ error_msg (m, n, e)
 static void
 #ifdef ANSI_COMPILER
 init_crc_table (
-  crc_t * tbl)
+  crc_t * const tbl)
 #else
 init_crc_table (tbl)
-  crc_t * tbl;
+  crc_t * const tbl;
 #endif
 {
   tbl   [0] = 0x00000000;  tbl   [1] = 0x51F9D3DE;
@@ -736,9 +733,7 @@ done:
   }
 
   if (0 != lim_bits && 0 != rem_bits) {
-    counter_bits_t used_bits;
-
-    used_bits = lim_bits - rem_bits;
+    const counter_bits_t used_bits = lim_bits - rem_bits;
 
     (void)fprintf (stderr,
       "WARNING: File ended after %lu bits, but --limit=%lu was requested.\n",
@@ -949,7 +944,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 {
   FILE * fp;
   char buf [9];
-  crc_t crcval, v;
+  crc_t v;
   counter_bits_t i;
 
   g_fileerr = 0;
@@ -960,15 +955,17 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     return;
   }
 
-  crcval = compute_crc (fp,
-    filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+  {
+    const crc_t crcval = compute_crc (fp,
+      filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
 
-  (void)fclose (fp);
+    (void)fclose (fp);
 
-  if (0 != g_fileerr)
-    return;
+    if (0 != g_fileerr)
+      return;
 
-  v = (crc_t)crcval;
+    v = (crc_t)crcval;
+  }
 
   for (i = 0; 8 > i; i++) {
     buf [7 - i] = hexdigits [(int)(v & 0xF)];
@@ -1032,6 +1029,11 @@ main (argc, argv)
   int pad = 0;
   int stop = 0;
   int found = 0;
+#ifdef __Z88DK
+# ifdef __CPM__
+  int processed = 0;
+# endif
+#endif
   counter_bits_t lim_bits = 0;
   char * filename = (char *)0;
   crc_t v = (crc_t)~0;
@@ -1155,13 +1157,21 @@ main (argc, argv)
     if (NULL != strchr (filename, '*') ||
         NULL != strchr (filename, '?')) {
       int x;
+      int match_found = 0;
       if (0 == (x = dir_move_first ()))
         while (0 == x) {
           if (wcmatch (filename, dir_get_entry_name ()))
-            if (0 == dir_get_entry_type ())
+            if (0 == dir_get_entry_type ()) {
+              match_found = 1;
               process_file (dir_get_entry_name (),
                 crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+              if (0 == g_fileerr)
+                processed++;
+            }
           x = dir_move_next ();
+      }
+      if (0 == match_found) {
+        (void)fprintf (stderr, "WARNING: No wildcard match for %s\n", filename);
       }
     } else
 # endif
@@ -1169,8 +1179,24 @@ main (argc, argv)
     {
       process_file (filename,
         crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+
+#ifdef __Z88DK
+# ifdef __CPM__
+      if (0 == g_fileerr)
+        processed++;
+# endif
+#endif
     }
   }
+
+#ifdef __Z88DK
+# ifdef __CPM__
+  if (0 == processed) {
+    (void)fprintf (stderr, "ERROR: No files processed.\n");
+    g_anyerr = 1;
+  }
+# endif
+#endif
 
   return (0 != g_anyerr) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
