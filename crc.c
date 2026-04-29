@@ -533,39 +533,61 @@ crc_t_bits ()
 
 static crc_t
 #ifdef ANSI_COMPILER
-crc_update_bytes (
+crc_update_byte (
   crc_t crc,
-  const crc_t * tbl,
+  const crc_t * const tbl,
+  const crc_t mask32,
+  const unsigned char b)
+#else
+crc_update_byte (crc, tbl, mask32, b)
+  crc_t crc;
+  const crc_t * const tbl;
+  const crc_t mask32;
+  const unsigned char b;
+#endif
+{
+  crc_t idx, t;
+
+  t   = crc;
+  t >>= 24;
+
+  idx  = t;
+  idx ^= (crc_t)b;
+  idx &= (crc_t)0xFF;
+
+  t   = crc;
+  t <<= 8;
+
+  crc  = t;
+  crc ^= tbl [idx];
+  crc &= mask32;
+
+  return crc;
+}
+
+/******************************************************************************/
+
+static crc_t
+#ifdef ANSI_COMPILER
+crc_update_buffer (
+  crc_t crc,
+  const crc_t * const tbl,
   const crc_t mask32,
   const unsigned char * buf,
   const long n)
 #else
-crc_update_bytes (crc, tbl, mask32, buf, n)
+crc_update_buffer (crc, tbl, mask32, buf, n)
   crc_t crc;
-  const crc_t * tbl;
+  const crc_t * const tbl;
   const crc_t mask32;
   const unsigned char * buf;
   const long n;
 #endif
 {
   long i;
-  crc_t idx, t;
 
-  for (i = 0; i < n; i++) {
-    t   = crc;
-    t >>= 24;
-
-    idx  = t;
-    idx ^= (crc_t)buf [i];
-    idx &= (crc_t)0xFF;
-
-    t   = crc;
-    t <<= 8;
-
-    crc  = t;
-    crc ^= tbl [idx];
-    crc &= mask32;
-  }
+  for (i = 0; n > i; i++)
+    crc = crc_update_byte (crc, tbl, mask32, buf [i]);
 
   return crc;
 }
@@ -598,12 +620,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
   unsigned char rbuf [BUFSIZ];
   unsigned char oct;
   int ch, c, shift;
-  crc_t idx, tmp, t, t2;
-  crc_t crc = 0;
-  crc_t buf = 0;
-  int bib = 0;
+  crc_t tmp, t2;
+  crc_t crc  = 0;
+  crc_t buf  = 0;
+  int bib    = 0;
   long nread = 0;
-  long pos = 0;
+  long pos   = 0;
   counter_bits_t rem_bits = lim_bits;
 
   for (;;) {
@@ -682,23 +704,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
         break;
 
     oct = (unsigned char)(buf & (crc_t)0xFF);
-
-    t   = crc;
-    t >>= 24;
-
-    idx  = t;
-    idx ^= (crc_t)oct;
-    idx &= (crc_t)0xFF;
-
-    t   = crc;
-    t <<= 8;
-
-    crc  = t;
-    crc ^= tbl [idx];
-    crc &= mask32;
+    crc = crc_update_byte (crc, tbl, mask32, oct);
 
     buf >>= 8;
-    bib -= 8;
+    bib  -= 8;
 
     if (0 != lim_bits && 0 == rem_bits)
       if (0 == bib)
@@ -709,20 +718,7 @@ done:
   if (0 < bib) {
     if (0 != pad) {
       oct = (unsigned char)(buf & (crc_t)0xFF);
-
-      t   = crc;
-      t >>= 24;
-
-      idx  = t;
-      idx ^= (crc_t)oct;
-      idx &= (crc_t)0xFF;
-
-      t   = crc;
-      t <<= 8;
-
-      crc  = t;
-      crc ^= tbl [idx];
-      crc &= mask32;
+      crc = crc_update_byte (crc, tbl, mask32, oct);
     } else {
       (void)fprintf (stderr,
         "WARNING: File ended with %d dangling bit%s (not a full character).\n",
@@ -833,7 +829,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
       }
 
       if (0 < bytes_to_process)
-        crc = crc_update_bytes (crc, tbl, mask32, rbuf, bytes_to_process);
+        crc = crc_update_buffer (crc, tbl, mask32, rbuf, bytes_to_process);
 
       if (0 != rem_bits && nread > bytes_to_process) {
         if (0 != pad) {
@@ -849,7 +845,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
           final_byte &= mask;
 
-          crc = crc_update_bytes (crc, tbl, mask32, & final_byte, (long)1);
+          crc = crc_update_byte (crc, tbl, mask32, final_byte);
 
           rem_bits = 0;
         } else {
@@ -873,7 +869,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
         unsigned char zbuf [32];
         long k;
 
-        for (k = 0; k < (long)sizeof (zbuf); k++)
+        for (k = 0; (long)sizeof (zbuf) > k; k++)
           zbuf [k] = 0;
 
         while (8 <= rem_bits) {
@@ -884,7 +880,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
             rem_bits -= 8;
           }
 
-          crc = crc_update_bytes (crc, tbl, mask32, zbuf, chunk);
+          crc = crc_update_buffer (crc, tbl, mask32, zbuf, chunk);
         }
 
         if (0 < rem_bits) {
