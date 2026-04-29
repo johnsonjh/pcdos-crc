@@ -3,6 +3,7 @@
  * Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
  * SPDX-License-Identifier: MIT-0
  * scspell-id: 41561dd2-3fff-11f1-8e90-80ee73e9b8e7
+ * //-V::1107
  */
 
 /******************************************************************************/
@@ -97,6 +98,47 @@ static int g_fileerr = 0;
 /******************************************************************************/
 
 static const char hexdigits [] = "0123456789ABCDEF";
+
+/******************************************************************************/
+
+static int
+#ifdef ANSI_COMPILER
+xstrncmp (
+  const char * s1,
+  const char * s2,
+  int n)
+#else
+xstrncmp (s1, s2, n)
+  const char * s1;
+  const char * s2;
+  int n;
+#endif
+{
+  int c1, c2;
+  int ret = 0;
+
+  if (0 >= n)
+    goto done;
+
+  for (;;) {
+    c1 = * s1++;
+    c2 = * s2++;
+
+    if (c1 != c2) {
+      ret = (c1 < c2) ? -1 : 1;
+      goto done;
+    }
+
+    if ('\0' == c1)
+      goto done;
+
+    if (0 >= --n)
+      goto done;
+  }
+
+done:
+    return ret;
+}
 
 /******************************************************************************/
 
@@ -604,7 +646,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
         }
 
         if (ferror (fp)) {
-          error_msg ("Error reading ", filename, errno); /* //-V1107 */
+          error_msg ("Error reading ", filename, errno);
           goto done;
         }
 
@@ -780,7 +822,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
       }
 
       if (ferror (fp)) {
-        error_msg ("Error reading ", filename, errno); /* //-V1107 */
+        error_msg ("Error reading ", filename, errno);
         return (crc_t)0;
       }
 
@@ -803,8 +845,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
       }
 
       if (bytes_to_process > 0)
-        crc = crc_update_bytes (crc, tbl, mask32, rbuf, /* //-V1107 */
-          bytes_to_process);
+        crc = crc_update_bytes (crc, tbl, mask32, rbuf, bytes_to_process);
 
       if (rem_bits != 0 && bytes_to_process < nread) {
         if (pad != 0) {
@@ -820,8 +861,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
           final_byte &= mask;
 
-          crc = crc_update_bytes ( /* //-V1107 */
-            crc, tbl, mask32, & final_byte, (long)1);
+          crc = crc_update_bytes (crc, tbl, mask32, & final_byte, (long)1);
 
           rem_bits = 0;
         } else {
@@ -856,8 +896,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
             rem_bits -= 8;
           }
 
-          crc = crc_update_bytes ( /* //-V1107 */
-            crc, tbl, mask32, zbuf, chunk);
+          crc = crc_update_bytes (crc, tbl, mask32, zbuf, chunk);
         }
 
         if (rem_bits > 0) {
@@ -884,7 +923,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     return crc;
   }
 
-  return compute_crc_fb ( /* //-V1107 */
+  return compute_crc_fb (
     fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits);
 }
 
@@ -925,11 +964,11 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   fp = fopen (filename, "rb");
 
   if (NULL == fp) {
-    error_msg ("Error opening ", filename, errno); /* //-V1107 */
+    error_msg ("Error opening ", filename, errno);
     return;
   }
 
-  crcval = compute_crc ( /* //-V1107 */
+  crcval = compute_crc (
     fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
 
   (void)fclose (fp);
@@ -1019,7 +1058,7 @@ main (argc, argv)
     return EXIT_FAILURE;
   }
 
-  init_crc_table (crc_table); /* //-V1107 */
+  init_crc_table (crc_table);
 
   cb = charbits ();
   ub = crc_t_bits ();
@@ -1036,7 +1075,7 @@ main (argc, argv)
     max_limit = (max_limit << 1) | 1;
 
   if (argc < 2) {
-    usage (progname, cb); /* //-V1107 */
+    usage (progname, cb);
     return EXIT_FAILURE;
   }
 
@@ -1050,12 +1089,12 @@ main (argc, argv)
                       0 == strcmp (argv [j], "--HELP") ||
                       0 == strcmp (argv [j], "-h") ||
                       0 == strcmp (argv [j], "-H"))) {
-      usage (progname, cb); /* //-V1107 */
+      usage (progname, cb);
       return 0;
     }
 
-    if (0 == stop && (0 == strncmp (argv [j], "--bits=", 7) ||
-                      0 == strncmp (argv [j], "--BITS=", 7))) {
+    if (0 == stop && (0 == xstrncmp (argv [j], "--bits=", 7) ||
+                      0 == xstrncmp (argv [j], "--BITS=", 7))) {
       process_bits = atoi (argv [j] + 7);
 
       if (process_bits <= 0) {
@@ -1073,9 +1112,9 @@ main (argc, argv)
       continue;
     }
 
-    if (0 == stop && (0 == strncmp (argv [j], "--limit=", 8) ||
-                      0 == strncmp (argv [j], "--LIMIT=", 8))) {
-      lim_bits = parse_limit (argv [j] + 8, max_limit); /* //-V1107 */
+    if (0 == stop && (0 == xstrncmp (argv [j], "--limit=", 8) ||
+                      0 == xstrncmp (argv [j], "--LIMIT=", 8))) {
+      lim_bits = parse_limit (argv [j] + 8, max_limit);
 
       if (lim_bits == 0 || lim_bits > max_limit) {
         (void)fprintf (stderr,
@@ -1089,7 +1128,7 @@ main (argc, argv)
 
     if (0 == stop && '-' == argv [j] [0]) {
       (void)fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j]);
-      usage (progname, cb); /* //-V1107 */
+      usage (progname, cb);
       return EXIT_FAILURE;
     }
 
@@ -1098,7 +1137,7 @@ main (argc, argv)
 
   if (0 == found) {
     (void)fprintf (stderr, "FATAL: No filename provided.\n");
-    usage (progname, cb); /* //-V1107 */
+    usage (progname, cb);
     return EXIT_FAILURE;
   }
 
@@ -1135,7 +1174,7 @@ main (argc, argv)
         while (0 == x) {
           if (wcmatch (filename, dir_get_entry_name ()))
             if (!dir_get_entry_type ())
-              process_file (dir_get_entry_name (), /* //-V1107 */
+              process_file (dir_get_entry_name (),
                 crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
           x = dir_move_next ();
       }
@@ -1143,8 +1182,8 @@ main (argc, argv)
 # endif
 #endif
     {
-      process_file (filename, /* //-V1107 */
-        crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+      process_file (
+        filename, crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
     }
   }
 
