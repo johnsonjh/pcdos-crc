@@ -903,7 +903,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
           (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
           (void)fprintf (stderr, "trailing %lu bit%s ignored in 8-bit mode.\n",
             (unsigned long)rem_bits, (rem_bits == 1 ? "" : "s"));
-          (void)fprintf (stderr,"         ");
+          (void)fprintf (stderr, "         ");
           (void)fprintf (stderr,
             "Result calculated only up to the last full character.\n");
         }
