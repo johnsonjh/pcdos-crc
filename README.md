@@ -136,10 +136,10 @@ used to specify that only 8 bits per character should be considered.
 As an additional hint, if the processing of a file ends with "dangling" bits
 (not a full character) then a warning message is displayed.
 
-The Multics filesystem includes the concept of multi-segment files (MSFs), which
-are indicated by a directory tagged with a non-zero bit count equal to the
-number of component segments of the MSF.  This CRC program does not provide
-special treatment for MSFs; each component segment should be processed
+The Multics filesystem includes the concept of multi-segment files (MSFs),
+which are indicated by a directory tagged with a non-zero bit count equal to
+the number of component segments of the MSF.  This CRC program does not
+provide special treatment for MSFs; each component segment should be processed
 independently.
 
 ### Building for CP/M-80
