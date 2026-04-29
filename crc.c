@@ -489,6 +489,49 @@ init_crc_table (tbl)
 
 /******************************************************************************/
 
+#ifdef SELFTEST
+static void
+# ifdef ANSI_COMPILER
+test_crc_table (
+  const crc_t * const tbl,
+  const crc_t mask32)
+# else
+test_crc_table (tbl, mask32)
+  const crc_t * const tbl;
+  const crc_t mask32;
+# endif
+{
+  int i, j;
+  crc_t c;
+  const crc_t poly = tbl [1];
+  const crc_t msb  = (crc_t)0x80000000;
+
+  for (i = 0; 256 > i; i++) {
+    c = (crc_t)i;
+    c <<= 24;
+
+    for (j = 0; 8 > j; j++) {
+      if (0 != (c & msb)) {
+        c = (c << 1) ^ poly;
+      } else {
+        c <<= 1;
+      }
+    }
+
+    c &= mask32;
+
+    if (tbl [i] != c) {
+      (void)fprintf (stderr,
+        "FATAL: CRC table mismatch at index %d (expected %08lX, got %08lX).\n",
+        i, (unsigned long)c, (unsigned long)tbl [i]);
+      exit (EXIT_FAILURE);
+    }
+  }
+}
+#endif
+
+/******************************************************************************/
+
 static int
 #ifdef ANSI_COMPILER
 charbits (void)
@@ -1051,6 +1094,10 @@ main (argc, argv)
   }
 
   init_crc_table (crc_table);
+
+#ifdef SELFTEST
+  test_crc_table (crc_table, mask32);
+#endif
 
   if ((8 > cb) || (32 < cb)) {
     (void)fprintf (stderr,
