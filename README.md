@@ -37,7 +37,7 @@ The only current requirements are:
 It has been tested on various exotic and retro platforms including
 **Multics**
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
-**CP/M-80** ([z88dk](https://z88dk.org/)),
+**TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)),
 **MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), Watcom,
 Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)), **ELKS** (IA16-GCC),
 **Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
