@@ -26,6 +26,10 @@
 
 /******************************************************************************/
 
+/* For more detailed information please review the README.md file. */
+
+/******************************************************************************/
+
 #ifdef multics
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
