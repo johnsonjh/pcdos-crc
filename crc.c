@@ -1228,14 +1228,16 @@ main (argc, argv)
 
     if (0 == stop && (0 == xstrncmp (argv [j], "--bits=", 7) ||
                       0 == xstrncmp (argv [j], "--BITS=", 7))) {
-      process_bits = atoi (argv [j] + 7);
+      const counter_bits_t bits =
+        parse_limit (argv [j] + 7, (counter_bits_t)ub);
 
-      if (0 >= process_bits) {
+      if (0 == bits) {
         (void)fprintf (stderr,
-          "FATAL: --bits must be a positive integer greater than zero.\n");
+          "FATAL: --bits must be a positive integer between 1 and %d.\n", ub);
         return EXIT_FAILURE;
       }
 
+      process_bits = (int)bits;
       continue;
     }
 
