@@ -83,24 +83,38 @@ The behavior of these options depends on the CRC processing mode:
 
 | Mode | `limit` > file size (without `pad`) | `limit` > file size (with `pad`) |
 | :--- | :--- | :--- |
-| **8-bit mode** (default) | Warns, stops at end of file. | **Zero-fills up to the limit.** |
-| **Fallback mode** (`--bits` ≠ 8) | Warns, stops at end of file. | Warns, stops at end of file. |
+| **8-bit mode** (default) | Warns, stops at end of file. | **Zero-fills up to the limit** (see below). |
+| **Fallback mode** (`--bits`≠`8`) | Warns, stops at end of file. | Warns, stops at end of file. |
 
 #### 8-bit mode (default)
 
-When processing 8-bit characters on a system with a native 8-bit characters
-size, the `--pad` option allows the program to synthesize zero-filled data
-to reach the specified `--limit`.  If the `--limit` is **not** a multiple
-of 8, any trailing bits are **discarded** and the resulting CRC is calculated
-using input only up to the last full character.
+When processing 8-bit characters on a system with a native 8-bit character
+size, the `--pad` option affects behavior in two ways:
+
+1. **Synthesizing data**: If the specified `--limit` exceeds the file size,
+   the program will synthesize zero-filled **full** 8-bit characters to reach
+   the limit.  If the `--limit` is not a multiple of 8, any trailing bits
+   that cannot form a complete octet are **discarded**.
+
+2. **Partial character processing**: If the `--limit` is reached **within**
+   the file and falls mid-octet, the `--pad` option allows the program to
+   process that final partial octet by zero-padding the remaining bits.
+   Without `--pad`, the program warns and truncates to the last full octet.
 
 #### Fallback mode
 
 When using a non-8-bit character size via `--bits` **or when running on a
-system with a non-8-bit character size**, the program operates in a bit-by-bit
-"fallback" mode.  In this mode:
-* The `--pad` option is used **only** to zero-fill any remaining bits of the
-  *final character* if the file input ends mid-character.
+system with a non-8-bit native character size**, the program operates in a
+bit-by-bit "fallback" mode. In this mode:
+
+* The `--limit` is effectively **rounded down** to the nearest multiple of
+  the requested character processing size (`--bits`).  The `--pad` option
+  does **not** allow processing partial characters to satisfy a limit in
+  this mode.
+
+* The `--pad` option is used **only** to zero-fill any remaining bits of
+  the *final character read from the file* if the input ends mid-character.
+
 * The program **does not** synthesize data to reach a specified `--limit`.
   If the file ends before the limit is reached, a warning is displayed.
 
