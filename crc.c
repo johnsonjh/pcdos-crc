@@ -123,7 +123,7 @@ extern char * strerror (errnum);
 
 /******************************************************************************/
 
-/* NOTE: counter_bits_t must be no wider than an unsigned long. */
+/* NOTE: counter_bits_t must be unsigned and no wider than an unsigned long. */
 
 #ifdef multics
 typedef unsigned int crc_t;
@@ -607,6 +607,7 @@ test_crc_table (tbl, mask32)
 
   for (i = 0; 256 > i; i++) {
     crc_t c = (crc_t)i;
+
     c <<= 24;
 
     for (j = 0; 8 > j; j++) {
