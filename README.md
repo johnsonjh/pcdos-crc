@@ -4,6 +4,27 @@
 <!-- SPDX-License-Identifier: MIT-0 -->
 <!-- scspell-id: dea16a3a-40d9-11f1-8a31-80ee73e9b8e7 -->
 
+<!-- toc -->
+
+- [Overview](#overview)
+- [Usage](#usage)
+  * [Interaction of `--limit` and `--pad`](#interaction-of---limit-and---pad)
+    + [8-bit mode (default)](#8-bit-mode-default)
+    + [Fallback mode](#fallback-mode)
+- [Building](#building)
+- [Platform specifics](#platform-specifics)
+  * [Building for Multics](#building-for-multics)
+    + [Multics notes](#multics-notes)
+  * [Building for TOPS-20](#building-for-tops-20)
+    + [TOPS-20 notes](#tops-20-notes)
+  * [Building for CP/M-80](#building-for-cpm-80)
+    + [CP/M-80 notes](#cpm-80-notes)
+  * [Building for ELKS](#building-for-elks)
+  * [Building for MS-DOS](#building-for-ms-dos)
+- [License](#license)
+
+<!-- tocstop -->
+
 ## Overview
 
 This program computes the same 32‑bit CRC values as those produced by the
@@ -152,13 +173,13 @@ sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
     -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
 ```
 
-You should ensure that the source code file (`crckcc.c`) is transferred
-to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line endings).
-The appropriate conversion should happen automatically if you use Kermit or
-ASCII-mode FTP for the file transfer, but if you plan to transfer the file
-via other means you *might* need to convert the line endings first.  You
-can do this with the [`unix2dos`](https://dos2unix.sourceforge.io/) utility
-or any POSIX-conforming `awk` implementation:
+You should ensure that the transformed source code file (`crckcc.c`) is
+transferred to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line
+endings).  The appropriate conversion should happen automatically if you use
+Kermit or ASCII-mode FTP for the file transfer, but if you plan to transfer
+the file via other means, you *might* need to convert the line endings first.
+You can do this with the [`unix2dos`](https://dos2unix.sourceforge.io/)
+utility or any POSIX-conforming `awk` implementation:
 ```
 awk '{ sub(/\r?$/, "\r"); print }' <infile.txt >outfile.txt
 ```
