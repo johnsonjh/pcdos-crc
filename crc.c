@@ -9,13 +9,20 @@
 /******************************************************************************/
 
 /*
- * If you are NOT using an ANSI C89-conforming compiler (e.g., K&R, "C86"),
- * then COMMENT OUT the "#define ANSI_COMPILER".  Otherwise leave it as-is.
- *
- * NOTE: Multics C is automatically detected and requires no adjustments.
+ * If you are NOT using an ANSI C89 compiler (e.g., K&R, "C86"),
+ * COMMENT OUT "#define ANSI_COMPILER" below (or define NOANSI).
  */
 
 #define ANSI_COMPILER
+
+/******************************************************************************/
+
+/*
+ * If your environment does not provide the "errno.h" header,
+ * COMMENT OUT "#define USE_ERRNO" below (or define NOERRNO).
+ */
+
+#define USE_ERRNO
 
 /******************************************************************************/
 
@@ -56,12 +63,36 @@
 
 /******************************************************************************/
 
+#ifdef NOERRNO
+# ifdef USE_ERRNO
+#  undef USE_ERRNO
+# endif
+#endif
+
+/******************************************************************************/
+
 #include <stdio.h>
+
 #ifndef multics
 # include <stdlib.h>
 #endif
-#include <errno.h>
-#include <string.h>
+
+#ifdef USE_ERRNO
+# include <errno.h>
+#else
+# ifdef errno
+#  undef errno
+# endif
+# define errno 0
+#endif
+
+#ifdef ANSI_COMPILER
+# include <string.h>
+#else
+# ifdef FORCE_STRERROR
+extern char * strerror (errnum);
+# endif
+#endif
 
 /******************************************************************************/
 
@@ -150,6 +181,39 @@ done:
 
 /******************************************************************************/
 
+static int
+#ifdef ANSI_COMPILER
+xstrcmp (
+  const char * s1,
+  const char * s2)
+#else
+xstrcmp (s1, s2)
+  const char * s1;
+  const char * s2;
+#endif
+{
+  int c1, c2;
+  int ret = 0;
+
+  for (;;) {
+    c1 = * s1++;
+    c2 = * s2++;
+
+    if (c1 != c2) {
+      ret = (c1 < c2) ? -1 : 1;
+      goto done;
+    }
+
+    if ('\0' == c1)
+      goto done;
+  }
+
+done:
+  return ret;
+}
+
+/******************************************************************************/
+
 static counter_bits_t
 #ifdef ANSI_COMPILER
 counter_bits (void)
@@ -221,6 +285,33 @@ parse_limit (s, max_v)
 
   return v;
 }
+
+/******************************************************************************/
+
+#ifdef __Z88DK
+# ifdef __CPM__
+static int
+#  ifdef ANSI_COMPILER
+is_wildcard (
+  const char * s)
+#  else
+is_wildcard (s)
+  const char * s;
+#  endif
+{
+  int c;
+
+  if ((const char *)0 == s)
+    return 0;
+
+  while ('\0' != (c = * s++))
+    if ('*' == c || '?' == c)
+      return 1;
+
+  return 0;
+}
+# endif
+#endif
 
 /******************************************************************************/
 
@@ -327,15 +418,25 @@ error_msg (m, n, e)
   const int e;
 #endif
 {
-  (void)fprintf (stderr, "ERROR: %s%s (Error %d", m, n, e);
+  (void)fprintf (stderr, "ERROR: %s%s", m, n);
+
+  if (0 != e) {
+    (void)fprintf (stderr, " (Error %d", e);
 #ifdef ANSI_COMPILER
-  (void)fprintf (stderr, ": %s", strerror (e));
+    (void)fprintf (stderr, ": %s", strerror (e));
 #else
-# ifdef USE_PSYSERROR
-  (void)fprintf (stderr, ": %s", psyserror (e));
+# ifdef FORCE_STRERROR
+    (void)fprintf (stderr, ": %s", strerror (e));
+# else
+#  ifdef USE_PSYSERROR
+    (void)fprintf (stderr, ": %s", psyserror (e));
+#  endif
 # endif
 #endif
-  (void)fprintf (stderr, ")\n");
+    (void)fprintf (stderr, ")");
+  }
+
+  (void)fprintf (stderr, ".\n");
 
   g_anyerr  = 1;
   g_fileerr = 1;
@@ -1108,15 +1209,15 @@ main (argc, argv)
   }
 
   for (j = 1; argc > j; j++) {
-    if (0 == stop && 0 == strcmp (argv [j], "--")) {
+    if (0 == stop && 0 == xstrcmp (argv [j], "--")) {
       stop = 1;
       continue;
     }
 
-    if (0 == stop && (0 == strcmp (argv [j], "--help") ||
-                      0 == strcmp (argv [j], "--HELP") ||
-                      0 == strcmp (argv [j], "-h") ||
-                      0 == strcmp (argv [j], "-H"))) {
+    if (0 == stop && (0 == xstrcmp (argv [j], "--help") ||
+                      0 == xstrcmp (argv [j], "--HELP") ||
+                      0 == xstrcmp (argv [j], "-h") ||
+                      0 == xstrcmp (argv [j], "-H"))) {
       usage (progname, cb);
       return 0;
     }
@@ -1134,8 +1235,8 @@ main (argc, argv)
       continue;
     }
 
-    if (0 == stop && (0 == strcmp (argv [j], "--pad") ||
-                      0 == strcmp (argv [j], "--PAD"))) {
+    if (0 == stop && (0 == xstrcmp (argv [j], "--pad") ||
+                      0 == xstrcmp (argv [j], "--PAD"))) {
       pad = 1;
       continue;
     }
@@ -1183,7 +1284,7 @@ main (argc, argv)
   stop = 0;
 
   for (j = 1; argc > j; j++) {
-    if (0 == stop && 0 == strcmp (argv [j], "--")) {
+    if (0 == stop && 0 == xstrcmp (argv [j], "--")) {
       stop = 1;
       continue;
     }
@@ -1195,8 +1296,7 @@ main (argc, argv)
 
 #ifdef __Z88DK
 # ifdef __CPM__
-    if (NULL != strchr (filename, '*') ||
-        NULL != strchr (filename, '?')) {
+    if (is_wildcard (filename)) {
       int x;
       int match_found = 0;
       if (0 == (x = dir_move_first ()))

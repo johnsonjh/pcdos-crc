@@ -120,16 +120,29 @@ bit-by-bit "fallback" mode. In this mode:
 
 ## Building
 
-The `crc.c` source code should build easily anywhere.  If you are using a
-non-ANSI C compiler, you may need to define `NOANSI` (*i.e.*, `-DNOANSI`)
-or modify the source to comment out the `#define ANSI_COMPILER` directive.
+The `crc.c` source code should build easily anywhere with no changes needed.
 
-If you are trying to build in a marginal environment using a C preprocessor
-that does not deal with indentation, you can "flatten" the source using POSIX
-`sed`:
-```sh
-sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
-```
+* If you are using a non-ANSI C compiler, you may need to define `NOANSI`
+  (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
+  `#define ANSI_COMPILER` directive.
+
+* If your environment does not have the `errno.h` header file, you may need
+  to define `NOERRNO` or modify the source code to comment out the
+  `#define USE_ERRNO` directive.
+
+* For non-ANSI compilers or environments offering an ANSI-conforming
+  `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
+  have the pre-ANSI BSD / System V `sys_errlist` / `sys_nerr` interface, you
+  should define `USE_PSYSERROR`.
+
+* If you are trying to build in an environment providing a C preprocessor
+  that does not deal with indentation, you can "flatten" the source code
+  using POSIX `sed`:
+  ```sh
+  sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
+  ```
+
+Most users won't need to do any of these things.
 
 ## Platform specifics
 
