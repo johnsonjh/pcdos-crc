@@ -183,7 +183,7 @@ command -v ch > /dev/null 2>&1 && {
 :
 :
 : Cppi
-: ::
+: ::::
 command -v cppi > /dev/null 2>&1 && {
   cppi -ac crc.c
 }
