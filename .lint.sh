@@ -149,8 +149,14 @@ command -v clang > /dev/null 2>&1 && {
 : Cppcheck
 : ::::::::
 command -v cppcheck > /dev/null 2>&1 && {
+  cppcheck --check-level=exhaustive 2>&1 \
+    | grep -q 'unrecognized command line option' \
+    || {
+      CHECK_LEVEL="--check-level=exhaustive"
+    }
+  # shellcheck disable=2086
   cppcheck --enable=warning,style,performance,portability,unusedFunction \
-    --force --check-level=exhaustive --std=c89 --platform=unix64 \
+    --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 \
     -D__CPPCHECK__ --inline-suppr --inconclusive crc.c
 }
 :
