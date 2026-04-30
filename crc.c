@@ -818,9 +818,6 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   const counter_bits_t lim_bits;
 #endif
 {
-  unsigned char rbuf [BUFSIZ];
-  crc_t crc = 0;
-
   if ((FILE *)0 == fp) {
     (void)fprintf (stderr,
       "FATAL: compute_crc called with NULL file pointer.\n");
@@ -834,6 +831,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   }
 
   if (8 == use_cb && 8 == cb) {
+    unsigned char rbuf [BUFSIZ];
+    crc_t crc = 0;
     counter_bits_t rem_bits = lim_bits;
 
     for (;;) {
