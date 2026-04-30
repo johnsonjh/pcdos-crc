@@ -81,10 +81,10 @@ Options:
 
 The behavior of these options depends on the CRC processing mode:
 
-| Mode | `limit` > file size (without `pad`) | `limit` > file size (with `pad`) |
+| Mode | `limit` > file size (no `pad`) | `limit` > file size (with `pad`) |
 | :--- | :--- | :--- |
-| **8-bit mode** (default) | Warns, stops at end of file. | **Zero-fills up to the limit** (see below). |
-| **Fallback mode** (`--bits`≠`8`) | Warns, stops at end of file. | Warns, stops at end of file. |
+| **8-bit mode** (*default*) | Warns, stops at end of file. | **Zero-fills to the limit**. |
+| **Fallback mode** (`bits`≠`8`) | Warns, stops at end of file. | Warns, stops at end of file. |
 
 #### 8-bit mode (default)
 
