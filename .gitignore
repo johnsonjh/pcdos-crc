@@ -9,10 +9,14 @@
 /core-*
 /crc
 /crc.com
+/CRC.COM
 /crc.exe
 /CRC.EXE
 /crckcc.c
 /crc.obj
 /log.pvs
 /pvsreport
+/selftest
+/test.dat
+/TEST.DAT
 /test.txt
