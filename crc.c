@@ -610,11 +610,10 @@ test_crc_table (tbl, mask32)
     c <<= 24;
 
     for (j = 0; 8 > j; j++) {
-      if (0 != (c & msb)) {
+      if (0 != (c & msb))
         c = (c << 1) ^ poly;
-      } else {
+      else
         c <<= 1;
-      }
     }
 
     c &= mask32;
@@ -978,8 +977,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
       if (0 != rem_bits && nread > bytes_to_process) {
         if (0 != pad) {
-          unsigned char final_byte = rbuf [bytes_to_process];
           unsigned char mask;
+          unsigned char final_byte = rbuf [bytes_to_process];
           const int shift = 8 - (int)rem_bits;
 
           if (0 < shift) {
@@ -1303,6 +1302,7 @@ main (argc, argv)
     if (is_wildcard (filename)) {
       int x;
       int match_found = 0;
+
       if (0 == (x = dir_move_first ()))
         while (0 == x) {
           if (wcmatch (filename, dir_get_entry_name ()))
@@ -1310,14 +1310,16 @@ main (argc, argv)
               match_found = 1;
               process_file (dir_get_entry_name (),
                 crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+
               if (0 == g_fileerr)
                 processed++;
             }
+
           x = dir_move_next ();
       }
-      if (0 == match_found) {
+
+      if (0 == match_found)
         (void)fprintf (stderr, "WARNING: No wildcard match for %s\n", filename);
-      }
     } else
 # endif
 #endif
