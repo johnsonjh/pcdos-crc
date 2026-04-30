@@ -73,10 +73,12 @@
 /******************************************************************************/
 
 #ifndef ANSI_COMPILER
-# ifdef const
-#  undef const
+# ifndef __CPPCHECK__
+#  ifdef const
+#   undef const
+#  endif
+#  define const /* //-V1059 */
 # endif
-# define const /* //-V1059 */
 #endif
 
 /******************************************************************************/
@@ -1087,6 +1089,7 @@ main (argc, argv)
   const char * const progname =
     ((char *)0 != argv [0] && '\0' != * argv [0]) ? argv [0] : "crc";
 
+  /* cppcheck-suppress knownConditionTrueFalse */
   if (v == (v >> 1)) { /* //-V547 */
     (void)fprintf (stderr,
       "FATAL: Broken compiler: logical right-shift is not logical.\n");

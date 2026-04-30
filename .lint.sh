@@ -149,7 +149,9 @@ command -v clang > /dev/null 2>&1 && {
 : Cppcheck
 : ::::::::
 command -v cppcheck > /dev/null 2>&1 && {
-  cppcheck --force --check-level=exhaustive crc.c
+  cppcheck --enable=warning,style,performance,portability,unusedFunction \
+    --force --check-level=exhaustive --std=c89 --platform=unix64 \
+    -D__CPPCHECK__ --inline-suppr --inconclusive crc.c
 }
 :
 :
