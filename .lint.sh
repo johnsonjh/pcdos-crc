@@ -161,8 +161,15 @@ command -v cppcheck > /dev/null 2>&1 && {
 }
 :
 :
+: markdown-toc
+: ::::::::::::
+command -v markdown-toc > /dev/null 2>&1 && {
+  markdown-toc -i README.md
+}
+:
+:
 : editorconfig-checker
-: ::
+: ::::::::::::::::::::
 command -v editorconfig-checker > /dev/null 2>&1 && {
   editorconfig-checker
 }
