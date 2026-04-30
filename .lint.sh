@@ -155,6 +155,13 @@ command -v cppcheck > /dev/null 2>&1 && {
 }
 :
 :
+: editorconfig-checker
+: ::
+command -v editorconfig-checker > /dev/null 2>&1 && {
+  editorconfig-checker
+}
+:
+:
 : Ch
 : ::
 command -v ch > /dev/null 2>&1 && {
