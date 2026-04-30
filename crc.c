@@ -1078,7 +1078,7 @@ main (argc, argv)
 # endif
 #endif
   counter_bits_t lim_bits = 0;
-  char * filename = (char *)0;
+  const char * filename = (char *)0;
   crc_t v = (crc_t)~0;
   const int cb = charbits ();
   const int ub = crc_t_bits ();
