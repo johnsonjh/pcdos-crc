@@ -192,14 +192,14 @@ parse_limit (s, max_v)
   const counter_bits_t max_v;
 #endif
 {
-  int c, i;
+  int c;
   counter_bits_t v = 0;
 
   if ((const char *)0 == s)
     return 0;
 
   while ('\0' != (c = * s++)) {
-    i = 0;
+    int i = 0;
 
     while (10 > i && c != hexdigits [i])
       i++;
@@ -272,12 +272,12 @@ psyserror (n)
 {
   static char buf [64];
   char tmp [48];
-  char * p, * q;
+  char * q;
   int i, neg;
   unsigned int u;
 
   if (0 <= n && sys_nerr > n) {
-    p = sys_errlist [n];
+    char * p = sys_errlist [n];
 
     if ((char *)0 != p)
       return p;
@@ -504,12 +504,11 @@ test_crc_table (tbl, mask32)
 # endif
 {
   int i, j;
-  crc_t c;
   const crc_t poly = tbl [1];
   const crc_t msb  = (crc_t)0x80000000;
 
   for (i = 0; 256 > i; i++) {
-    c = (crc_t)i;
+    crc_t c = (crc_t)i;
     c <<= 24;
 
     for (j = 0; 8 > j; j++) {
@@ -820,10 +819,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 #endif
 {
   unsigned char rbuf [BUFSIZ];
-  long nread, bytes_to_process;
-  int c;
   crc_t crc = 0;
-  counter_bits_t rem_bits = lim_bits;
 
   if ((FILE *)0 == fp) {
     (void)fprintf (stderr,
@@ -838,7 +834,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   }
 
   if (8 == use_cb && 8 == cb) {
+    counter_bits_t rem_bits = lim_bits;
+
     for (;;) {
+      long nread, bytes_to_process;
 
       if (feof (fp))
         break;
@@ -846,7 +845,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
       nread = 0;
 
       while ((long)sizeof (rbuf) > nread) {
-        c = fgetc (fp);
+        int c = fgetc (fp);
 
         if (EOF == c)
           break;
