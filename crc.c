@@ -12,13 +12,6 @@
  * If you are NOT using an ANSI C89-conforming compiler (e.g., K&R, "C86"),
  * then COMMENT OUT the "#define ANSI_COMPILER".  Otherwise leave it as-is.
  *
- * If your C preprocessor doesn't deal with indentation, flatten with sed:
- *   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
- *
- * If you are using the KCC compiler on a PDP-10 system running TOPS-20:
- *   sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
- *       -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
- *
  * NOTE: Multics C is automatically detected and requires no adjustments.
  */
 
