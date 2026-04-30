@@ -190,7 +190,7 @@ command -v cppi > /dev/null 2>&1 && {
 :
 :
 : SELFTEST
-: ::::
+: ::::::::
 command -v cc > /dev/null 2>&1 && {
   cc -O -DSELFTEST -o selftest crc.c
   ./selftest crc.c selftest
