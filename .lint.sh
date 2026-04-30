@@ -12,7 +12,7 @@ set -eux
 :
 : Cleanup
 : :::::::
-rm -f a.out crc log.pvs compile_commands.json
+rm -f a.out crc log.pvs compile_commands.json selftest
 rm -rf ./pvsreport
 :
 :
@@ -31,7 +31,7 @@ command -v reuse > /dev/null 2>&1 && {
 :
 :
 : diff
-: :::::
+: ::::
 command -v diff > /dev/null 2>&1 && {
   diff LICENSES/MIT-0.txt LICENSE
 }
@@ -66,8 +66,8 @@ command -v clang > /dev/null 2>&1 && {
    -Wno-missing-noreturn -Werror"
   # shellcheck disable=SC2086
   clang ${CLANG_ANSI_CFLAGS:?} crc.c
+  rm -f a.out
 }
-rm -f a.out
 :
 :
 : Clang Analyzer - ANSI
@@ -110,8 +110,8 @@ command -v clang > /dev/null 2>&1 && {
    -Wno-strict-prototypes -Werror"
   # shellcheck disable=SC2086
   clang -DNOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
+  rm -f a.out
 }
-rm -f a.out
 :
 :
 : Clang Analyzer - non-ANSI
@@ -189,6 +189,15 @@ command -v cppi > /dev/null 2>&1 && {
 }
 :
 :
+: SELFTEST
+: ::::
+command -v cc > /dev/null 2>&1 && {
+  cc -O -DSELFTEST -o selftest crc.c
+  ./selftest crc.c selftest
+  rm -f selftest
+}
+:
+:
 : NetBSD Lint
 : :::::::::::
 case "$(uname -s 2> /dev/null || :)" in
@@ -206,4 +215,4 @@ esac
 :
 : Finish
 : ::::::
-rm -f a.out crc log.pvs compile_commands.json
+rm -f a.out crc log.pvs compile_commands.json selftest
