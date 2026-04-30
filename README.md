@@ -132,7 +132,7 @@ The `crc.c` source code should build easily anywhere with no changes needed.
 
 * For non-ANSI compilers or environments offering an ANSI-conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
-  have the pre-ANSI BSD / System V `sys_errlist` / `sys_nerr` interface, you
+  have the pre-ANSI BSD/System V `sys_errlist` / `sys_nerr` interface, you
   should define `USE_PSYSERROR`.
 
 * If you are trying to build in an environment providing a C preprocessor
