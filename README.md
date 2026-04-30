@@ -142,6 +142,41 @@ the number of component segments of the MSF.  This CRC program does not
 provide special treatment for MSFs; each component segment should be processed
 independently.
 
+### Building for TOPS-20
+
+To build a binary for TOPS-20 for PDP-10 systems using the KCC compiler, you
+need to transform the source code appropriately.  This is easy to do on any
+system with a POSIX-conforming `sed` implementation available:
+```
+sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
+    -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
+```
+
+You should ensure that the source code file (`crckcc.c`) is transferred
+to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line endings).
+The appropriate conversion should happen automatically if you use Kermit or
+ASCII-mode FTP for the file transfer, but if you plan to transfer the file
+via other means you *might* need to convert the line endings first.  You
+can do this with the [`unix2dos`](https://dos2unix.sourceforge.io/) utility
+or any POSIX-conforming `awk` implementation:
+```
+awk '{ sub(/\r?$/, "\r"); print }' <infile.txt >outfile.txt
+```
+
+Once you have the source code on the PDP-10 in the appropriate format, it
+can be compiled with the KCC compiler (usually installed as `CC`):
+```
+CC -o CRC CRCKCC.C
+```
+
+#### TOPS-20 notes
+
+The PDP-10 mainframe is a big-endian 36-bit word-addressed system.  Although
+it uses various ways of encoding data, CRC uses the standard C I/O library
+provided by KCC, which treats characters as 9-bit nonets.  You'll need to
+specify an appropriate `--bits` argument to get matching calculations for
+most foreign data (depending on how it's stored) on the system.
+
 ### Building for CP/M-80
 
 To build a binary for CP/M-80 for Z80 systems, use a recent version
