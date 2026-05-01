@@ -223,8 +223,12 @@ independently.
    [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
    POSIX-conforming `awk` implementation:
    ```
-   awk '{ sub(/\r?$/, "\r"); print }' <infile.txt >outfile.txt
+   awk '{ sub(/\r?$/, "\r"); print }' <crckcc.c >crckcc.new
    ```
+   **NB**: You should only perform the above step **only** if necessary, as
+   a "double-conversion" will result in a slower compilation, with the KCC
+   compiler emitting several *thousand* warning messages (one for each line
+   of source compiled).
 
 3. Once you have the source code on the PDP-10 in the appropriate format, it
    can be compiled with the KCC compiler (usually installed as `CC`):
