@@ -1525,7 +1525,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   }
 
   for (i = 0; 8 > i; i++) {
-    buf [7 - i] = hexdigits [(int)(v & 0xF)];
+    buf [(long)(7 - i)] = hexdigits [(int)(v & 0xF)];
     v >>= 4;
   }
 
