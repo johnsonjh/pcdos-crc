@@ -139,6 +139,24 @@ command -v bear > /dev/null 2>&1 && {
 }
 :
 :
+: GCC Analyzer - ANSI
+: :::::::::::::::::::
+command -v gcc > /dev/null 2>&1 && {
+  gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+    -std=c89 -o crc crc.c
+  rm -f crc
+}
+:
+:
+: GCC Analyzer - non-ANSI
+: :::::::::::::::::::::::
+command -v gcc > /dev/null 2>&1 && {
+  gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+    -DNOANSI -Wno-old-style-definition -o crc crc.c
+  rm -f crc
+}
+:
+:
 : PVS-Studio Analyzer - non-ANSI
 : ::::::::::::::::::::::::::::::
 command -v clang > /dev/null 2>&1 && {
