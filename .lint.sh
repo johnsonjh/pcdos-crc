@@ -71,8 +71,8 @@ command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
 }
 :
 :
-: : Clang - ANSI
-: : ::::::::::::
+: Clang - ANSI
+: ::::::::::::
 command -v clang > /dev/null 2>&1 && {
   CLANG_ANSI_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Werror"
