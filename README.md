@@ -266,7 +266,13 @@ docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
   zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
 ```
 
-CP/M builds for Z80 will execute about 25% faster than 8080 builds.
+* CP/M builds for Z80 will execute about 25% faster than 8080 builds.
+
+* The
+  [PopCom!](https://github.com/johnsonjh/VEDIT/raw/refs/heads/master/dev/popcom.com)
+  utility can compress the generated CP/M executable, reducing its on‑disk size
+  by approximately 50% and slightly lowering its memory usage, at the cost of a
+  small increase in load time.
 
 #### CP/M-80 notes
 
