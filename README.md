@@ -12,6 +12,7 @@
     + [8-bit mode (default)](#8-bit-mode-default)
     + [Fallback mode](#fallback-mode)
 - [Building](#building)
+  * [Porting tips](#porting-tips)
 - [Platform specifics](#platform-specifics)
   * [Building for Multics](#building-for-multics)
     + [Multics notes](#multics-notes)
@@ -135,6 +136,8 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   ```
   cc -O -o crc crc.c
   ```
+
+### Porting tips
 
 * If you are using a non-ANSI C compiler, you may need to define `NOANSI`
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
