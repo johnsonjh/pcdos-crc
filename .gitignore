@@ -3,6 +3,7 @@
 # scspell-id: 9c65452e-40d4-11f1-a71d-80ee73e9b8e7
 
 /*~
+/*.$$$
 /a.out
 /*.bak
 /compile_commands.json
@@ -21,6 +22,7 @@
 /nonexistent
 /NOTES.TXT
 /*.out
+/popcom.com
 /profile.txt
 /pvsreport
 /selftest
