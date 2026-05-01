@@ -1085,7 +1085,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
         cb_zero (& uc_cb);
         if (0 == cb_add (& uc_cb, (unsigned int)use_cb)) {
-          error_msg ("Counter logic error", filename, 0);
+          error_msg ("Counter logic error reading ", filename, 0);
           goto done;
         }
 
@@ -1152,7 +1152,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
           tmp &= inmask;
 
           if (0 == cb_sub (& rem_bits, bits_added)) {
-            error_msg ("Counter logic error", filename, 0);
+            error_msg ("Counter logic error reading ", filename, 0);
             goto done;
           }
         }
@@ -1162,7 +1162,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       }
 
       if (0 == cb_add (processed_bits, bits_added)) {
-        error_msg ("Bit counter overflow", filename, 0);
+        error_msg ("Bit counter overflow reading ", filename, 0);
         goto done;
       }
 
@@ -1341,7 +1341,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       if (0 < bytes_to_process) {
         if (0 == cb_add (processed_bits,
           (unsigned int)bytes_to_process * 8)) {
-          error_msg ("Bit counter overflow", filename, 0);
+          error_msg ("Bit counter overflow reading ", filename, 0);
           return (crc_t)0;
         }
 
@@ -1365,7 +1365,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           final_byte &= mask;
 
           if (0 == cb_add (processed_bits, (unsigned int)rb_val)) {
-            error_msg ("Bit counter overflow", filename, 0);
+            error_msg ("Bit counter overflow ", filename, 0);
             return (crc_t)0;
           }
 
@@ -1412,7 +1412,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           }
 
           if (0 == cb_add (processed_bits, (unsigned int)chunk * 8)) {
-            error_msg ("Bit counter overflow", filename, 0);
+            error_msg ("Bit counter overflow reading ", filename, 0);
             return (crc_t)0;
           }
 
