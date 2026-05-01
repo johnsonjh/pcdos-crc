@@ -227,11 +227,11 @@ static int
 #ifdef ANSI_COMPILER
 cb_add (
   counter_bits_t * const c,
-  unsigned int v)
+  const unsigned int v)
 #else
 cb_add (c, v)
   counter_bits_t * const c;
-  unsigned int v;
+  const unsigned int v;
 #endif
 {
   int i = 0;
@@ -268,11 +268,11 @@ static int
 #ifdef ANSI_COMPILER
 cb_sub (
   counter_bits_t * const c,
-  unsigned int v)
+  const unsigned int v)
 #else
 cb_sub (c, v)
   counter_bits_t * const c;
-  unsigned int v;
+  const unsigned int v;
 #endif
 {
   int i = 0;
@@ -351,11 +351,11 @@ cb_cmp (a, b)
 static void
 #ifdef ANSI_COMPILER
 cb_printf (
-  FILE * fp,
+  FILE * const fp,
   const counter_bits_t * const c)
 #else
 cb_printf (fp, c)
-  FILE * fp;
+  FILE * const fp;
   const counter_bits_t * const c;
 #endif
 {
@@ -390,11 +390,11 @@ static int
 #ifdef ANSI_COMPILER
 cb_parse (
   counter_bits_t * const c,
-  const char * s)
+  const char * const s)
 #else
 cb_parse (c, s)
   counter_bits_t * const c;
-  const char * s;
+  const char * const s;
 #endif
 {
   int i;
@@ -453,10 +453,10 @@ cb_parse (c, s)
 static int
 #ifdef ANSI_COMPILER
 xfold (
-  int c)
+  const int c)
 #else
 xfold (c)
-  int c;
+  const int c;
 #endif
 {
   int i;
@@ -602,7 +602,7 @@ pdiv10 (u)
 extern char * sys_errlist [];
 extern int sys_nerr;
 
-static char *
+static const char *
 # ifdef ANSI_COMPILER
 psyserror (
   const int n)
@@ -618,9 +618,9 @@ psyserror (n)
   unsigned int u;
 
   if (0 <= n && sys_nerr > n) {
-    char * p = sys_errlist [n];
+    const char * p = sys_errlist [n];
 
-    if ((char *)0 != p)
+    if ((const char *)0 != p)
       return p;
   }
 
@@ -997,14 +997,14 @@ crc_update_buffer (
   crc_t crc,
   const crc_t * const tbl,
   const crc_t mask32,
-  const unsigned char * buf,
+  const unsigned char * const buf,
   const long n)
 #else
 crc_update_buffer (crc, tbl, mask32, buf, n)
   crc_t crc;
   const crc_t * const tbl;
   const crc_t mask32;
-  const unsigned char * buf;
+  const unsigned char * const buf;
   const long n;
 #endif
 {
@@ -1021,9 +1021,9 @@ crc_update_buffer (crc, tbl, mask32, buf, n)
 static crc_t
 #ifdef ANSI_COMPILER
 compute_crc_fb (
-  FILE * fp,
-  const char * filename,
-  const crc_t * tbl,
+  FILE * const fp,
+  const char * const filename,
+  const crc_t * const tbl,
   const int use_cb,
   const crc_t mask32,
   const crc_t inmask,
@@ -1033,9 +1033,9 @@ compute_crc_fb (
 #else
 compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
                 processed_bits)
-  FILE * fp;
-  const char * filename;
-  const crc_t * tbl;
+  FILE * const fp;
+  const char * const filename;
+  const crc_t * const tbl;
   const int use_cb;
   const crc_t mask32;
   const crc_t inmask;
@@ -1233,9 +1233,9 @@ done:
 static crc_t
 #ifdef ANSI_COMPILER
 compute_crc (
-  FILE * fp,
-  const char * filename,
-  const crc_t * tbl,
+  FILE * const fp,
+  const char * const filename,
+  const crc_t * const tbl,
   const int cb,
   const int ub,
   const int use_cb,
@@ -1247,9 +1247,9 @@ compute_crc (
 #else
 compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
              lim_bits, processed_bits)
-  FILE * fp;
-  const char * filename;
-  const crc_t * tbl;
+  FILE * const fp;
+  const char * const filename;
+  const crc_t * const tbl;
   const int cb;
   const int ub;
   const int use_cb;
@@ -1456,8 +1456,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 static void
 #ifdef ANSI_COMPILER
 process_file (
-  const char * filename,
-  const crc_t * tbl,
+  const char * const filename,
+  const crc_t * const tbl,
   const int cb,
   const int ub,
   const int use_cb,
@@ -1467,8 +1467,8 @@ process_file (
   const counter_bits_t * const lim_bits)
 #else
 process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
-  const char * filename;
-  const crc_t * tbl;
+  const char * const filename;
+  const crc_t * const tbl;
   const int cb;
   const int ub;
   const int use_cb;
