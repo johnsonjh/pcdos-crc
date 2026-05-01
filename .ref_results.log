@@ -88,7 +88,7 @@ EXIT: 1
 TEST: Invalid limit (0)
 ARGS: ./.test_data.bin --limit=0
 
-FATAL: --limit must be between 1 and 18446744073709551615 bits.
+FATAL: --limit must be greater than zero.
 
 EXIT: 1
 
@@ -97,7 +97,7 @@ EXIT: 1
 TEST: Invalid limit (-1)
 ARGS: ./.test_data.bin --limit=-1
 
-FATAL: --limit must be between 1 and 18446744073709551615 bits.
+FATAL: --limit must be a positive integer.
 
 EXIT: 1
 
@@ -106,7 +106,7 @@ EXIT: 1
 TEST: Invalid limit (a)
 ARGS: ./.test_data.bin --limit=a
 
-FATAL: --limit must be between 1 and 18446744073709551615 bits.
+FATAL: --limit must be a positive integer.
 
 EXIT: 1
 

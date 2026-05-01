@@ -16,8 +16,11 @@
 /crckcc.c
 /crc.obj
 /crc_test
+/*.dsk
 /log.pvs
 /nonexistent
+/*.out
+/profile.txt
 /pvsreport
 /selftest
 /test
