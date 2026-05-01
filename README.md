@@ -77,6 +77,9 @@ Options:
   --help, -h  Shows the help and usage text
 ```
 
+* If multiple `--bits` or `--limit` options are provided, only the last value
+  is effective.
+
 ### Interaction of `--limit` and `--pad`
 
 The behavior of these options depends on the CRC processing mode:
