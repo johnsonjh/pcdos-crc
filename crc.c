@@ -1092,7 +1092,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         if (0 > cb_cmp (& rem_bits, & uc_cb)) {
           if (0 == pad) {
             (void)fprintf (stderr,
-              "WARNING: --limit ended mid-character; use --pad if needed.\n");
+              "WARNING: --limit ended mid 8-bit octet; use --pad if needed.\n");
             cb_zero (& rem_bits);
             goto done;
           }
@@ -1202,7 +1202,7 @@ done:
         (void)fprintf (stderr,
           "WARNING: File ended with %d dangling bit%s ",
           bib, 1 == bib ? "" : "s");
-        (void)fprintf (stderr, "(not a full character).\n");
+        (void)fprintf (stderr, "(not a full 8-bit octet).\n");
         hinted = 1;
       }
     }

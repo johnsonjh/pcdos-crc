@@ -193,7 +193,7 @@ EXIT: 0
 TEST: Fallback: bits=7
 ARGS: ./.test_data.bin --bits=7
 
-WARNING: File ended with 5 dangling bits (not a full character).
+WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=D50157AC
 
@@ -213,7 +213,7 @@ EXIT: 0
 TEST: Fallback: bits=7, limit=7 (1 char)
 ARGS: ./.test_data.bin --bits=7 --limit=7
 
-WARNING: File ended with 7 dangling bits (not a full character).
+WARNING: File ended with 7 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=00000000
 
@@ -224,8 +224,8 @@ EXIT: 0
 TEST: Fallback: bits=7, limit=10, no pad
 ARGS: ./.test_data.bin --bits=7 --limit=10
 
-WARNING: --limit ended mid-character; use --pad if needed.
-WARNING: File ended with 7 dangling bits (not a full character).
+WARNING: --limit ended mid 8-bit octet; use --pad if needed.
+WARNING: File ended with 7 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=00000000
 
@@ -245,7 +245,7 @@ EXIT: 0
 TEST: Fallback: bits=7, limit=40 (exceeds), no pad
 ARGS: ./.test_data.bin --bits=7 --limit=40
 
-WARNING: File ended with 5 dangling bits (not a full character).
+WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
 WARNING: File ended after 21 bits, but --limit=40 was requested.
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=D50157AC
@@ -267,7 +267,7 @@ EXIT: 0
 TEST: Fallback: bits=9
 ARGS: ./.test_data.bin --bits=9
 
-WARNING: File ended with 3 dangling bits (not a full character).
+WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=34F08A0A
 
@@ -364,7 +364,7 @@ EXIT: 0
 TEST: Verbose: With bits (7)
 ARGS: ./.test_data.bin --bits=7 -v
 
-WARNING: File ended with 5 dangling bits (not a full character).
+WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=D50157AC	# --limit=21 --bits=7
 
