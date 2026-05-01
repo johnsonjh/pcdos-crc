@@ -225,8 +225,8 @@ independently.
    ```
    awk '{ sub(/\r?$/, "\r"); print }' <crckcc.c >crckcc.new
    ```
-   **NB**: You should only perform the above step **only** if necessary, as
-   a "double-conversion" will result in a slower compilation, with the KCC
+   **NB**: You should perform the above step **only** if necessary, as a
+   "double-conversion" will result in a slower compilation, with the KCC
    compiler emitting several *thousand* warning messages (one for each line
    of source compiled).
 
