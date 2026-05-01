@@ -280,7 +280,7 @@ the current `z88dk`.
 
 CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
 
-CP/M builds for Z80 will execute about 25% faster than 8080 builds.
+Builds targeting the Z80 will execute about 25% faster than 8080 builds.
 
 The
 [PopCom!](https://github.com/johnsonjh/VEDIT/raw/refs/heads/master/dev/popcom.com)
