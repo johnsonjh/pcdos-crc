@@ -256,11 +256,15 @@ zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
 Docker container to build without needing to locally compile and install
-the current `z88dk`:
+the current `z88dk`.
+
+To build for **Z80** CP/M-80:
 ```
 docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
   zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
 ```
+
+To build for **8080** CP/M-80:
 ```
 docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
   zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
