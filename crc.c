@@ -238,7 +238,7 @@ cb_add (c, v)
   unsigned int carry = v;
 
   while (0 != carry) {
-    if (i >= MAX_CB_DIGITS)
+    if (MAX_CB_DIGITS <= i)
       return 0;
 
     carry += (unsigned int)c -> d [i];
@@ -247,7 +247,7 @@ cb_add (c, v)
       unsigned int q = 0;
       unsigned int r = carry;
 
-      while (r >= 10) {
+      while (10 <= r) {
         r -= 10;
         q++;
       }
@@ -285,7 +285,7 @@ cb_sub (c, v)
       unsigned int q = 0;
       unsigned int r = val;
 
-      while (r >= 10) {
+      while (10 <= r) {
         r -= 10;
         q++;
       }
@@ -294,7 +294,7 @@ cb_sub (c, v)
       val = q;
     }
 
-    if (i >= MAX_CB_DIGITS)
+    if (MAX_CB_DIGITS <= i)
       return 0;
 
     if (c -> d [i] >= digit_to_sub) {
@@ -302,12 +302,12 @@ cb_sub (c, v)
     } else {
       int j = i + 1;
 
-      while (j < MAX_CB_DIGITS && 0 == c -> d [j]) {
+      while (MAX_CB_DIGITS > j && 0 == c -> d [j]) {
         c -> d [j] = 9;
         j++;
       }
 
-      if (j >= MAX_CB_DIGITS)
+      if (MAX_CB_DIGITS <= j)
         return 0;
 
       c -> d [j]--;
@@ -368,7 +368,7 @@ cb_printf (fp, c)
   for (; 0 <= i; i--) {
     int ch = hexdigits [c -> d [i]];
 
-    if (fp != (FILE *)0)
+    if ((FILE *)0 != fp)
       (void)fputc (ch, fp);
     else
       (void)printf ("%c", ch);
@@ -377,7 +377,7 @@ cb_printf (fp, c)
   }
 
   if (0 == started) {
-    if (fp != (FILE *)0)
+    if ((FILE *)0 != fp)
       (void)fputc ('0', fp);
     else
       (void)printf ("0");
@@ -401,35 +401,35 @@ cb_parse (c, s)
   /* cppcheck-suppress constStatement */
   const char * p;
 
-  if (s == (const char *)0 || * s == '\0')
+  if ((const char *)0 == s || '\0' == * s)
     return 0;
 
   cb_zero (c);
   p = s;
 
-  while (* p != '\0') {
+  while ('\0' != * p) {
     int digit = -1;
 
-    for (i = 0; i < 10; i++) {
-      if (* p == hexdigits [i]) {
+    for (i = 0; 10 > i; i++) {
+      if (hexdigits [i] == * p) {
         digit = i;
         break;
       }
     }
 
-    if (digit < 0)
+    if (0 > digit)
       return 0;
 
     {
       unsigned int carry = (unsigned int)digit;
       int j;
 
-      for (j = 0; j < MAX_CB_DIGITS; j++) {
+      for (j = 0; MAX_CB_DIGITS > j; j++) {
         unsigned int val = (unsigned int)c -> d [j] * 10 + carry;
         unsigned int q = 0;
         unsigned int r = val;
 
-        while (r >= 10) {
+        while (10 <= r) {
           r -= 10;
           q++;
         }
@@ -478,7 +478,7 @@ xfold (c)
   int i;
 
   for (i = 0; 26 > i; i++) {
-    if (c == (int)(unsigned char)alplowers [i])
+    if ((int)(unsigned char)alplowers [i] == c)
       return (int)(unsigned char)alpuppers [i];
   }
 
@@ -888,7 +888,7 @@ test_crc_table (tbl, mask32)
 
     c &= mask32;
 
-    if (tbl [i] != c) {
+    if (c != tbl [i]) {
       (void)fprintf (stderr,
         "FATAL: CRC table mismatch at index %d (expected %08lX, got %08lX).\n",
         i, (unsigned long)c, (unsigned long)tbl [i]);
@@ -963,7 +963,7 @@ make_mask (bits)
   if (bits > w)
     bits = w;
 
-  for (i = 0; i < bits; i++)
+  for (i = 0; bits > i; i++)
     m = m * 2 + 1;
 
   return m;
@@ -1099,7 +1099,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         }
       }
 
-      if (pos >= nread) {
+      if (nread <= pos) {
         if (0 != feof (fp))
           goto done;
 
@@ -1668,7 +1668,7 @@ main (argc, argv)
 
       {
         int k;
-        for (k = MAX_CB_DIGITS - 1; k >= 0; k--)
+        for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
           bits = bits * 10 + (unsigned long)bits_cb.d [k];
       }
 
