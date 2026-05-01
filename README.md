@@ -241,10 +241,17 @@ most foreign data (depending on how it's stored) on the system.
 
 ### Building for CP/M-80
 
-To build a binary for CP/M-80 for Z80 systems, use a recent version
+To build a binary for CP/M-80 for **Z80** systems, use any recent version
 of [z88dk](https://z88dk.org/):
 ```
 zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
+```
+
+To build a binary for CP/M-80 for **8080** systems, use a version
+of [z88dk](https://z88dk.org/) from **2026-05-01** or later (earlier versions
+have a bug which causes the CRC to be miscalculated on 8080 processors):
+```
+zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
 ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
@@ -254,6 +261,12 @@ the current `z88dk`:
 docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
   zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
 ```
+```
+docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
+  zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
+```
+
+CP/M builds for Z80 will execute about 25% faster than 8080 builds.
 
 #### CP/M-80 notes
 
