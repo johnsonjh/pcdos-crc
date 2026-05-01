@@ -223,7 +223,8 @@ independently.
    [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
    POSIX-conforming `awk` implementation:
    ```
-   awk '{ sub(/\r?$/, "\r"); print }' <crckcc.c >crckcc.new
+   awk '{ sub(/\r?$/, "\r"); print }' crckcc.c | \
+     { out=$(cat) || exit 1; : > crckcc.c && printf '%s\n' "$out" > crckcc.c; }
    ```
    **NB**: You should perform the above step **only** if necessary, as a
    "double-conversion" will result in a slower compilation, with the KCC
