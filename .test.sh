@@ -204,6 +204,7 @@ printf '%s\n' "done, results saved to '${OUT_FILE:?}'"
 
 # shellcheck disable=SC2015
 diff "${REF_FILE:?}" "${OUT_FILE:?}" > /dev/null 2>&1 && {
+  printf '%s\n' "SUCCESS!!! Test suite completed with no errors detected."
   exit 0
 } || {
   printf '\n%s\n\n' "ERROR!!! '${OUT_FILE:?}' does not match '${REF_FILE:?}'!"
