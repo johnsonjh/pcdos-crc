@@ -210,6 +210,7 @@ need to transform the source code appropriately.  This is easy to do on any
 system with a POSIX-conforming `sed` implementation available:
 ```
 sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
+    -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
     -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
 ```
 

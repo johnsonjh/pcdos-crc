@@ -350,11 +350,11 @@ cb_cmp (a, b)
 
 static void
 #ifdef ANSI_COMPILER
-cb_fprint (
+cb_printf (
   FILE * fp,
   const counter_bits_t * const c)
 #else
-cb_fprint (fp, c)
+cb_printf (fp, c)
   FILE * fp;
   const counter_bits_t * const c;
 #endif
@@ -366,12 +366,22 @@ cb_fprint (fp, c)
     i--;
 
   for (; 0 <= i; i--) {
-    (void)fputc (hexdigits [c -> d [i]], fp);
+    int ch = hexdigits [c -> d [i]];
+
+    if (fp != (FILE *)0)
+      (void)fputc (ch, fp);
+    else
+      (void)printf ("%c", ch);
+
     started = 1;
   }
 
-  if (0 == started)
-    (void)fputc ('0', fp);
+  if (0 == started) {
+    if (fp != (FILE *)0)
+      (void)fputc ('0', fp);
+    else
+      (void)printf ("0");
+  }
 }
 
 /******************************************************************************/
@@ -1219,9 +1229,9 @@ done:
       }
 
       (void)fprintf (stderr, "WARNING: File ended after ");
-      cb_fprint (stderr, & used_bits);
+      cb_printf (stderr, & used_bits);
       (void)fprintf (stderr, " bits, but --limit=");
-      cb_fprint (stderr, lim_bits);
+      cb_printf (stderr, lim_bits);
       (void)fprintf (stderr, " was requested.\n");
       hinted = 1;
     }
@@ -1412,7 +1422,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         if (0 == cb_is_zero (& rem_bits)) {
           (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
           (void)fprintf (stderr, "trailing ");
-          cb_fprint (stderr, & rem_bits);
+          cb_printf (stderr, & rem_bits);
           (void)fprintf (stderr, " bit%s ignored in 8-bit mode.\n",
             (1 == rem_bits.d [0] && 0 == rem_bits.d [1]) ? "" : "s");
           (void)fprintf (stderr, "         ");
@@ -1441,10 +1451,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         }
 
         (void)fprintf (stderr, "WARNING: File ended after ");
-        cb_fprint (stderr, & used_bits);
+        cb_printf (stderr, & used_bits);
         (void)fprintf (stderr, " bit%s, but --limit=",
            (1 == used_bits.d [0] && 0 == used_bits.d [1]) ? "" : "s");
-        cb_fprint (stderr, lim_bits);
+        cb_printf (stderr, lim_bits);
         (void)fprintf (stderr, " requested.\n");
         (void)fprintf (stderr, "         ");
         (void)fprintf (stderr, "Use --pad to zero-fill the remaining bit%s.\n",
@@ -1525,7 +1535,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   if (0 != g_verbose) {
     (void)fprintf (stdout, "\t# --limit=");
-    cb_fprint (stdout, & processed_bits);
+    cb_printf (stdout, & processed_bits);
     (void)fprintf (stdout, " --bits=%d", use_cb);
 
     if (0 != pad)
