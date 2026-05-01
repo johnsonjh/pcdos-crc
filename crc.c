@@ -137,6 +137,7 @@ typedef unsigned long counter_bits_t;
 
 static int g_anyerr  = 0;
 static int g_fileerr = 0;
+static int g_verbose = 0;
 
 /******************************************************************************/
 
@@ -261,6 +262,29 @@ counter_bits ()
   }
 
   return bits;
+}
+
+/******************************************************************************/
+
+static int
+#ifdef ANSI_COMPILER
+safe_add_bits (
+  counter_bits_t * const counter,
+  const counter_bits_t delta,
+  const counter_bits_t max_v)
+#else
+safe_add_bits (counter, delta, max_v)
+  counter_bits_t * const counter;
+  const counter_bits_t delta;
+  const counter_bits_t max_v;
+#endif
+{
+  if (delta > (max_v - * counter))
+    return 0;
+
+  * counter += delta;
+
+  return 1;
 }
 
 /******************************************************************************/
@@ -775,9 +799,12 @@ compute_crc_fb (
   const crc_t mask32,
   const crc_t inmask,
   const int pad,
-  const counter_bits_t lim_bits)
+  const counter_bits_t lim_bits,
+  const counter_bits_t max_limit,
+  counter_bits_t * const processed_bits)
 #else
-compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
+compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
+                max_limit, processed_bits)
   FILE * fp;
   const char * filename;
   const crc_t * tbl;
@@ -786,6 +813,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
   const crc_t inmask;
   const int pad;
   const counter_bits_t lim_bits;
+  const counter_bits_t max_limit;
+  counter_bits_t * const processed_bits;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
@@ -801,6 +830,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
 
   for (;;) {
     while (8 > bib) {
+      counter_bits_t bits_added;
+
       if (0 != lim_bits && 0 == rem_bits)
         break;
 
@@ -818,7 +849,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
       }
 
       if (pos >= nread) {
-        if (feof (fp))
+        if (0 != feof (fp))
           goto done;
 
         nread = 0;
@@ -833,7 +864,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
           nread++;
         }
 
-        if (ferror (fp)) {
+        if (0 != ferror (fp)) {
           error_msg ("Error reading ", filename, errno);
           goto done;
         }
@@ -851,9 +882,11 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
 
       if (0 != lim_bits && 0 != rem_bits &&
           rem_bits < (counter_bits_t)use_cb) {
+        bits_added = rem_bits;
         tmp &= (((crc_t)1 << rem_bits) - (crc_t)1);
         rem_bits = 0;
       } else {
+        bits_added = (counter_bits_t)use_cb;
         tmp &= inmask;
 
         if (0 != lim_bits && 0 != rem_bits) {
@@ -866,10 +899,15 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
         }
       }
 
+      if (0 == safe_add_bits (processed_bits, bits_added, max_limit)) {
+        error_msg ("Bit counter overflow ", filename, 0);
+        goto done;
+      }
+
       tmp <<= bib;
 
       buf |= tmp;
-      bib += use_cb;
+      bib += (int)bits_added;
 
       if (0 != lim_bits && 0 == rem_bits)
         break;
@@ -939,9 +977,12 @@ compute_crc (
   const crc_t mask32,
   const crc_t inmask,
   const int pad,
-  const counter_bits_t lim_bits)
+  const counter_bits_t lim_bits,
+  const counter_bits_t max_limit,
+  counter_bits_t * const processed_bits)
 #else
-compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
+compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
+             lim_bits, max_limit, processed_bits)
   FILE * fp;
   const char * filename;
   const crc_t * tbl;
@@ -952,6 +993,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   const crc_t inmask;
   const int pad;
   const counter_bits_t lim_bits;
+  const counter_bits_t max_limit;
+  counter_bits_t * const processed_bits;
 #endif
 {
   if ((FILE *)0 == fp) {
@@ -974,7 +1017,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     for (;;) {
       long nread, bytes_to_process;
 
-      if (feof (fp))
+      if (0 != feof (fp))
         break;
 
       nread = 0;
@@ -988,7 +1031,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
         rbuf [nread++] = (unsigned char)c;
       }
 
-      if (ferror (fp)) {
+      if (0 != ferror (fp)) {
         error_msg ("Error reading ", filename, errno);
         return (crc_t)0;
       }
@@ -1011,8 +1054,15 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
         rem_bits = b;
       }
 
-      if (0 < bytes_to_process)
+      if (0 < bytes_to_process) {
+        if (0 == safe_add_bits (processed_bits,
+          (counter_bits_t)bytes_to_process * 8, max_limit)) {
+          error_msg ("Bit counter overflow ", filename, 0);
+          return (crc_t)0;
+        }
+
         crc = crc_update_buffer (crc, tbl, mask32, rbuf, bytes_to_process);
+      }
 
       if (0 != rem_bits && nread > bytes_to_process) {
         if (0 != pad) {
@@ -1022,6 +1072,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
           mask = (unsigned char)(((crc_t)1 << rem_bits) - (crc_t)1);
 
           final_byte &= mask;
+
+          if (0 == safe_add_bits (processed_bits, rem_bits, max_limit)) {
+            error_msg ("Bit counter overflow ", filename, 0);
+            return (crc_t)0;
+          }
 
           crc = crc_update_byte (crc, tbl, mask32, final_byte);
 
@@ -1058,6 +1113,12 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
             rem_bits -= 8;
           }
 
+          if (0 == safe_add_bits (processed_bits,
+            (counter_bits_t)chunk * 8, max_limit)) {
+            error_msg ("Bit counter overflow ", filename, 0);
+            return (crc_t)0;
+          }
+
           crc = crc_update_buffer (crc, tbl, mask32, zbuf, chunk);
         }
 
@@ -1086,7 +1147,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   }
 
   return compute_crc_fb (fp,
-    filename, tbl, use_cb, mask32, inmask, pad, lim_bits);
+    filename, tbl, use_cb, mask32, inmask, pad, lim_bits, max_limit,
+    processed_bits);
 }
 
 /******************************************************************************/
@@ -1102,9 +1164,11 @@ process_file (
   const crc_t mask32,
   const crc_t inmask,
   const int pad,
-  const counter_bits_t lim_bits)
+  const counter_bits_t lim_bits,
+  const counter_bits_t max_limit)
 #else
-process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
+process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
+              max_limit)
   const char * filename;
   const crc_t * tbl;
   const int cb;
@@ -1114,12 +1178,14 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   const crc_t inmask;
   const int pad;
   const counter_bits_t lim_bits;
+  const counter_bits_t max_limit;
 #endif
 {
   FILE * fp;
   char buf [9];
   crc_t v;
   counter_bits_t i;
+  counter_bits_t processed_bits = 0;
 
   g_fileerr = 0;
   fp = fopen (filename, "rb");
@@ -1131,7 +1197,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   {
     const crc_t crcval = compute_crc (fp,
-      filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+      filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
+      max_limit, & processed_bits);
 
     (void)fclose (fp);
 
@@ -1148,7 +1215,17 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   buf [8] = '\0';
 
-  (void)fprintf (stdout, "%s\t\tCRC=%s\n", filename, buf);
+  (void)fprintf (stdout, "%s\t\tCRC=%s", filename, buf);
+
+  if (0 != g_verbose) {
+    (void)fprintf (stdout, "\t# --limit=%lu --bits=%d",
+      (unsigned long)processed_bits, use_cb);
+
+    if (0 != pad)
+      (void)fprintf (stdout, " --pad");
+  }
+
+  (void)fprintf (stdout, "\n");
 }
 
 /******************************************************************************/
@@ -1166,11 +1243,18 @@ usage (progname, cb)
 {
   (void)fprintf (stderr, "Usage: %s [option(s)...] <file> [file(s)...]\n",
     progname);
-  (void)fprintf (stderr, "Options:\n");
-  (void)fprintf (stderr, "  --bits=N    Reads as N-bit packed bitstream\n");
-  (void)fprintf (stderr, "  --pad       Pads trailing bits with zeros\n");
-  (void)fprintf (stderr, "  --limit=N   Stops processing after N bits\n");
-  (void)fprintf (stderr, "  --help, -h  Shows this help and usage text\n");
+  (void)fprintf (stderr,
+    "Options:\n");
+  (void)fprintf (stderr,
+    "  --bits=N         Reads as N-bit packed bitstream\n");
+  (void)fprintf (stderr,
+    "  --pad            Pads trailing bits with zeros\n");
+  (void)fprintf (stderr,
+    "  --limit=N        Stops processing after N bits\n");
+  (void)fprintf (stderr,
+    "  --verbose, -v    Verbose (prints reproduction flags)\n");
+  (void)fprintf (stderr,
+    "  --help, -h       Shows this help and usage text\n");
 
   if (8 != cb)
     (void)fprintf (stderr,
@@ -1280,6 +1364,12 @@ main (argc, argv)
       continue;
     }
 
+    if (0 == stop && (0 == xstrcasecmp (argv [j], "-v") ||
+                      0 == xstrcasecmp (argv [j], "--verbose"))) {
+      g_verbose = 1;
+      continue;
+    }
+
     if (0 == stop && 0 == xstrncasecmp (argv [j], "--limit=", 8)) {
       lim_bits = parse_limit (argv [j] + 8, max_limit);
 
@@ -1344,7 +1434,8 @@ main (argc, argv)
             if (0 == dir_get_entry_type ()) {
               match_found = 1;
               process_file (dir_get_entry_name (),
-                crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+                crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
+                max_limit);
 
               if (0 == g_fileerr)
                 processed++;
@@ -1360,7 +1451,8 @@ main (argc, argv)
 #endif
     {
       process_file (filename,
-        crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits);
+        crc_table, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
+        max_limit);
 
 #ifdef __Z88DK
 # ifdef __CPM__

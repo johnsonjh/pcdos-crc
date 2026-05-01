@@ -9,10 +9,11 @@ ARGS:
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Reads as N-bit packed bitstream
-  --pad       Pads trailing bits with zeros
-  --limit=N   Stops processing after N bits
-  --help, -h  Shows this help and usage text
+  --bits=N         Reads as N-bit packed bitstream
+  --pad            Pads trailing bits with zeros
+  --limit=N        Stops processing after N bits
+  --verbose, -v    Verbose (prints reproduction flags)
+  --help, -h       Shows this help and usage text
 
 EXIT: 1
 
@@ -23,10 +24,11 @@ ARGS: ./.test_data.bin --help
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Reads as N-bit packed bitstream
-  --pad       Pads trailing bits with zeros
-  --limit=N   Stops processing after N bits
-  --help, -h  Shows this help and usage text
+  --bits=N         Reads as N-bit packed bitstream
+  --pad            Pads trailing bits with zeros
+  --limit=N        Stops processing after N bits
+  --verbose, -v    Verbose (prints reproduction flags)
+  --help, -h       Shows this help and usage text
 
 EXIT: 0
 
@@ -37,10 +39,11 @@ ARGS: ./.test_data.bin -h
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Reads as N-bit packed bitstream
-  --pad       Pads trailing bits with zeros
-  --limit=N   Stops processing after N bits
-  --help, -h  Shows this help and usage text
+  --bits=N         Reads as N-bit packed bitstream
+  --pad            Pads trailing bits with zeros
+  --limit=N        Stops processing after N bits
+  --verbose, -v    Verbose (prints reproduction flags)
+  --help, -h       Shows this help and usage text
 
 EXIT: 0
 
@@ -284,7 +287,7 @@ EXIT: 0
 TEST: Fallback: bits=13, limit=20, pad
 ARGS: ./.test_data.bin --bits=13 --limit=20 --pad
 
-./.test_data.bin		CRC=945D34AE
+./.test_data.bin		CRC=5F341E8E
 
 EXIT: 0
 
@@ -337,6 +340,54 @@ ERROR: Error opening nonexistent (Error 2: No such file or directory).
 ./.test_data.bin		CRC=8908927E
 
 EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Verbose: Standard
+ARGS: ./.test_data.bin -v
+
+./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Verbose: Alias (--verbose)
+ARGS: ./.test_data.bin --verbose
+
+./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Verbose: With bits (7)
+ARGS: ./.test_data.bin --bits=7 -v
+
+WARNING: File ended with 5 dangling bits (not a full character).
+         Use --pad to zero-fill remaining bits.
+./.test_data.bin		CRC=D50157AC	# --limit=21 --bits=7
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Verbose: With limit (12) and pad
+ARGS: ./.test_data.bin --limit=12 --pad -v
+
+./.test_data.bin		CRC=FDEC49D6	# --limit=12 --bits=8 --pad
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Verbose: Multiple files
+ARGS: ./.test_data.bin ./.test_data.bin -v
+
+./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+
+EXIT: 0
 
 ------------------------------------------------------------------------------
 

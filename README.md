@@ -71,10 +71,11 @@ able to be built anywhere else with little to no porting effort required.
 ```
 Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Reads as N-bit packed bitstream
-  --pad       Pads trailing bits with zeros
-  --limit=N   Stops processing after N bits
-  --help, -h  Shows the help and usage text
+  --bits=N         Reads as N-bit packed bitstream
+  --pad            Pads trailing bits with zeros
+  --limit=N        Stops processing after N bits
+  --verbose, -v    Verbose (prints reproduction flags)
+  --help, -h       Shows this help and usage text
 ```
 
 * If multiple `--bits` or `--limit` options are provided, only the last value
@@ -137,6 +138,10 @@ The `crc.c` source code should build easily anywhere with no changes needed.
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
   have the pre-ANSI BSD/System V `sys_errlist` / `sys_nerr` interface, you
   should define `USE_PSYSERROR`.
+
+* Defining `SELFTEST` adds a (rather heavyweight) startup test which verifies
+  the CRC lookup table in the source code is uncorrupted and consistent with
+  the polynomial (`0x51F9D3DE`).
 
 * If you are trying to build in an environment providing a C preprocessor
   that does not deal with indentation, you can "flatten" the source code

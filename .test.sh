@@ -165,6 +165,21 @@ run_test "Edge: Multiple files + nonexistent" \
 run_test "Edge: Nonexistent + multiple files" \
   nonexistent "${TEST_FILE:?}" "${TEST_FILE:?}"
 
+run_test "Verbose: Standard" \
+  "${TEST_FILE:?}" -v
+
+run_test "Verbose: Alias (--verbose)" \
+  "${TEST_FILE:?}" --verbose
+
+run_test "Verbose: With bits (7)" \
+  "${TEST_FILE:?}" --bits=7 -v
+
+run_test "Verbose: With limit (12) and pad" \
+  "${TEST_FILE:?}" --limit=12 --pad -v
+
+run_test "Verbose: Multiple files" \
+  "${TEST_FILE:?}" "${TEST_FILE:?}" -v
+
 rm -f ./nonexistent > /dev/null 2>&1 || :
 rm -f "${PROG:?}" "${TEST_FILE:?}"
 
