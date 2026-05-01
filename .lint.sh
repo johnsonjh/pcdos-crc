@@ -225,14 +225,6 @@ NetBSD)
 esac
 :
 :
-: Test
-: ::::
-# shellcheck disable=SC2065
-test -x ./.test.sh > /dev/null 2>&1 && {
-  ./.test.sh
-}
-:
-:
 : Finish
 : ::::::
 rm -f a.out crc log.pvs compile_commands.json selftest

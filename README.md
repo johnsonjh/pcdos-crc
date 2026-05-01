@@ -124,7 +124,17 @@ bit-by-bit "fallback" mode. In this mode:
 
 ## Building
 
-The `crc.c` source code should build easily anywhere with no changes needed.
+The `crc.c` source code should build easily anywhere with no changes needed:
+
+* Build using `make`:
+  ```
+  make
+  ```
+
+* Build using `cc` (or `c89`, `gcc`, `clang`, etc.):
+  ```
+  cc -O -o crc crc.c
+  ```
 
 * If you are using a non-ANSI C compiler, you may need to define `NOANSI`
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
@@ -208,10 +218,11 @@ independently.
 1. To build a binary for TOPS-20 for PDP-10 systems using the KCC compiler,
    you need to transform the source code appropriately.  This is easy to do on
    any system with a POSIX-conforming `sed` implementation available:
-   ```
+   ```sh
    sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
        -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
-       -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
+       -e 's|^#define ANSI_COMPILER$||' crc.c | \
+     { out=$(cat) || exit 1; : > crckcc.c && printf '%s\n' "$out" > crckcc.c; }
    ```
 
 2. You should ensure that the transformed source code file (`crckcc.c`) is
@@ -222,7 +233,7 @@ independently.
    endings first.  You can do this easily with the
    [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
    POSIX-conforming `awk` implementation:
-   ```
+   ```sh
    awk '{ sub(/\r?$/, "\r"); print }' crckcc.c | \
      { out=$(cat) || exit 1; : > crckcc.c && printf '%s\n' "$out" > crckcc.c; }
    ```
