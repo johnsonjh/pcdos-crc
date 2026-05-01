@@ -14,9 +14,13 @@
 /CRC.EXE
 /crckcc.c
 /crc.obj
+/crc_test
 /log.pvs
+/nonexistent
 /pvsreport
 /selftest
 /test.dat
 /TEST.DAT
+/.test_data.bin
+/.test_results.log
 /test.txt

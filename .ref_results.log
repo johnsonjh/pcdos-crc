@@ -1,0 +1,343 @@
+# Test suite log
+# Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
+# SPDX-License-Identifier: MIT-0
+
+------------------------------------------------------------------------------
+
+TEST: No options
+ARGS:
+
+Usage: ./crc_test [option(s)...] <file> [file(s)...]
+Options:
+  --bits=N    Read as N-bit packed bitstream
+  --pad       Pads trailing bits with zeros
+  --limit=N   Stops processing after N bits
+  --help, -h  Shows this help and usage text
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Help (--help)
+ARGS: ./.test_data.bin --help
+
+Usage: ./crc_test [option(s)...] <file> [file(s)...]
+Options:
+  --bits=N    Read as N-bit packed bitstream
+  --pad       Pads trailing bits with zeros
+  --limit=N   Stops processing after N bits
+  --help, -h  Shows this help and usage text
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Help (-h)
+ARGS: ./.test_data.bin -h
+
+Usage: ./crc_test [option(s)...] <file> [file(s)...]
+Options:
+  --bits=N    Read as N-bit packed bitstream
+  --pad       Pads trailing bits with zeros
+  --limit=N   Stops processing after N bits
+  --help, -h  Shows this help and usage text
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Invalid bits (0)
+ARGS: ./.test_data.bin --bits=0
+
+FATAL: --bits must be a positive integer between 1 and 64.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Invalid bits (-1)
+ARGS: ./.test_data.bin --bits=-1
+
+FATAL: --bits must be a positive integer between 1 and 64.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Invalid bits (a)
+ARGS: ./.test_data.bin --bits=a
+
+FATAL: --bits must be a positive integer between 1 and 64.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Invalid bits (65)
+ARGS: ./.test_data.bin --bits=65
+
+FATAL: --bits must be a positive integer between 1 and 64.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Invalid limit (0)
+ARGS: ./.test_data.bin --limit=0
+
+FATAL: --limit must be between 1 and 18446744073709551615 bits.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Invalid limit (-1)
+ARGS: ./.test_data.bin --limit=-1
+
+FATAL: --limit must be between 1 and 18446744073709551615 bits.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Invalid limit (a)
+ARGS: ./.test_data.bin --limit=a
+
+FATAL: --limit must be between 1 and 18446744073709551615 bits.
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Nonexistent
+ARGS: ./.test_data.bin nonexistent
+
+./.test_data.bin		CRC=8908927E
+ERROR: Error opening nonexistent (Error 2: No such file or directory).
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Standard
+ARGS: ./.test_data.bin
+
+./.test_data.bin		CRC=8908927E
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Limit exact (16 bits)
+ARGS: ./.test_data.bin --limit=16
+
+./.test_data.bin		CRC=958622F0
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Limit mid-octet (12 bits), no pad
+ARGS: ./.test_data.bin --limit=12
+
+WARNING: Input --limit caused truncation mid-character; use --pad if needed.
+./.test_data.bin		CRC=5F1A48BC
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Limit mid-octet (12 bits), with pad
+ARGS: ./.test_data.bin --limit=12 --pad
+
+./.test_data.bin		CRC=FDEC49D6
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Limit > file (32 bits), no pad
+ARGS: ./.test_data.bin --limit=32
+
+WARNING: File ended after 24 bits, but --limit=32 requested.
+         Use --pad to zero-fill the remaining bits.
+./.test_data.bin		CRC=8908927E
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Limit > file (32 bits), with pad (Synthesis)
+ARGS: ./.test_data.bin --limit=32 --pad
+
+./.test_data.bin		CRC=1576A7EE
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: 8-bit: Limit > file (36 bits), with pad (Synthesis + Truncation)
+ARGS: ./.test_data.bin --limit=36 --pad
+
+WARNING: --limit not a multiple of 8; trailing 4 bits ignored in 8-bit mode.
+         Result calculated only up to the last full character.
+./.test_data.bin		CRC=1576A7EE
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7
+ARGS: ./.test_data.bin --bits=7
+
+WARNING: File ended with 5 dangling bits (not a full character).
+         Use --pad to zero-fill remaining bits.
+./.test_data.bin		CRC=D50157AC
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7, pad
+ARGS: ./.test_data.bin --bits=7 --pad
+
+./.test_data.bin		CRC=DEA91832
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7, limit=7 (1 char)
+ARGS: ./.test_data.bin --bits=7 --limit=7
+
+WARNING: File ended with 7 dangling bits (not a full character).
+         Use --pad to zero-fill remaining bits.
+./.test_data.bin		CRC=00000000
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7, limit=10, no pad
+ARGS: ./.test_data.bin --bits=7 --limit=10
+
+WARNING: --limit ended mid-character; use --pad if needed.
+WARNING: File ended with 7 dangling bits (not a full character).
+         Use --pad to zero-fill remaining bits.
+./.test_data.bin		CRC=00000000
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7, limit=10, pad
+ARGS: ./.test_data.bin --bits=7 --limit=10 --pad
+
+./.test_data.bin		CRC=19F8A112
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7, limit=40 (exceeds), no pad
+ARGS: ./.test_data.bin --bits=7 --limit=40
+
+WARNING: File ended with 5 dangling bits (not a full character).
+WARNING: File ended after 21 bits, but --limit=40 was requested.
+         Use --pad to zero-fill remaining bits.
+./.test_data.bin		CRC=D50157AC
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=7, limit=40 (exceeds), pad
+ARGS: ./.test_data.bin --bits=7 --limit=40 --pad
+
+WARNING: File ended after 21 bits, but --limit=40 was requested.
+./.test_data.bin		CRC=DEA91832
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=9
+ARGS: ./.test_data.bin --bits=9
+
+WARNING: File ended with 3 dangling bits (not a full character).
+         Use --pad to zero-fill remaining bits.
+./.test_data.bin		CRC=34F08A0A
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=9, pad
+ARGS: ./.test_data.bin --bits=9 --pad
+
+./.test_data.bin		CRC=FC10756C
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Fallback: bits=13, limit=20, pad
+ARGS: ./.test_data.bin --bits=13 --limit=20 --pad
+
+./.test_data.bin		CRC=945D34AE
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Edge: Empty file
+ARGS: /dev/null
+
+/dev/null		CRC=00000000
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Edge: Empty file, limit=16, pad
+ARGS: /dev/null --limit=16 --pad
+
+/dev/null		CRC=00000000
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Edge: Multiple files
+ARGS: ./.test_data.bin ./.test_data.bin
+
+./.test_data.bin		CRC=8908927E
+./.test_data.bin		CRC=8908927E
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Edge: Multiple files + nonexistent
+ARGS: ./.test_data.bin ./.test_data.bin nonexistent
+
+./.test_data.bin		CRC=8908927E
+./.test_data.bin		CRC=8908927E
+ERROR: Error opening nonexistent (Error 2: No such file or directory).
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+TEST: Edge: Nonexistent + multiple files
+ARGS: nonexistent ./.test_data.bin ./.test_data.bin
+
+ERROR: Error opening nonexistent (Error 2: No such file or directory).
+./.test_data.bin		CRC=8908927E
+./.test_data.bin		CRC=8908927E
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
+# EOF

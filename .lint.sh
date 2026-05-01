@@ -40,14 +40,14 @@ command -v diff > /dev/null 2>&1 && {
 : ShellCheck
 : ::::::::::
 command -v shellcheck > /dev/null 2>&1 && {
-  shellcheck -o any,all .lint.sh
+  shellcheck -o any,all .lint.sh .test.sh
 }
 :
 :
 : shfmt
 : :::::
 command -v shfmt > /dev/null 2>&1 && {
-  shfmt -bn -sr -fn -i 2 -s -d .lint.sh
+  shfmt -bn -sr -fn -i 2 -s -d .lint.sh .test.sh
 }
 :
 :
@@ -211,6 +211,14 @@ NetBSD)
   ;;
 *) : ;;
 esac
+:
+:
+: Test
+: ::::
+# shellcheck disable=SC2065
+test -x ./.test.sh > /dev/null 2>&1 && {
+  ./.test.sh
+}
 :
 :
 : Finish
