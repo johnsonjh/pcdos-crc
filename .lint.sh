@@ -9,6 +9,12 @@ if [ -n "${ZSH_VERSION-}" ]; then
   setopt sh_word_split
 fi
 
+# shellcheck disable=SC2065
+test -f "./${0##*/}" > /dev/null 2>&1 || {
+  printf '%s\n' "ERROR: Cannot locate script in current directory."
+  exit 1
+}
+
 test -d "/usr/pkg/gnu/bin" && {
   export PATH="${PATH:-}:/usr/pkg/gnu/bin"
 }
