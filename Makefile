@@ -5,7 +5,7 @@
 # vim: set ft=make ts=8 ai noexpandtab list listchars=tab\:\>\- cc=80 :
 
 crc: crc.c
-	cc -O -o crc crc.c
+	$${CC:-cc} $${CFLAGS:--O} $${LDFLAGS:-} -o crc crc.c
 
 clean:
 	rm -f crc
