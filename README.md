@@ -217,9 +217,9 @@ independently.
 2. You should ensure that the transformed source code file (`crckcc.c`) is
    transferred to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line
    endings).  The appropriate conversion should happen automatically if you use
-   Kermit or ASCII-mode FTP for the file transfer, but if you plan to transfer
-   the file via other means, you *might* need to convert the line endings
-   first.  You can do this with the
+   **Kermit** or **ASCII-mode** FTP for the file transfer.  If you plan to
+   transfer the file via other means, you *might* need to convert the line
+   endings first.  You can do this easily with the
    [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
    POSIX-conforming `awk` implementation:
    ```
