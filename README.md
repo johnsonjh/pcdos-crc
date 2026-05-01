@@ -156,11 +156,11 @@ Most users won't need to do any of these things.
 
 ### Building for Multics
 
-To build a binary for [Multics](https://multics-wiki.swenson.org/) using
-[Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf):
-```
->sl3p>cc>e>cc -lg -of crc crc.c
-```
+* To build a binary for [Multics](https://multics-wiki.swenson.org/) using
+  [Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf):
+  ```
+  >sl3p>cc>e>cc -lg -of crc crc.c
+  ```
 
 #### Multics notes
 
@@ -205,31 +205,32 @@ independently.
 
 ### Building for TOPS-20
 
-To build a binary for TOPS-20 for PDP-10 systems using the KCC compiler, you
-need to transform the source code appropriately.  This is easy to do on any
-system with a POSIX-conforming `sed` implementation available:
-```
-sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
-    -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
-    -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
-```
+1. To build a binary for TOPS-20 for PDP-10 systems using the KCC compiler,
+   you need to transform the source code appropriately.  This is easy to do on
+   any system with a POSIX-conforming `sed` implementation available:
+   ```
+   sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
+       -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
+       -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
+   ```
 
-You should ensure that the transformed source code file (`crckcc.c`) is
-transferred to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line
-endings).  The appropriate conversion should happen automatically if you use
-Kermit or ASCII-mode FTP for the file transfer, but if you plan to transfer
-the file via other means, you *might* need to convert the line endings first.
-You can do this with the [`unix2dos`](https://dos2unix.sourceforge.io/)
-utility or any POSIX-conforming `awk` implementation:
-```
-awk '{ sub(/\r?$/, "\r"); print }' <infile.txt >outfile.txt
-```
+2. You should ensure that the transformed source code file (`crckcc.c`) is
+   transferred to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line
+   endings).  The appropriate conversion should happen automatically if you use
+   Kermit or ASCII-mode FTP for the file transfer, but if you plan to transfer
+   the file via other means, you *might* need to convert the line endings
+   first.  You can do this with the
+   [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
+   POSIX-conforming `awk` implementation:
+   ```
+   awk '{ sub(/\r?$/, "\r"); print }' <infile.txt >outfile.txt
+   ```
 
-Once you have the source code on the PDP-10 in the appropriate format, it
-can be compiled with the KCC compiler (usually installed as `CC`):
-```
-CC -o CRC CRCKCC.C
-```
+3. Once you have the source code on the PDP-10 in the appropriate format, it
+   can be compiled with the KCC compiler (usually installed as `CC`):
+   ```
+   CC -o CRC CRCKCC.C
+   ```
 
 #### TOPS-20 notes
 
@@ -241,34 +242,34 @@ most foreign data (depending on how it's stored) on the system.
 
 ### Building for CP/M-80
 
-To build a binary for CP/M-80 for **Z80** systems, use any recent version
-of [z88dk](https://z88dk.org/):
-```
-zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
-```
+* To build a binary for CP/M-80 for **Z80** systems, use any recent version
+  of [z88dk](https://z88dk.org/):
+  ```
+  zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
+  ```
 
-To build a binary for CP/M-80 for **8080** systems, use a version
-of [z88dk](https://z88dk.org/) from **2026-05-01** or later (earlier versions
-have a bug which causes the CRC to be miscalculated on 8080 processors):
-```
-zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
-```
+* To build a binary for CP/M-80 for **8080** systems, use a version
+  of [z88dk](https://z88dk.org/) from **2026-05-01** or later (earlier versions
+  have a bug which causes the CRC to be miscalculated on 8080 processors):
+  ```
+  zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
+  ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
 Docker container to build without needing to locally compile and install
 the current `z88dk`.
 
-To build for **Z80** CP/M-80:
-```
-docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-  zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
-```
+* To build for **Z80** CP/M-80:
+  ```
+  docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
+    zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
+  ```
 
-To build for **8080** CP/M-80:
-```
-docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-  zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
-```
+* To build for **8080** CP/M-80:
+  ```
+  docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
+    zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
+  ```
 
 #### CP/M-80 notes
 
@@ -316,17 +317,17 @@ utilized, but might be supported in a future release.
 
 ### Building for ELKS
 
-To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
-```sh
-ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
-```
+* To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
+  ```sh
+  ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
+  ```
 
 ### Building for MS-DOS
 
-To build a binary for MS-DOS using IA16-GCC:
-```sh
-ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny -o crc.com crc.c
-```
+* To build a binary for MS-DOS using IA16-GCC:
+  ```sh
+  ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny -o crc.com crc.c
+  ```
 
 ## License
 
