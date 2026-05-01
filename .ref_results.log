@@ -9,7 +9,7 @@ ARGS:
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Read as N-bit packed bitstream
+  --bits=N    Reads as N-bit packed bitstream
   --pad       Pads trailing bits with zeros
   --limit=N   Stops processing after N bits
   --help, -h  Shows this help and usage text
@@ -23,7 +23,7 @@ ARGS: ./.test_data.bin --help
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Read as N-bit packed bitstream
+  --bits=N    Reads as N-bit packed bitstream
   --pad       Pads trailing bits with zeros
   --limit=N   Stops processing after N bits
   --help, -h  Shows this help and usage text
@@ -37,7 +37,7 @@ ARGS: ./.test_data.bin -h
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Read as N-bit packed bitstream
+  --bits=N    Reads as N-bit packed bitstream
   --pad       Pads trailing bits with zeros
   --limit=N   Stops processing after N bits
   --help, -h  Shows this help and usage text

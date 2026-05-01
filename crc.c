@@ -141,17 +141,40 @@ static int g_fileerr = 0;
 /******************************************************************************/
 
 static const char hexdigits [] = "0123456789ABCDEF";
+static const char alpuppers [] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char alplowers [] = "abcdefghijklmnopqrstuvwxyz";
 
 /******************************************************************************/
 
 static int
 #ifdef ANSI_COMPILER
-xstrncmp (
+xfold (
+  int c)
+#else
+xfold (c)
+  int c;
+#endif
+{
+  int i;
+
+  for (i = 0; 26 > i; i++) {
+    if (c == (int)(unsigned char)alplowers [i])
+      return (int)(unsigned char)alpuppers [i];
+  }
+
+  return c;
+}
+
+/******************************************************************************/
+
+static int
+#ifdef ANSI_COMPILER
+xstrncasecmp (
   const char * s1,
   const char * s2,
   int n)
 #else
-xstrncmp (s1, s2, n)
+xstrncasecmp (s1, s2, n)
   const char * s1;
   const char * s2;
   int n;
@@ -164,8 +187,8 @@ xstrncmp (s1, s2, n)
     goto done;
 
   for (;;) {
-    c1 = (unsigned char)* s1++;
-    c2 = (unsigned char)* s2++;
+    c1 = xfold ((unsigned char)* s1++);
+    c2 = xfold ((unsigned char)* s2++);
 
     if (c1 != c2) {
       ret = (c1 < c2) ? -1 : 1;
@@ -180,18 +203,18 @@ xstrncmp (s1, s2, n)
   }
 
 done:
-    return ret;
+  return ret;
 }
 
 /******************************************************************************/
 
 static int
 #ifdef ANSI_COMPILER
-xstrcmp (
+xstrcasecmp (
   const char * s1,
   const char * s2)
 #else
-xstrcmp (s1, s2)
+xstrcasecmp (s1, s2)
   const char * s1;
   const char * s2;
 #endif
@@ -200,8 +223,8 @@ xstrcmp (s1, s2)
   int ret = 0;
 
   for (;;) {
-    c1 = (unsigned char)* s1++;
-    c2 = (unsigned char)* s2++;
+    c1 = xfold ((unsigned char)* s1++);
+    c2 = xfold ((unsigned char)* s2++);
 
     if (c1 != c2) {
       ret = (c1 < c2) ? -1 : 1;
@@ -268,7 +291,7 @@ parse_limit (s, max_v)
     if (10 <= i)
       return 0;
 
-    if (0 != (v & ~(max_v >> 3)))
+    if (v > (max_v >> 3))
       return 0;
 
     {
@@ -767,8 +790,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
 {
   unsigned char rbuf [BUFSIZ];
   unsigned char oct;
-  int ch, c, shift;
-  crc_t tmp, t2;
+  int ch, c;
+  crc_t tmp;
   crc_t crc  = 0;
   crc_t buf  = 0;
   int bib    = 0;
@@ -778,13 +801,19 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
 
   for (;;) {
     while (8 > bib) {
+      if (0 != lim_bits && 0 == rem_bits)
+        break;
+
       if (0 != lim_bits && 0 != rem_bits) {
         const counter_bits_t uc = (counter_bits_t)use_cb;
 
         if (rem_bits < uc) {
-          (void)fprintf (stderr,
-            "WARNING: --limit ended mid-character; use --pad if needed.\n");
-          goto done;
+          if (0 == pad) {
+            (void)fprintf (stderr,
+              "WARNING: --limit ended mid-character; use --pad if needed.\n");
+            rem_bits = 0;
+            goto done;
+          }
         }
       }
 
@@ -819,31 +848,30 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
       pos++;
 
       tmp  = (crc_t)(unsigned char)ch;
-      tmp &= inmask;
 
-      t2    = tmp;
-      shift = bib;
+      if (0 != lim_bits && 0 != rem_bits &&
+          rem_bits < (counter_bits_t)use_cb) {
+        tmp &= (((crc_t)1 << rem_bits) - (crc_t)1);
+        rem_bits = 0;
+      } else {
+        tmp &= inmask;
 
-      while (0 < shift) {
-        t2 <<= 1;
-        shift--;
+        if (0 != lim_bits && 0 != rem_bits) {
+          const counter_bits_t step = (counter_bits_t)use_cb;
+
+          if (rem_bits <= step)
+            rem_bits = 0;
+          else
+            rem_bits = rem_bits - step;
+        }
       }
 
-      tmp = t2;
+      tmp <<= bib;
 
       buf |= tmp;
       bib += use_cb;
 
-      if (0 != lim_bits && 0 != rem_bits) {
-        const counter_bits_t step = (counter_bits_t)use_cb;
-
-        if (rem_bits <= step)
-          rem_bits = 0;
-        else
-          rem_bits = rem_bits - step;
-      }
-
-      if (0 == rem_bits)
+      if (0 != lim_bits && 0 == rem_bits)
         break;
     }
 
@@ -863,25 +891,35 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits)
   }
 
 done:
-  if (0 < bib) {
-    if (0 != pad) {
-      oct = (unsigned char)(buf & (crc_t)0xFF);
-      crc = crc_update_byte (crc, tbl, mask32, oct);
-    } else {
-      (void)fprintf (stderr,
-        "WARNING: File ended with %d dangling bit%s (not a full character).\n",
-        bib, 1 == bib ? "" : "s");
+  if (0 == g_fileerr) {
+    int hinted = 0;
+
+    if (0 < bib) {
+      if (0 != pad) {
+        oct = (unsigned char)(buf & (crc_t)0xFF);
+        crc = crc_update_byte (crc, tbl, mask32, oct);
+      } else {
+        (void)fprintf (stderr,
+          "WARNING: File ended with %d dangling bit%s ",
+          bib, 1 == bib ? "" : "s");
+        (void)fprintf (stderr, "(not a full character).\n");
+        hinted = 1;
+      }
     }
-  }
 
-  if (0 != lim_bits && 0 != rem_bits) {
-    const counter_bits_t used_bits = lim_bits - rem_bits;
+    if (0 != lim_bits && 0 != rem_bits) {
+      const counter_bits_t used_bits = lim_bits - rem_bits;
 
-    (void)fprintf (stderr,
-      "WARNING: File ended after %lu bits, but --limit=%lu was requested.\n",
-      (unsigned long)used_bits, (unsigned long)lim_bits);
-    (void)fprintf (stderr,
-      "         Use --pad to zero-fill remaining bits.\n");
+      (void)fprintf (stderr,
+        "WARNING: File ended after %lu bits, but --limit=%lu was requested.\n",
+        (unsigned long)used_bits, (unsigned long)lim_bits);
+      hinted = 1;
+    }
+
+    if (0 != hinted && 0 == pad) {
+      (void)fprintf (stderr,
+        "         Use --pad to zero-fill remaining bits.\n");
+    }
   }
 
   return crc;
@@ -980,13 +1018,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
         if (0 != pad) {
           unsigned char mask;
           unsigned char final_byte = rbuf [bytes_to_process];
-          const int shift = 8 - (int)rem_bits;
 
-          if (0 < shift) {
-              mask   = 0xFF;
-              mask   = (unsigned char)(mask << shift);
-          } else
-            mask = (unsigned char)0xFF;
+          mask = (unsigned char)(((crc_t)1 << rem_bits) - (crc_t)1);
 
           final_byte &= mask;
 
@@ -1105,7 +1138,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     if (0 != g_fileerr)
       return;
 
-    v = (crc_t)crcval;
+    v = (crc_t)crcval & mask32;
   }
 
   for (i = 0; 8 > i; i++) {
@@ -1134,10 +1167,10 @@ usage (progname, cb)
   (void)fprintf (stderr, "Usage: %s [option(s)...] <file> [file(s)...]\n",
     progname);
   (void)fprintf (stderr, "Options:\n");
-  (void)fprintf (stderr, "  --bits=N    Process N bits per character\n");
-  (void)fprintf (stderr, "  --pad       Pad trailing bits with zeros\n");
-  (void)fprintf (stderr, "  --limit=N   Stop processing after N bits\n");
-  (void)fprintf (stderr, "  --help, -h  Show the help and usage text\n");
+  (void)fprintf (stderr, "  --bits=N    Reads as N-bit packed bitstream\n");
+  (void)fprintf (stderr, "  --pad       Pads trailing bits with zeros\n");
+  (void)fprintf (stderr, "  --limit=N   Stops processing after N bits\n");
+  (void)fprintf (stderr, "  --help, -h  Shows this help and usage text\n");
 
   if (8 != cb)
     (void)fprintf (stderr,
@@ -1177,13 +1210,18 @@ main (argc, argv)
 #endif
   counter_bits_t lim_bits = 0;
   const char * filename = (char *)0;
-  crc_t v = (crc_t)~0;
+  crc_t mask32 = 0;
+  crc_t v;
   const int cb = charbits ();
   const int ub = crc_t_bits ();
   const counter_bits_t max_ul_bits = counter_bits ();
-  const crc_t mask32 = (crc_t)0xFFFFFFFF;
   const char * const progname =
     ((char *)0 != argv [0] && '\0' != * argv [0]) ? argv [0] : "crc";
+
+  for (i = 0; 32 > i; i++)
+    mask32 = (mask32 << 1) | 1;
+
+  v = mask32;
 
   /* cppcheck-suppress knownConditionTrueFalse */
   if (v == (v >> 1)) { /* //-V547 */
@@ -1213,25 +1251,21 @@ main (argc, argv)
   }
 
   for (j = 1; argc > j; j++) {
-    if (0 == stop && 0 == xstrcmp (argv [j], "--")) {
+    if (0 == stop && 0 == xstrcasecmp (argv [j], "--")) {
       stop = 1;
       continue;
     }
 
-    if (0 == stop && (0 == xstrcmp (argv [j], "--help") ||
-                      0 == xstrcmp (argv [j], "--HELP") ||
-                      0 == xstrcmp (argv [j], "-h") ||
-                      0 == xstrcmp (argv [j], "-H"))) {
+    if (0 == stop && (0 == xstrcasecmp (argv [j], "--help") ||
+                      0 == xstrcasecmp (argv [j], "-h"))) {
       usage (progname, cb);
       return 0;
     }
 
-    if (0 == stop && (0 == xstrncmp (argv [j], "--bits=", 7) ||
-                      0 == xstrncmp (argv [j], "--BITS=", 7))) {
-      const counter_bits_t bits =
-        parse_limit (argv [j] + 7, (counter_bits_t)ub);
+    if (0 == stop && 0 == xstrncasecmp (argv [j], "--bits=", 7)) {
+      const counter_bits_t bits = parse_limit (argv [j] + 7, max_limit);
 
-      if (0 == bits) {
+      if (0 == bits || (counter_bits_t)ub < bits) {
         (void)fprintf (stderr,
           "FATAL: --bits must be a positive integer between 1 and %d.\n", ub);
         return EXIT_FAILURE;
@@ -1241,14 +1275,12 @@ main (argc, argv)
       continue;
     }
 
-    if (0 == stop && (0 == xstrcmp (argv [j], "--pad") ||
-                      0 == xstrcmp (argv [j], "--PAD"))) {
+    if (0 == stop && 0 == xstrcasecmp (argv [j], "--pad")) {
       pad = 1;
       continue;
     }
 
-    if (0 == stop && (0 == xstrncmp (argv [j], "--limit=", 8) ||
-                      0 == xstrncmp (argv [j], "--LIMIT=", 8))) {
+    if (0 == stop && 0 == xstrncasecmp (argv [j], "--limit=", 8)) {
       lim_bits = parse_limit (argv [j] + 8, max_limit);
 
       if (0 == lim_bits || max_limit < lim_bits) {
@@ -1290,7 +1322,7 @@ main (argc, argv)
   stop = 0;
 
   for (j = 1; argc > j; j++) {
-    if (0 == stop && 0 == xstrcmp (argv [j], "--")) {
+    if (0 == stop && 0 == xstrcasecmp (argv [j], "--")) {
       stop = 1;
       continue;
     }

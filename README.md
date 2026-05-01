@@ -71,10 +71,10 @@ able to be built anywhere else with little to no porting effort required.
 ```
 Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N    Process N bits per character
-  --pad       Pad trailing bits with zeros
-  --limit=N   Stop processing after N bits
-  --help, -h  Show the help and usage text
+  --bits=N    Reads as N-bit packed bitstream
+  --pad       Pads trailing bits with zeros
+  --limit=N   Stops processing after N bits
+  --help, -h  Shows the help and usage text
 ```
 
 ### Interaction of `--limit` and `--pad`
@@ -108,12 +108,12 @@ system with a non-8-bit native character size**, the program operates in a
 bit-by-bit "fallback" mode. In this mode:
 
 * The `--limit` is effectively **rounded down** to the nearest multiple of
-  the requested character processing size (`--bits`).  The `--pad` option
-  does **not** allow processing partial characters to satisfy a limit in
-  this mode.
+  the requested character processing size (`--bits`) unless the `--pad`
+  option is used.
 
-* The `--pad` option is used **only** to zero-fill any remaining bits of
-  the *final character read from the file* if the input ends mid-character.
+* The `--pad` option is used to zero-fill any remaining bits of
+  the *final character read from the file* if the input ends mid-character,
+  or to allow processing a final partial character to satisfy a `--limit`.
 
 * The program **does not** synthesize data to reach a specified `--limit`.
   If the file ends before the limit is reached, a warning is displayed.
@@ -176,10 +176,15 @@ For example, assume `DATA.DAT` is a file of 174,344 bits (21,793 8-bit octets)
 which produces a CRC of `0D03ABFA` on MS-DOS or UNIX systems.  On a Multics
 system, this file will be stored as 196,137 bits (21,793 9-bit nonets).
 The CRC on such a system will be calculated based on processing the file as a
-stream of bits, handing off octets (of 8-bits each) to the CRC routines, which
-includes the unused 9th bit in each character.  This means the CRC calculated
-will not match that of the DOS or UNIX system unless the `--bits=8` option is
-used to specify that only 8 bits per character should be considered.
+stream of bits, handing off octets (of 8‑bits each) to the CRC routines, which
+includes the unused 9th bit in each character.  Note that the `--bits` option
+works by packing the specified number of bits from each character into a
+continuous stream; changing the number of bits processed per character will
+therefore shift the bit-alignment of subsequent characters and result in a
+different CRC value, even if the discarded bits were zero.
+This means the CRC calculated will not match that of the DOS or UNIX system
+unless the `--bits=8` option is used to specify that only 8 bits per character
+should be considered.
 
 As an additional hint, if the processing of a file ends with "dangling" bits
 (not a full character) then a warning message is displayed.
