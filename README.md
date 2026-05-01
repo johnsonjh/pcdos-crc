@@ -239,7 +239,7 @@ independently.
 #### TOPS-20 notes
 
 The PDP-10 mainframe is a big-endian 36-bit word-addressed system.  Although
-it uses various ways of encoding data, CRC uses the standard C I/O library
+TOPS-20 has various ways of encoding data, CRC uses the standard C I/O library
 provided by KCC, which treats characters as 9-bit nonets.  You'll need to
 specify an appropriate `--bits` argument to get matching calculations for
 most foreign data (depending on how it's stored) on the system.
