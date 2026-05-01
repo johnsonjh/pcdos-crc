@@ -297,9 +297,9 @@ cb_sub (c, v)
     if (MAX_CB_DIGITS <= i)
       return 0;
 
-    if (c -> d [i] >= digit_to_sub) {
+    if (c -> d [i] >= digit_to_sub)
       c -> d [i] -= (unsigned char)digit_to_sub;
-    } else {
+    else {
       int j = i + 1;
 
       while (MAX_CB_DIGITS > j && 0 == c -> d [j]) {
@@ -446,22 +446,6 @@ cb_parse (c, s)
   }
 
   return 1;
-}
-
-/******************************************************************************/
-
-static int
-#ifdef ANSI_COMPILER
-parse_limit (
-  const char * s,
-  counter_bits_t * const v)
-#else
-parse_limit (s, v)
-  const char * s;
-  counter_bits_t * const v;
-#endif
-{
-  return cb_parse (v, s);
 }
 
 /******************************************************************************/
@@ -1220,9 +1204,8 @@ done:
           if (0 > diff) {
             diff += 10;
             borrow = 1;
-          } else {
+          } else
             borrow = 0;
-          }
 
           used_bits.d [k] = (unsigned char)diff;
         }
@@ -1442,9 +1425,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             if (0 > diff) {
               diff += 10;
               borrow = 1;
-            } else {
+            } else
               borrow = 0;
-            }
 
             used_bits.d [k] = (unsigned char)diff;
           }
@@ -1663,7 +1645,7 @@ main (argc, argv)
       counter_bits_t bits_cb;
       unsigned long bits = 0;
 
-      if (0 == parse_limit (argv [j] + 7, & bits_cb))
+      if (0 == cb_parse (& bits_cb, argv [j] + 7))
         goto bits_error;
 
       {
@@ -1697,7 +1679,7 @@ bits_error:
     }
 
     if (0 == stop && 0 == xstrncasecmp (argv [j], "--limit=", 8)) {
-      if (0 == parse_limit (argv [j] + 8, & lim_bits)) {
+      if (0 == cb_parse (& lim_bits, argv [j] + 8)) {
         (void)fprintf (stderr,
           "FATAL: --limit must be a positive integer.\n");
         return EXIT_FAILURE;
