@@ -221,8 +221,7 @@ independently.
    ```sh
    sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
        -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
-       -e 's|^#define ANSI_COMPILER$||' crc.c | \
-     { out=$(cat) || exit 1; : > crckcc.c && printf '%s\n' "$out" > crckcc.c; }
+       -e 's|^#define ANSI_COMPILER$||' crc.c > crckcc.c
    ```
 
 2. You should ensure that the transformed source code file (`crckcc.c`) is
