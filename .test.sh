@@ -5,6 +5,15 @@
 # vim: set ft=sh ts=2 sw=2 tw=0 ai expandtab cc=80 :
 # shellcheck disable=SC2129
 
+if [ -n "${ZSH_VERSION-}" ]; then
+  emulate sh
+  setopt sh_word_split
+fi
+
+test -d "/usr/pkg/gnu/bin" && {
+  export PATH="${PATH:-}:/usr/pkg/gnu/bin"
+}
+
 set -eu
 
 PROG="./crc_test"

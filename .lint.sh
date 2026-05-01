@@ -7,6 +7,11 @@ if [ -n "${ZSH_VERSION-}" ]; then
   emulate sh
   setopt sh_word_split
 fi
+
+test -d "/usr/pkg/gnu/bin" && {
+  export PATH="${PATH:-}:/usr/pkg/gnu/bin"
+}
+
 set -eux
 :
 :
