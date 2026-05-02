@@ -366,7 +366,7 @@ cb_printf (fp, c)
     i--;
 
   for (; 0 <= i; i--) {
-    int ch = hexdigits [c -> d [i]];
+    const int ch = hexdigits [c -> d [i]];
 
     if ((FILE *)0 != fp)
       (void)fputc (ch, fp);
@@ -425,7 +425,7 @@ cb_parse (c, s)
       int j;
 
       for (j = 0; MAX_CB_DIGITS > j; j++) {
-        unsigned int val = (unsigned int)c -> d [j] * 10 + carry;
+        const unsigned int val = (unsigned int)c -> d [j] * 10 + carry;
         unsigned int q = 0;
         unsigned int r = val;
 
@@ -1046,7 +1046,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 {
   unsigned char rbuf [BUFSIZ];
   unsigned char oct;
-  int ch, c;
+  int ch;
   crc_t tmp;
   crc_t crc  = 0;
   crc_t buf  = 0;
@@ -1090,7 +1090,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         nread = 0;
 
         while ((long)sizeof (rbuf) > nread) {
-          c = fgetc (fp);
+          const int c = fgetc (fp);
 
           if (EOF == c)
             break;
@@ -1288,7 +1288,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       nread = 0;
 
       while ((long)sizeof (rbuf) > nread) {
-        int c = fgetc (fp);
+        const int c = fgetc (fp);
 
         if (EOF == c)
           break;
