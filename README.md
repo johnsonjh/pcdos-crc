@@ -127,7 +127,8 @@ bit-by-bit "fallback" mode. In this mode:
 
 The `crc.c` source code should build easily anywhere with no changes needed:
 
-* Build using `make` (`CC`, `CFLAGS`, and `LDFLAGS` variables are respected):
+* Build using `make` (the `CC`, `CFLAGS`, and `LDFLAGS` variables
+  are respected):
   ```
   make
   ```
