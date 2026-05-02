@@ -7,10 +7,12 @@
 CC=`command -v cc 2> /dev/null || command -v gcc 2> /dev/null || \
 	command -v clang 2> /dev/null || echo cc`
 
+all: crc
+
 crc: crc.c
-	@echo \
-	$(CC) $${CFLAGS:--O2} $${LDFLAGS:-} -o $@ crc.c || :
-	@$(CC) $${CFLAGS:--O2} $${LDFLAGS:-} -o $@ crc.c
+	@eval echo \
+	$${CC-$(CC)} $${CFLAGS--O2} $${LDFLAGS-} -o $@ crc.c || :
+	@eval $${CC-$(CC)} $${CFLAGS--O2} $${LDFLAGS-} -o $@ crc.c
 
 clean:
 	rm -f crc
