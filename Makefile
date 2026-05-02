@@ -4,8 +4,13 @@
 # scspell-id: 9d10afe6-4583-11f1-bfc5-80ee73e9b8e7
 # vim: set ft=make ts=8 ai noexpandtab list listchars=tab\:\>\- cc=80 :
 
+CC=`command -v cc 2> /dev/null || command -v gcc 2> /dev/null || \
+	command -v clang 2> /dev/null || echo cc`
+
 crc: crc.c
-	$${CC:-cc} $${CFLAGS:--O} $${LDFLAGS:-} -o crc crc.c
+	@echo \
+	$(CC) $${CFLAGS:--O2} $${LDFLAGS:-} -o $@ crc.c || :
+	@$(CC) $${CFLAGS:--O2} $${LDFLAGS:-} -o $@ crc.c
 
 clean:
 	rm -f crc
@@ -15,9 +20,10 @@ distclean: clean
 	command -v git > /dev/null 2>&1 && git clean -ndx 2> /dev/null || :
 
 test: .test.sh
-	sh .test.sh
+	@sh .test.sh
 
 lint: .lint.sh
-	sh .lint.sh
+	@sh .lint.sh
 
 .PHONY: clean distclean test lint
+.NOTPARALLEL:
