@@ -95,7 +95,7 @@ The behavior of these options depends on the CRC processing mode:
 
 #### 8-bit mode (default)
 
-When processing 8-bit characters on a system with a native 8-bit character
+When processing 8-bit characters on a system with an 8-bit native character
 size, the `--pad` option affects behavior in two ways:
 
 1. **Synthesizing data**: If the specified `--limit` exceeds the file size,
