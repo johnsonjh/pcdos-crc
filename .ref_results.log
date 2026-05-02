@@ -9,10 +9,10 @@ ARGS:
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads as N-bit packed bitstream
+  --bits=N         Reads N bits per character (or 'auto')
   --pad            Pads trailing bits with zeros
   --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (prints reproduction flags)
+  --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
 
 EXIT: 1
@@ -24,10 +24,10 @@ ARGS: ./.test_data.bin --help
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads as N-bit packed bitstream
+  --bits=N         Reads N bits per character (or 'auto')
   --pad            Pads trailing bits with zeros
   --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (prints reproduction flags)
+  --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
 
 EXIT: 0
@@ -39,10 +39,10 @@ ARGS: ./.test_data.bin -h
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads as N-bit packed bitstream
+  --bits=N         Reads N bits per character (or 'auto')
   --pad            Pads trailing bits with zeros
   --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (prints reproduction flags)
+  --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
 
 EXIT: 0
@@ -52,7 +52,7 @@ EXIT: 0
 TEST: Invalid bits (0)
 ARGS: ./.test_data.bin --bits=0
 
-FATAL: --bits must be a positive integer between 1 and 64.
+FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
 
 EXIT: 1
 
@@ -61,7 +61,7 @@ EXIT: 1
 TEST: Invalid bits (-1)
 ARGS: ./.test_data.bin --bits=-1
 
-FATAL: --bits must be a positive integer between 1 and 64.
+FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
 
 EXIT: 1
 
@@ -70,7 +70,7 @@ EXIT: 1
 TEST: Invalid bits (a)
 ARGS: ./.test_data.bin --bits=a
 
-FATAL: --bits must be a positive integer between 1 and 64.
+FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
 
 EXIT: 1
 
@@ -79,7 +79,7 @@ EXIT: 1
 TEST: Invalid bits (65)
 ARGS: ./.test_data.bin --bits=65
 
-FATAL: --bits must be a positive integer between 1 and 64.
+FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
 
 EXIT: 1
 
@@ -267,6 +267,8 @@ EXIT: 0
 TEST: Fallback: bits=9
 ARGS: ./.test_data.bin --bits=9
 
+WARNING: Specified --bits=9 is greater than host 8-bit character size.
+         Each 8-bit character read will be zero-filled to reach 9 bits.
 WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=34F08A0A
@@ -278,6 +280,8 @@ EXIT: 0
 TEST: Fallback: bits=9, pad
 ARGS: ./.test_data.bin --bits=9 --pad
 
+WARNING: Specified --bits=9 is greater than host 8-bit character size.
+         Each 8-bit character read will be zero-filled to reach 9 bits.
 ./.test_data.bin		CRC=FC10756C
 
 EXIT: 0
@@ -287,6 +291,8 @@ EXIT: 0
 TEST: Fallback: bits=13, limit=20, pad
 ARGS: ./.test_data.bin --bits=13 --limit=20 --pad
 
+WARNING: Specified --bits=13 is greater than host 8-bit character size.
+         Each 8-bit character read will be zero-filled to reach 13 bits.
 ./.test_data.bin		CRC=5F341E8E
 
 EXIT: 0
@@ -346,7 +352,7 @@ EXIT: 1
 TEST: Verbose: Standard
 ARGS: ./.test_data.bin -v
 
-./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+./.test_data.bin		CRC=8908927E	# 24 bits (3 8-bit characters)
 
 EXIT: 0
 
@@ -355,7 +361,7 @@ EXIT: 0
 TEST: Verbose: Alias (--verbose)
 ARGS: ./.test_data.bin --verbose
 
-./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+./.test_data.bin		CRC=8908927E	# 24 bits (3 8-bit characters)
 
 EXIT: 0
 
@@ -366,7 +372,7 @@ ARGS: ./.test_data.bin --bits=7 -v
 
 WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
-./.test_data.bin		CRC=D50157AC	# --limit=21 --bits=7
+./.test_data.bin		CRC=D50157AC	# 21 bits (3 7-bit characters)
 
 EXIT: 0
 
@@ -375,7 +381,7 @@ EXIT: 0
 TEST: Verbose: With limit (12) and pad
 ARGS: ./.test_data.bin --limit=12 --pad -v
 
-./.test_data.bin		CRC=FDEC49D6	# --limit=12 --bits=8 --pad
+./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters) [padded]
 
 EXIT: 0
 
@@ -384,8 +390,110 @@ EXIT: 0
 TEST: Verbose: Multiple files
 ARGS: ./.test_data.bin ./.test_data.bin -v
 
-./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
-./.test_data.bin		CRC=8908927E	# --limit=24 --bits=8
+./.test_data.bin		CRC=8908927E	# 24 bits (3 8-bit characters)
+./.test_data.bin		CRC=8908927E	# 24 bits (3 8-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: 8-bit (high bit set)
+ARGS: ./.test_data.bin --bits=auto
+
+./.test_data.bin		CRC=8908927E
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: 7-bit (Hello)
+ARGS: ./.test_seven.txt --bits=auto
+
+WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+         Use --pad to zero-fill remaining bits.
+./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: 7-bit, limit=14 (2 chars)
+ARGS: ./.test_seven.txt --bits=auto --limit=14
+
+WARNING: File ended with 6 dangling bits (not a full 8-bit octet).
+         Use --pad to zero-fill remaining bits.
+./.test_seven.txt		CRC=7C0D138E	# 14 bits (2 7-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: 7-bit, limit=10 (mid-char), no pad
+ARGS: ./.test_seven.txt --bits=auto --limit=10
+
+WARNING: --limit ended mid 8-bit octet; use --pad if needed.
+WARNING: File ended with 7 dangling bits (not a full 8-bit octet).
+         Use --pad to zero-fill remaining bits.
+./.test_seven.txt		CRC=00000000	# 7 bits (1 7-bit character)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: 7-bit, limit=10 (mid-char), pad
+ARGS: ./.test_seven.txt --bits=auto --limit=10 --pad
+
+./.test_seven.txt		CRC=4C5D0240	# 10 bits (2 7-bit characters) [padded]
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Zero file
+ARGS: ./.test_zero.bin --bits=auto
+
+./.test_zero.bin		CRC=00000000	# 24 bits (3 8-bit characters - empty)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Empty file
+ARGS: /dev/null --bits=auto
+
+/dev/null		CRC=00000000	# 0 bits (0 8-bit characters - empty)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Mixed files (7-bit and 8-bit)
+ARGS: ./.test_seven.txt ./.test_data.bin --bits=auto
+
+WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+         Use --pad to zero-fill remaining bits.
+./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
+./.test_data.bin		CRC=8908927E
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Override (Manual then Auto)
+ARGS: ./.test_seven.txt --bits=8 --bits=auto
+
+WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+         Use --pad to zero-fill remaining bits.
+./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Override (Auto then Manual)
+ARGS: ./.test_seven.txt --bits=auto --bits=8
+
+./.test_seven.txt		CRC=B1A1ACA0
 
 EXIT: 0
 

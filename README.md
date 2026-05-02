@@ -8,7 +8,11 @@
 
 - [Overview](#overview)
 - [Usage](#usage)
-  * [Interaction of `--limit` and `--pad`](#interaction-of---limit-and---pad)
+  * [Automatic bit-width detection](#automatic-bit-width-detection)
+  * [Verbose output](#verbose-output)
+  * [Cross-Platform Consistency and Bitstreams](#cross-platform-consistency-and-bitstreams)
+    + [Bit-for-bit transfers](#bit-for-bit-transfers)
+    + [Interaction of `--limit` and `--pad`](#interaction-of---limit-and---pad)
     + [8-bit mode (default)](#8-bit-mode-default)
     + [Fallback mode](#fallback-mode)
 - [Building](#building)
@@ -74,17 +78,81 @@ able to be built anywhere else with little to no porting effort required.
 ```
 Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads as N-bit packed bitstream
+  --bits=N         Reads as N bits per storage character (or 'auto')
   --pad            Pads trailing bits with zeros
   --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (prints reproduction flags)
+  --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
 ```
 
 * If multiple `--bits` or `--limit` options are provided, only the last value
   is effective.
 
-### Interaction of `--limit` and `--pad`
+* If the specified `--bits` value is larger than the host's native character
+  size, a warning is displayed at startup to indicate that each character
+  read from the file will be zero-filled to the requested size.
+
+### Automatic bit-width detection
+
+When using `--bits=auto`, the program performs two passes on each file:
+
+1.  **First pass**: Scans the file to determine the number of significant
+    bits actually used in the storage characters.
+2.  **Second pass**: Calculates the CRC using the detected bit-width.
+
+If a file contains only 7-bit ASCII data, `--bits=auto` will automatically
+process it using 7 bits per character, ensuring a consistent CRC regardless
+of whether the file is stored on an 8-bit or 9-bit system.
+
+If the detected bit-width differs from the host's native character size,
+verbose output is automatically enabled for that file.
+
+If all bits in a file are zero (including empty files), the program defaults
+to the host's native character width and appends `(empty)` to the verbose
+output.
+
+### Verbose output
+
+When using the `--verbose` or `-v` flag, the program appends detailed
+processing information to the output after a `#` character:
+
+```
+DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
+```
+
+This information shows:
+1. The total number of bits processed.
+2. The total number of storage characters read from the file.
+3. The number of bits extracted from each storage character.
+
+### Cross-Platform Consistency and Bitstreams
+
+This program calculates CRCs based on a continuous bitstream.  To ensure the
+same CRC value is obtained for the same data across different platforms, you
+must understand how the bitstream is constructed from the host's storage
+characters.
+
+The `--bits=N` option specifies how many bits to extract from each "storage
+character" (the native byte or word size of the C compiler on that system).
+
+#### Bit-for-bit transfers
+
+If a file is transferred bit-for-bit between systems with different native
+character sizes, the CRC will match if you use the native character size of
+the *current* host.
+
+For example, consider a 72-bit file:
+* On an **8-bit** system (like PC or Linux), the file has **9 characters**.
+  The bitstream is correct when using the default `--bits=8`.
+* On a **9-bit** system (like Multics), the same 72 bits occupy **8
+  characters**. The bitstream is correct when using `--bits=9`.
+
+Using `--bits=9` on an 8-bit system for this file would be incorrect, as it
+would attempt to pull 9 bits from each 8-bit character (effectively injecting
+a zero bit for every byte read) resulting in an 81-bit stream and a different
+CRC.
+
+#### Interaction of `--limit` and `--pad`
 
 The behavior of these options depends on the CRC processing mode:
 
@@ -182,11 +250,7 @@ Most users won't need to do any of these things.
 
 Multics can be considered to run on an exotic platform, the Honeywell
 6000-series of 36-bit "large systems" mainframes.  This system uses 9 bits
-per character, where most systems use 8 bits per character.  Multics stores
-data in big-endian format, that is, "foreign" 8-bit data would be stored in
-the first most significant positions (starting at bit 1 and ending with
-bit 8) and the 9th or least most significant bit would remain unused in
-each character.
+per character, where most systems use 8 bits per character.
 
 When run on Multics or any other environment not using an 8-bit character
 size, some instructional text will be appended to the `--help` output:
@@ -196,19 +260,17 @@ NOTE: This system has a character size of 9-bits.
 Use '--bits=8' to process 8-bit input data on this system.
 ```
 
-For example, assume `DATA.DAT` is a file of 174,344 bits (21,793 8-bit octets)
-which produces a CRC of `0D03ABFA` on MS-DOS or UNIX systems.  On a Multics
-system, this file will be stored as 196,137 bits (21,793 9-bit nonets).
-The CRC on such a system will be calculated based on processing the file as a
-stream of bits, handing off octets (of 8‑bits each) to the CRC routines, which
-includes the unused 9th bit in each character.  Note that the `--bits` option
-works by packing the specified number of bits from each character into a
-continuous stream; changing the number of bits processed per character will
-therefore shift the bit-alignment of subsequent characters and result in a
-different CRC value, even if the discarded bits were zero.
-This means the CRC calculated will not match that of the DOS or UNIX system
-unless the `--bits=8` option is used to specify that only 8 bits per character
-should be considered.
+As explained in the **Cross-Platform Consistency and Bitstreams** section,
+the `--bits` option specifies how many bits to extract from each storage
+character.  On Multics, the native character size is 9 bits. If a file was
+transferred bit-for-bit from an 8-bit system, you should use `--bits=9` on
+Multics (or the default, if `--bits` is not specified) to pull all 9 bits
+from each storage nonet. Conversely, if you are processing 8-bit data that
+was stored "one byte per nonet" (leaving the 9th bit unused), you must use
+`--bits=8` to skip that unused bit.
+
+Note that changing the number of bits processed per character will shift the
+bit-alignment of subsequent characters and result in a different CRC value.
 
 As an additional hint, if the processing of a file ends with "dangling" bits
 (not a full character) then a warning message is displayed.

@@ -24,6 +24,8 @@ set -eu
 
 PROG="./crc_test"
 TEST_FILE="./.test_data.bin"
+ZERO_FILE="./.test_zero.bin"
+SEVEN_FILE="./.test_seven.txt"
 OUT_FILE="./.test_results.log"
 REF_FILE="./.ref_results.log"
 
@@ -32,6 +34,8 @@ cc -O3 crc.c -o crc_test
 rm -f "nonexistent" > /dev/null 2>&1 || :
 
 printf '\252\125\377' > "${TEST_FILE:?}"
+printf '\0\0\0' > "${ZERO_FILE:?}"
+printf 'Hello' > "${SEVEN_FILE:?}"
 
 if command -v stdbuf > /dev/null 2>&1; then
   STDBUF=stdbuf
@@ -195,8 +199,38 @@ run_test "Verbose: With limit (12) and pad" \
 run_test "Verbose: Multiple files" \
   "${TEST_FILE:?}" "${TEST_FILE:?}" -v
 
+run_test "Auto: 8-bit (high bit set)" \
+  "${TEST_FILE:?}" --bits=auto
+
+run_test "Auto: 7-bit (Hello)" \
+  "${SEVEN_FILE:?}" --bits=auto
+
+run_test "Auto: 7-bit, limit=14 (2 chars)" \
+  "${SEVEN_FILE:?}" --bits=auto --limit=14
+
+run_test "Auto: 7-bit, limit=10 (mid-char), no pad" \
+  "${SEVEN_FILE:?}" --bits=auto --limit=10
+
+run_test "Auto: 7-bit, limit=10 (mid-char), pad" \
+  "${SEVEN_FILE:?}" --bits=auto --limit=10 --pad
+
+run_test "Auto: Zero file" \
+  "${ZERO_FILE:?}" --bits=auto
+
+run_test "Auto: Empty file" \
+  /dev/null --bits=auto
+
+run_test "Auto: Mixed files (7-bit and 8-bit)" \
+  "${SEVEN_FILE:?}" "${TEST_FILE:?}" --bits=auto
+
+run_test "Auto: Override (Manual then Auto)" \
+  "${SEVEN_FILE:?}" --bits=8 --bits=auto
+
+run_test "Auto: Override (Auto then Manual)" \
+  "${SEVEN_FILE:?}" --bits=auto --bits=8
+
 rm -f ./nonexistent > /dev/null 2>&1 || :
-rm -f "${PROG:?}" "${TEST_FILE:?}"
+rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
 
 printf '%s\n' "# EOF" >> "${OUT_FILE:?}"
 

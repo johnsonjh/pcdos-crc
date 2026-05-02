@@ -33,6 +33,8 @@
 /TEST.DAT
 /.test_data.bin
 /.test_results.log
+/.test_seven.txt
 /test.txt
+/.test_zero.bin
 /*.tmp
 /*.TMP
