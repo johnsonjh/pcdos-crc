@@ -6,6 +6,7 @@
 /*.$$$
 /a.out
 /*.bak
+/compile_commands.events.json
 /compile_commands.json
 /core
 /core-*
@@ -18,6 +19,7 @@
 /crc.obj
 /crc_test
 /*.dsk
+/*.log
 /log.pvs
 /nonexistent
 /NOTES.TXT
@@ -32,3 +34,5 @@
 /.test_data.bin
 /.test_results.log
 /test.txt
+/*.tmp
+/*.TMP
