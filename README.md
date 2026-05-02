@@ -135,7 +135,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 * Build using `cc` (or `c89`, `gcc`, `clang`, etc.):
   ```
-  cc -O2 -o crc crc.c
+  cc -O3 -o crc crc.c
   ```
 
 ### Porting tips
@@ -338,14 +338,14 @@ utilized, but might be supported in a future release.
 
 * To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
   ```sh
-  ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -melks -o crc crc.c
+  ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
   ```
 
 ### Building for MS-DOS
 
 * To build a binary for MS-DOS using IA16-GCC:
   ```sh
-  ia16-elf-gcc -march=i8086 -std=c89 -Os -mregparmcall -mcmodel=tiny -o crc.com crc.c
+  ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
 ## License
