@@ -29,7 +29,9 @@
 ## Overview
 
 This program computes the same 32‑bit CRC values as those produced by the
-IBM PC‑DOS `CRC.EXE` utility.
+IBM PC‑DOS
+[`CRC.EXE`](https://github.com/johnsonjh/pcdos-crc/raw/refs/heads/reference/CRC.EXE)
+utility.
 
 It was carefully constructed to be portable and correct on every platform
 with a C compiler, such as:
