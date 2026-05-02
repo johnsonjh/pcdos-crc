@@ -74,7 +74,7 @@ command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
 : Clang - ANSI
 : ::::::::::::
 command -v clang > /dev/null 2>&1 && {
-  CLANG_ANSI_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
+  CLANG_ANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Werror"
   # shellcheck disable=SC2086
   clang ${CLANG_ANSI_CFLAGS:?} crc.c
@@ -126,7 +126,7 @@ command -v gcc > /dev/null 2>&1 && {
 : Clang - non-ANSI
 : ::::::::::::::::
 command -v clang > /dev/null 2>&1 && {
-  CLANG_NOANSI_CFLAGS="-Weverything -Wno-unsafe-buffer-usage \
+  CLANG_NOANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Wno-deprecated-non-prototype \
    -Wno-strict-prototypes -Werror"
   # shellcheck disable=SC2086

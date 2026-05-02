@@ -27,7 +27,7 @@ TEST_FILE="./.test_data.bin"
 OUT_FILE="./.test_results.log"
 REF_FILE="./.ref_results.log"
 
-cc -O crc.c -o crc_test
+cc -O3 crc.c -o crc_test
 
 rm -f "nonexistent" > /dev/null 2>&1 || :
 
