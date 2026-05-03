@@ -253,6 +253,15 @@ run_test "Pad: Override (Manual then Auto)" \
 run_test "Pad: Override (Auto then Manual)" \
   "${SEVEN_FILE:?}" --bits=auto --pad=auto --pad
 
+run_test "Auto: Bits + Synthesis (Auto-Verbosity)" \
+  "${SEVEN_FILE:?}" --bits=auto --limit=40 --pad=auto
+
+run_test "Auto: Pad only (Auto-Verbosity)" \
+  "${SEVEN_FILE:?}" --pad=auto
+
+run_test "Auto: Exact match (No Auto-Verbosity)" \
+  "${ZERO_FILE:?}" --bits=8 --pad=auto
+
 rm -f ./nonexistent > /dev/null 2>&1 || :
 rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
 

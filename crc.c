@@ -1435,6 +1435,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             return (crc_t)0;
           }
 
+          if (0 == cb_add (processed_chars, (unsigned int)chunk)) {
+            error_msg ("Character counter overflow reading ", filename, 0);
+            return (crc_t)0;
+          }
+
           if (0 < chunk && 0 != g_pad_auto) {
             * actually_padded = 1;
           }
