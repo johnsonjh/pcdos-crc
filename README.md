@@ -61,7 +61,8 @@ The only current requirements are:
   as the 32‑bit CRC,
 * a character type with a width of at least 8 but no more than 32 bits, and
 * a minimal `stdio` implementation (only needing to support `fprintf` or
-  `printf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, and `clearerr`).
+  `printf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, `clearerr`, and
+  optionally `setbuf`).
 
 It has been tested on various exotic and retro platforms including
 **Multics**

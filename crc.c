@@ -141,7 +141,7 @@ typedef unsigned long crc_t;
 # define MAX_CB_DIGITS 9 /* ~119 MiB */
 #endif
 
-#ifdef __KCC__
+#ifdef __COMPILER_KCC__
 # define MAX_CB_DIGITS 9 /* ~119 MiB */
 #endif
 
@@ -1846,6 +1846,13 @@ main (argc, argv)
     ((char *)0 != argv [0] && '\0' != * argv [0]) ? argv [0] : "crc";
 
   cb_zero (& lim_bits);
+
+#ifndef __Z88DK
+# ifndef __COMPILER_KCC__
+  setbuf (stdout, NULL);
+  setbuf (stderr, NULL);
+# endif
+#endif
 
   if (16 > uib) {
     (void)fprintf (stderr,

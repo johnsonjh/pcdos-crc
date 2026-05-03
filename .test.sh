@@ -37,17 +37,6 @@ printf '\252\125\377' > "${TEST_FILE:?}"
 printf '\0\0\0' > "${ZERO_FILE:?}"
 printf 'Hello' > "${SEVEN_FILE:?}"
 
-if command -v stdbuf > /dev/null 2>&1; then
-  STDBUF=stdbuf
-else
-  STDBUF=
-fi
-
-STDBUF_FLAGS="-o L"
-test -n "${STDBUF:-}" || {
-  STDBUF_FLAGS=""
-}
-
 run_test()
 {
   label="${1:?}"
@@ -55,12 +44,7 @@ run_test()
   printf '%s\n' "TEST: ${label:?}" >> "${OUT_FILE:?}"
   printf '%s\n\n' "ARGS: $*" | sed 's/[[:space:]]*$//' >> "${OUT_FILE}"
   set +e
-  if [ -n "${STDBUF:-}" ]; then
-    # shellcheck disable=SC2086
-    "${STDBUF}" ${STDBUF_FLAGS} "${PROG:?}" "$@" >> "${OUT_FILE:?}" 2>&1
-  else
-    env "${PROG:?}" "$@" >> "${OUT_FILE:?}" 2>&1
-  fi
+  env "${PROG:?}" "$@" >> "${OUT_FILE:?}" 2>&1
   printf '\n%s\n' "EXIT: $?" >> "${OUT_FILE:?}"
   set -e
   printf '\n%s' "----------------------------------------" >> "${OUT_FILE:?}"
@@ -70,11 +54,6 @@ run_test()
 # /* REUSE-IgnoreStart */
 printf '%s' "" > "${OUT_FILE:?}"
 printf '%s\n' "# Test suite log" >> "${OUT_FILE:?}"
-
-test -n "${STDBUF:-}" || {
-  printf '%s\n' "# WARNING: NO STDBUF! RESULTS MAY BE WRONG!" \
-    >> "${OUT_FILE:?}"
-}
 
 printf '%s\n' \
   "# Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>" \
