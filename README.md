@@ -120,7 +120,7 @@ default to using the native character width of the host system and adds an
 `empty` note to the verbose output.
 
 This option is especially useful when combined with the `--pad=auto` option,
-and both options are enabled when the program is invoked with `--auto`.
+(and both options are enabled when the program is invoked with `--auto`).
 
 ### Automatic padding
 
