@@ -94,7 +94,7 @@
 # include <string.h>
 #else
 # ifdef FORCE_STRERROR
-extern char * strerror (errnum);
+extern char * strerror ();
 # endif
 #endif
 
@@ -666,6 +666,80 @@ psyserror (n)
 
 /******************************************************************************/
 
+#ifndef ANSI_COMPILER
+# ifndef FORCE_STRERROR
+#  ifndef USE_PSYSERROR
+#   ifndef USE_TRIM
+#    define NO_TRIM
+#   endif
+#  endif
+# endif
+#endif
+
+#ifndef NO_TRIM
+# define TRIM_BUFSIZE 256
+# define TRIM_RING 2
+
+static char *
+# ifdef ANSI_COMPILER
+trim_str (
+  const tchar * const s)
+# else
+trim_str (s)
+  const char * const s;
+# endif
+{
+  static char bufs [TRIM_RING] [TRIM_BUFSIZE];
+  static int idx = 0;
+
+  const char * p;
+  const char * q;
+  const char * last;
+
+  char * buf;
+  char * d;
+
+  buf = bufs [idx];
+  idx = (idx + 1) % TRIM_RING;
+
+  if (0 == s) {
+    buf [0] = '\0';
+    return buf;
+  }
+
+  p = s;
+
+  while (' ' == * p || '\t' == * p)
+    p++;
+
+  if ('\0' == * p) {
+    buf [0] = '\0';
+    return buf;
+  }
+
+  q = p;
+  last = p;
+
+  while ('\0' != * q) {
+    if (' ' != * q && '\t' != * q)
+      last = q;
+
+    q++;
+  }
+
+  d = buf;
+
+  while (p <= last && (d - buf) < (TRIM_BUFSIZE - 1))
+    * d++ = * p++;
+
+  * d = '\0';
+
+  return buf;
+}
+#endif
+
+/******************************************************************************/
+
 static void
 #ifdef ANSI_COMPILER
 error_msg (
@@ -688,13 +762,13 @@ error_msg (m, n, e)
   if (0 != e) {
     (void)fprintf (stderr, " (Error %d", e);
 #ifdef ANSI_COMPILER
-    (void)fprintf (stderr, ": %s", strerror (e));
+    (void)fprintf (stderr, ": %s", trim_str(strerror (e)));
 #else
 # ifdef FORCE_STRERROR
-    (void)fprintf (stderr, ": %s", strerror (e));
+    (void)fprintf (stderr, ": %s", trim_str(strerror (e)));
 # else
 #  ifdef USE_PSYSERROR
-    (void)fprintf (stderr, ": %s", psyserror (e));
+    (void)fprintf (stderr, ": %s", trim_str(psyserror (e)));
 #  endif
 # endif
 #endif
