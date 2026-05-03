@@ -516,7 +516,7 @@ EXIT: 0
 TEST: Pad: Auto (3 bytes - 24 bits, no pad needed)
 ARGS: ./.test_zero.bin --bits=8 --pad=auto -v
 
-./.test_zero.bin		CRC=00000000	# 24 bits (3 8-bit characters)
+./.test_zero.bin		CRC=00000000	# 24 bits (3 8-bit characters - empty)
 
 EXIT: 0
 
@@ -525,7 +525,7 @@ EXIT: 0
 TEST: Pad: Auto (limit exact, no pad needed)
 ARGS: ./.test_zero.bin --bits=8 --limit=16 --pad=auto -v
 
-./.test_zero.bin		CRC=00000000	# 16 bits (2 8-bit characters)
+./.test_zero.bin		CRC=00000000	# 16 bits (2 8-bit characters - empty)
 
 EXIT: 0
 
@@ -534,7 +534,7 @@ EXIT: 0
 TEST: Pad: Auto (limit mid-char, needs pad)
 ARGS: ./.test_zero.bin --bits=8 --limit=12 --pad=auto -v
 
-./.test_zero.bin		CRC=00000000	# 12 bits (2 8-bit characters - padded)
+./.test_zero.bin		CRC=00000000	# 12 bits (2 8-bit characters - empty - padded)
 
 EXIT: 0
 
@@ -543,7 +543,7 @@ EXIT: 0
 TEST: Pad: Auto (Synthesis, needs pad)
 ARGS: ./.test_zero.bin --bits=8 --limit=32 --pad=auto -v
 
-./.test_zero.bin		CRC=00000000	# 32 bits (3 8-bit characters - padded)
+./.test_zero.bin		CRC=00000000	# 32 bits (3 8-bit characters - empty - padded)
 
 EXIT: 0
 

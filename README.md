@@ -9,6 +9,7 @@
 - [Overview](#overview)
 - [Usage](#usage)
   * [Automatic bit-width detection](#automatic-bit-width-detection)
+  * [Automatic padding](#automatic-padding)
   * [Verbose output](#verbose-output)
   * [Cross-Platform Consistency and Bitstreams](#cross-platform-consistency-and-bitstreams)
     + [Bit-for-bit transfers](#bit-for-bit-transfers)

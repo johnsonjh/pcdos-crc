@@ -1519,9 +1519,10 @@ find_max_bits (filename, is_all_zeros)
   * is_all_zeros = 1;
 
   fp = fopen (filename, "rb");
-  if ((FILE *)0 == fp) {
-    /* error handled in process_file */
-    return 0;
+
+  /* cppcheck-suppress knownConditionTrueFalse */
+  if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
+    return 0; /* Errors handled via process_file */
   }
 
   while (EOF != (ch = fgetc (fp))) {
@@ -1537,7 +1538,8 @@ find_max_bits (filename, is_all_zeros)
   * is_all_zeros = 0;
 
   for (bits = 32; bits > 0; bits--) {
-    if (0 != (aggregate & ((crc_t)1 << (bits - 1)))) {
+    const crc_t bit_mask = (crc_t)1 << (bits - 1);
+    if (0 != (aggregate & bit_mask)) {
       return bits;
     }
   }
@@ -1584,28 +1586,32 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   counter_t processed_bits;
   counter_t processed_chars;
 
-  if (0 != g_bits_auto) {
-    int max_bits = find_max_bits (filename, & is_all_zeros);
-
-    if (0 != is_all_zeros) {
-      local_use_cb = cb;
-    } else {
-      local_use_cb = max_bits;
-    }
-
-    if (local_use_cb != cb || 0 != is_all_zeros) {
-      auto_v = 1;
-    }
-
-    local_inmask = ((crc_t)1 << local_use_cb) - (crc_t)1;
-  }
-
   cb_zero (& processed_bits);
   cb_zero (& processed_chars);
   g_fileerr = 0;
+
+  {
+    const int max_bits = find_max_bits (filename, & is_all_zeros);
+
+    if (0 != g_bits_auto) {
+      if (0 != is_all_zeros) {
+        local_use_cb = cb;
+      } else {
+        local_use_cb = max_bits;
+      }
+
+      if (local_use_cb != cb || 0 != is_all_zeros) {
+        auto_v = 1;
+      }
+
+      local_inmask = ((crc_t)1 << local_use_cb) - (crc_t)1;
+    }
+  }
+
   fp = fopen (filename, "rb");
 
-  if (NULL == fp) {
+  /* cppcheck-suppress knownConditionTrueFalse */
+  if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
     error_msg ("Error opening ", filename, errno);
     return;
   }
@@ -1624,7 +1630,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   }
 
   for (i = 0; 8 > i; i++) {
-    buf [(long)(7 - i)] = hexdigits [(int)(v & 0xF)];
+    const int ch = hexdigits [(int)(v & 0xF)];
+    buf [(long)(7 - i)] = (char)ch;
     v >>= 4;
   }
 
@@ -1632,7 +1639,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   (void)fprintf (stdout, "%s\t\tCRC=%s", filename, buf);
 
-  if (0 != g_verbose || 0 != auto_v || (0 != actually_padded && 0 != g_pad_auto)) {
+  if (0 != g_verbose || 0 != auto_v ||
+    (0 != actually_padded && 0 != g_pad_auto)) {
     (void)fprintf (stdout, "\t# ");
     cb_printf (stdout, & processed_bits);
     (void)fprintf (stdout, " bits (");
@@ -1869,6 +1877,7 @@ bits_error:
       cb, use_cb);
   }
 
+  /* cppcheck-suppress knownConditionTrueFalse */
   if ((1 > use_cb) || ((ub - 8) < use_cb)) { /* //-V560 */
     (void)fprintf (stderr,
       "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n",
