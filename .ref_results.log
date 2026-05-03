@@ -543,7 +543,7 @@ EXIT: 0
 TEST: Pad: Auto (Synthesis, needs pad)
 ARGS: ./.test_zero.bin --bits=8 --limit=32 --pad=auto -v
 
-./.test_zero.bin		CRC=00000000	# 32 bits (3 8-bit characters - empty - padded)
+./.test_zero.bin		CRC=00000000	# 32 bits (4 8-bit characters - empty - padded)
 
 EXIT: 0
 
@@ -572,6 +572,33 @@ TEST: Pad: Override (Auto then Manual)
 ARGS: ./.test_seven.txt --bits=auto --pad=auto --pad
 
 ./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Bits + Synthesis (Auto-Verbosity)
+ARGS: ./.test_seven.txt --bits=auto --limit=40 --pad=auto
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Pad only (Auto-Verbosity)
+ARGS: ./.test_seven.txt --pad=auto
+
+./.test_seven.txt		CRC=B1A1ACA0
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Exact match (No Auto-Verbosity)
+ARGS: ./.test_zero.bin --bits=8 --pad=auto
+
+./.test_zero.bin		CRC=00000000
 
 EXIT: 0
 
