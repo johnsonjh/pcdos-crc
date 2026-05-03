@@ -386,7 +386,7 @@ EXIT: 0
 TEST: Verbose: With limit (12) and pad
 ARGS: ./.test_data.bin --limit=12 --pad -v
 
-./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters)
+./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters - padded)
 
 EXIT: 0
 
@@ -448,7 +448,7 @@ EXIT: 0
 TEST: Auto: 7-bit, limit=10 (mid-char), pad
 ARGS: ./.test_seven.txt --bits=auto --limit=10 --pad
 
-./.test_seven.txt		CRC=4C5D0240	# 10 bits (2 7-bit characters)
+./.test_seven.txt		CRC=4C5D0240	# 10 bits (2 7-bit characters - padded)
 
 EXIT: 0
 
@@ -499,6 +499,15 @@ TEST: Auto: Override (Auto then Manual)
 ARGS: ./.test_seven.txt --bits=auto --bits=8
 
 ./.test_seven.txt		CRC=B1A1ACA0
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Explicit (Hello - 35 bits, needs pad)
+ARGS: ./.test_seven.txt --bits=auto --pad -v
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
 
 EXIT: 0
 
@@ -571,7 +580,7 @@ EXIT: 0
 TEST: Pad: Override (Auto then Manual)
 ARGS: ./.test_seven.txt --bits=auto --pad=auto --pad
 
-./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters)
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
 
 EXIT: 0
 

@@ -370,7 +370,8 @@ cb_printf (fp, c)
   for (; 0 <= i; i--) {
     const int ch = hexdigits [c -> d [i]];
 
-    if ((FILE *)0 != fp)
+    /* cppcheck-suppress knownConditionTrueFalse */
+    if (NULL != fp || (FILE *)0 != fp) /* //-V560 */
       (void)fputc (ch, fp);
     else
       (void)printf ("%c", ch);
@@ -378,9 +379,9 @@ cb_printf (fp, c)
     started = 1;
   }
 
-  if (0 == started)
-  {
-    if ((FILE *)0 != fp)
+  if (0 == started) {
+    /* cppcheck-suppress knownConditionTrueFalse */
+    if (NULL != fp || (FILE *)0 != fp) /* //-V560 */
       (void)fputc ('0', fp);
     else
       (void)printf ("0");
@@ -1077,14 +1078,13 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
           goto done;
         }
 
-        if (0 > cb_cmp (& rem_bits, & uc_cb)) {
+        if (0 > cb_cmp (& rem_bits, & uc_cb))
           if (0 == pad && 0 == g_pad_auto) {
             (void)fprintf (stderr,
               "WARNING: --limit ended mid 8-bit octet; use --pad if needed.\n");
             cb_zero (& rem_bits);
             goto done;
           }
-        }
       }
 
       if (nread <= pos) {
@@ -1191,9 +1191,7 @@ done:
       if (0 != pad || 0 != g_pad_auto) {
         oct = (unsigned char)(buf & (crc_t)0xFF);
         crc = crc_update_byte (crc, tbl, mask32, oct);
-        if (0 != g_pad_auto) {
-          * actually_padded = 1;
-        }
+        * actually_padded = 1;
       } else {
         (void)fprintf (stderr,
           "WARNING: File ended with %d dangling bit%s ",
@@ -1231,16 +1229,13 @@ done:
         (void)fprintf (stderr, " was requested.\n");
         hinted = 1;
       } else {
-        if (0 != g_pad_auto) {
-          * actually_padded = 1;
-        }
+        * actually_padded = 1;
       }
     }
 
-    if (0 != hinted && 0 == pad && 0 == g_pad_auto) {
+    if (0 != hinted && 0 == pad && 0 == g_pad_auto)
       (void)fprintf (stderr,
         "         Use --pad to zero-fill remaining bits.\n");
-    }
   }
 
   return crc;
@@ -1282,7 +1277,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   int * const actually_padded;
 #endif
 {
-  if ((FILE *)0 == fp) {
+  /* cppcheck-suppress knownConditionTrueFalse */
+  if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
     (void)fprintf (stderr,
       "FATAL: compute_crc called with NULL file pointer.\n");
     exit (EXIT_FAILURE);
@@ -1385,11 +1381,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           }
 
           crc = crc_update_byte (crc, tbl, mask32, final_byte);
-
-          if (0 != g_pad_auto) {
-            * actually_padded = 1;
-          }
-
+          * actually_padded = 1;
           cb_zero (& rem_bits);
         } else {
           (void)fprintf (stderr, "WARNING: Input --limit caused truncation");
@@ -1401,10 +1393,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         break;
       }
 
-      if (0 != cb_is_zero (lim_bits) || 0 != cb_is_zero (& rem_bits)) {
+      if (0 != cb_is_zero (lim_bits) || 0 != cb_is_zero (& rem_bits))
         if (0 == cb_is_zero (lim_bits))
           break;
-      }
     }
 
     clearerr (fp);
@@ -1440,7 +1431,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             return (crc_t)0;
           }
 
-          if (0 < chunk && 0 != g_pad_auto) {
+          if (0 < chunk) {
             * actually_padded = 1;
           }
 
@@ -1448,9 +1439,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         }
 
         if (0 == cb_is_zero (& rem_bits)) {
-          if (0 != g_pad_auto) {
-             * actually_padded = 1;
-          } else {
+          * actually_padded = 1;
+
+          if (0 == g_pad_auto) {
             (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
             (void)fprintf (stderr, "trailing ");
             cb_printf (stderr, & rem_bits);
@@ -1637,7 +1628,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   (void)fprintf (stdout, "%s\t\tCRC=%s", filename, buf);
 
   if (0 != g_verbose || 0 != auto_v ||
-    (0 != actually_padded && 0 != g_pad_auto)) {
+     (0 != actually_padded && 0 != g_pad_auto)) {
     (void)fprintf (stdout, "\t# ");
     cb_printf (stdout, & processed_bits);
     (void)fprintf (stdout, " bits (");

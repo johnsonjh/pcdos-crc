@@ -229,6 +229,9 @@ run_test "Auto: Override (Manual then Auto)" \
 run_test "Auto: Override (Auto then Manual)" \
   "${SEVEN_FILE:?}" --bits=auto --bits=8
 
+run_test "Pad: Explicit (Hello - 35 bits, needs pad)" \
+  "${SEVEN_FILE:?}" --bits=auto --pad -v
+
 run_test "Pad: Auto (Hello - 35 bits, needs pad)" \
   "${SEVEN_FILE:?}" --bits=auto --pad=auto
 
