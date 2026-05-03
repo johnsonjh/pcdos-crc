@@ -88,71 +88,73 @@ Options:
   --help, -h       Shows this help and usage text
 ```
 
-* If multiple `--bits`, `--pad`, or `--limit` options are provided, only the last
-  value is effective.
+* If multiple `--bits`, `--pad`, or `--limit` options are provided, only the
+  last value is effective.
 
-* If the specified `--bits` value is larger than the host's native character
-  size, a warning is displayed at startup to indicate that each character
-  read from the file will be zero-filled to the requested size.
+* If the specified `--bits` value is larger than the native character size a
+  warning is displayed at startup to indicate that each character read from
+  the file will be zero-filled to the requested size.
 
 ### Automatic bit-width detection
 
 When using `--bits=auto`, the program performs two passes on each file:
 
-1.  **First pass**: Scans the file to determine the number of significant
+1.  The first pass will scan the file to determine the number of significant
     bits actually used in the storage characters.
-2.  **Second pass**: Calculates the CRC using the detected bit-width.
 
-If a file contains only 7-bit ASCII data, `--bits=auto` will automatically
+2.  The second pass actually calculates the CRC (using the detected bit-width).
+
+If a file contains **only** 7-bit ASCII data, `--bits=auto` will automatically
 process it using 7 bits per character, ensuring a consistent CRC regardless
-of whether the file is stored on an 8-bit or 9-bit system.
+of whether the file is stored on system with a wider native character size,
+like a mainframe running Multics (which stores text in 9-bit "bytes").
 
-If the detected bit-width differs from the host's native character size,
-verbose output is automatically enabled for that file.
+If the detected bit-width differs from the host's native character size, the
+verbose output option is automatically enabled for that file.
 
-If all bits in a file are zero (including empty files), the program defaults
-to the host's native character width and appends `(empty)` to the verbose
-output.
+If all bits in a file are zero (including empty files), the program will
+default to using the native character width of the host system and adds an
+`empty` note to the verbose output.
+
+This option is usually most useful when combined with the `--pad=auto` option.
 
 ### Automatic padding
 
 When using `--pad=auto`, the program automatically applies zero-padding to the
 bitstream in the following scenarios:
 
-1.  **Dangling bits**: If the file ends mid-character (e.g., a file with 11
+1.  **Dangling bits**: If the file ends mid-character (*e.g.*, a file with 11
     bits when reading 8 bits per character), the final partial character is
     zero-padded.
+
 2.  **Truncated limits**: If an input `--limit` is reached mid-character,
     the program pads the remaining bits of that character.
+
 3.  **Synthesis**: If the specified `--limit` exceeds the file size, the
     program zero-fills the stream to the limit.
 
-If automatic padding is applied, the program automatically enables verbose
-output for that file and appends `( - padded)` to the processing details.
+If automatic padding is applied the program automatically enables the verbose
+output option for that file and adds a `padded` note to the details.
 
 ### Verbose output
 
-When using the `--verbose` or `-v` flag, the program appends detailed
-processing information to the output after a `#` character:
+When using the `--verbose` (or `-v`) option, the program appends detailed
+processing information to the output (after a `#` character):
 
 ```
 DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
 ```
 
-This information shows:
-1. The total number of bits processed.
-2. The total number of storage characters read from the file.
-3. The number of bits extracted from each storage character.
-
 ### Cross-Platform Consistency and Bitstreams
 
-This program calculates CRCs based on a continuous bitstream.  To ensure the
+This program calculates a CRC based on a continuous bitstream.  To ensure the
 same CRC value is obtained for the same data across different platforms, you
 must understand how the bitstream is constructed from the host's storage
 characters.
 
 The `--bits=N` option specifies how many bits to extract from each "storage
-character" (the native byte or word size of the C compiler on that system).
+character" (which is the native size of the "byte" or character type of the
+C compiler on that system).
 
 #### Bit-for-bit transfers
 
@@ -160,16 +162,17 @@ If a file is transferred bit-for-bit between systems with different native
 character sizes, the CRC will match if you use the native character size of
 the *current* host.
 
-For example, consider a 72-bit file:
-* On an **8-bit** system (like PC or Linux), the file has **9 characters**.
-  The bitstream is correct when using the default `--bits=8`.
-* On a **9-bit** system (like Multics), the same 72 bits occupy **8
-  characters**. The bitstream is correct when using `--bits=9`.
+For example, consider a file that contains 72-bits of data stored sequentially:
 
-Using `--bits=9` on an 8-bit system for this file would be incorrect, as it
-would attempt to pull 9 bits from each 8-bit character (effectively injecting
-a zero bit for every byte read) resulting in an 81-bit stream and a different
-CRC.
+* On an **8-bit** system (like modern machines), the file has **9 characters**.
+
+* On a **9-bit** system (like a Honeywell mainframe running Multics), the same
+  72 bits occupy **8 characters**.
+
+Using `--bits=9` on a system that uses 8-bit characters to process such a
+file stored locally results in pulling 9 bits from each native 8-bit character
+(thus injecting a zeroed 9th bit into every 8-bit byte read) resulting in an
+81-bit stream (and a different CRC).
 
 #### Interaction of `--limit` and `--pad`
 
@@ -199,7 +202,9 @@ size, the `--pad` option affects behavior in two ways:
 
 When using a non-8-bit character size via `--bits` **or when running on a
 system with a non-8-bit native character size**, the program operates in a
-bit-by-bit "fallback" mode. In this mode:
+bit-by-bit "fallback" mode.
+
+In this mode:
 
 * The `--limit` is effectively **rounded down** to the nearest multiple of
   the requested character processing size (`--bits`) unless the `--pad`
@@ -281,12 +286,12 @@ Use '--bits=8' to process 8-bit input data on this system.
 
 As explained in the **Cross-Platform Consistency and Bitstreams** section,
 the `--bits` option specifies how many bits to extract from each storage
-character.  On Multics, the native character size is 9 bits. If a file was
+character.  On Multics, the native character size is 9 bits.  If a file was
 transferred bit-for-bit from an 8-bit system, you should use `--bits=9` on
-Multics (or the default, if `--bits` is not specified) to pull all 9 bits
-from each storage nonet. Conversely, if you are processing 8-bit data that
-was stored "one byte per nonet" (leaving the 9th bit unused), you must use
-`--bits=8` to skip that unused bit.
+Multics (wnich is the default on Multics if `--bits` is not specified) to pull
+all 9 bits from each storage nonet.  Conversely, if you are processing 8-bit
+data that was stored "one byte per nonet" (leaving the 9th bit unused), you
+must use `--bits=8` to skip that unused bit.
 
 Note that changing the number of bits processed per character will shift the
 bit-alignment of subsequent characters and result in a different CRC value.
@@ -339,8 +344,9 @@ independently.
 The PDP-10 mainframe is a big-endian 36-bit word-addressed system.  Although
 TOPS-20 has various ways of encoding data, CRC uses the standard C I/O library
 provided by KCC, which treats characters as 9-bit nonets.  You'll need to
-specify an appropriate `--bits` argument to get matching calculations for
-most foreign data (depending on how it's stored) on the system.
+specify an appropriate `--bits` (or use `--bits=auto`) and `--pad` (or use
+`--pad=auto`) to get matching calculations for most foreign data (depending
+on how it's stored) on the system.
 
 ### Building for CP/M-80
 
@@ -385,27 +391,28 @@ utility can compress the generated CP/M executable, reducing its on‑disk size
 by approximately 50% and slightly lowering its memory usage, at the cost of a
 small increase in load time.
 
-If you need to verify CRCs on CP/M that were created on other systems, you
-should always constrain processing to the actual number of significant bits.
+**NB**: If you need to verify CRCs on CP/M that were created on other
+systems, you should always constrain processing to the actual number of
+significant bits.
 
-On CP/M-80 systems, files do not have exact sizes but are stored on disk in
+On CP/M-80 systems, files **do not have exact sizes** but are stored on disk in
 fixed-size records of 1024 bits (*i.e.,* 128 8-bit octets) each.  Files
 transferred from other systems that are not a multiple of the CP/M record size
-will be padded with undefined data to fill a complete record, and there is no
-universal EOF marker that can be used to find the true end of file.
+will be padded with **undefined** data to fill a complete record, and there is
+**no** universal EOF marker that can be used to find the true end of file.
 
 By default, the `CRC.COM` program will calculate the CRC for all records on
 disk associated with the file.  If you transferred the file from another type
-of system that does support exact lengths, you can specify the number of bits
-to process using the `--limit` flag.
+of system that does support exact lengths (which is likely), you can specify
+the number of bits to process using the `--limit` flag.
 
 For example, assume `DATA.DAT` is file of 174,344 bits (21,793 8-bit octets)
-which produces a CRC of `0D03ABFA` on MS-DOS or UNIX systems.  On a CP/M-80
+which produces a CRC of `0D03ABFA` on an MS-DOS or UNIX system.  On a CP/M-80
 system this file will utilize 171 records of storage.  Since 21,793 octets is
-not a multiple of 128, the CRC calculation will not match unless constrained
-to process only 174,344 bits (*i.e.*, `CRC --limit=174344 DATA.DAT`).  With
-no limit applied, all 175,104 bits (171 records × 128 octets × 8 bits) on
-disk would be processed.
+**not** a multiple of 128, the CRC calculation will not match unless
+constrained to process only 174,344 bits (*i.e.*,
+`CRC --limit=174344 DATA.DAT`).  With no limit applied, all 175,104 bits
+(171 records × 128 octets × 8 bits) of data on disk would be processed.
 
 CP/M-80 3.0 added a new filesystem metadata field: Last Record Byte Count (or
 LRBC).  Unfortunately, the LRBC is stored as a number between 0 and 255, with
