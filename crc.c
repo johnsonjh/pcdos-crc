@@ -683,7 +683,7 @@ psyserror (n)
 static char *
 # ifdef ANSI_COMPILER
 trim_str (
-  const tchar * const s)
+  const char * const s)
 # else
 trim_str (s)
   const char * const s;
@@ -692,8 +692,11 @@ trim_str (s)
   static char bufs [TRIM_RING] [TRIM_BUFSIZE];
   static int idx = 0;
 
+  /* cppcheck-suppress constStatement */
   const char * p;
+  /* cppcheck-suppress constStatement */
   const char * q;
+  /* cppcheck-suppress constStatement */
   const char * last;
 
   char * buf;
