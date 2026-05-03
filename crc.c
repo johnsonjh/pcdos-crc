@@ -157,11 +157,11 @@ typedef struct {
 
 /******************************************************************************/
 
-static int g_anyerr    = 0;
-static int g_fileerr   = 0;
-static int g_verbose   = 0;
+static int g_anyerr = 0;
+static int g_fileerr = 0;
+static int g_verbose = 0;
 static int g_bits_auto = 0;
-static int g_pad_auto  = 0;
+static int g_pad_auto = 0;
 
 /******************************************************************************/
 
@@ -628,7 +628,7 @@ psyserror (n)
       return p;
   }
 
-    q   = buf;
+  q = buf;
   * q++ = 'E';
   * q++ = 'r';
   * q++ = 'r';
@@ -640,7 +640,7 @@ psyserror (n)
 
   if (0 > n) {
     neg = 1;
-    u   = (unsigned int)(-(n + 1)) + 1;
+    u = (unsigned int)(-(n + 1)) + 1;
   } else
     u = (unsigned int)n;
 
@@ -703,7 +703,7 @@ error_msg (m, n, e)
 
   (void)fprintf (stderr, ".\n");
 
-  g_anyerr  = 1;
+  g_anyerr = 1;
   g_fileerr = 1;
 }
 
@@ -864,7 +864,7 @@ test_crc_table (tbl, mask32)
 {
   int i, j;
   const crc_t poly = tbl [1];
-  const crc_t msb  = (crc_t)0x80000000;
+  const crc_t msb = (crc_t)0x80000000;
 
   for (i = 0; 256 > i; i++) {
     crc_t c = (crc_t)i;
@@ -898,16 +898,16 @@ charbits (void)
 charbits ()
 #endif
 {
-  unsigned char c      = 1;
+  unsigned char c = 1;
   unsigned char last_c = 0;
-  int bits             = 0;
+  int bits = 0;
 
   while (c > last_c) {
     bits++;
 
     last_c = c;
-    c      = (unsigned char)(c << 1);
-    c     |= 1;
+    c = (unsigned char)(c << 1);
+    c |= 1;
   }
 
   return bits;
@@ -922,15 +922,15 @@ unsigned_int_bits (void)
 unsigned_int_bits ()
 #endif
 {
-  unsigned int u      = 1;
+  unsigned int u = 1;
   unsigned int last_u = 0;
-  int bits            = 0;
+  int bits = 0;
 
   while (u > last_u) {
     bits++;
 
     last_u = u;
-    u      = u * 2 + 1;
+    u = u * 2 + 1;
   }
 
   return bits;
@@ -945,9 +945,9 @@ crc_t_bits (void)
 crc_t_bits ()
 #endif
 {
-  crc_t v      = 1;
+  crc_t v = 1;
   crc_t last_v = 0;
-  int bits     = 0;
+  int bits = 0;
 
   while (v > last_v) {
     bits++;
@@ -1034,17 +1034,17 @@ crc_update_byte (crc, tbl, mask32, b)
 {
   crc_t idx, t;
 
-  t   = crc;
+  t = crc;
   t >>= 24;
 
-  idx  = t;
+  idx = t;
   idx ^= (crc_t)b;
   idx &= (crc_t)0xFF;
 
-  t   = crc;
+  t = crc;
   t <<= 8;
 
-  crc  = t;
+  crc = t;
   crc ^= tbl [idx];
   crc &= mask32;
 
@@ -1118,7 +1118,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   crc_t tmp;
   crc_t crc = 0;
   crc_t buf = 0;
-  int bib  = 0;
+  int bib = 0;
   long nread = 0;
   long pos = 0;
   unsigned int acc_bits = 0;
@@ -1184,7 +1184,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
       acc_chars++;
 
-      tmp  = (crc_t)(unsigned char)ch;
+      tmp = (crc_t)(unsigned char)ch;
 
       if (0 == cb_is_zero (lim_bits) && 0 == cb_is_zero (& rem_bits)) {
         counter_t uc_cb;
@@ -1840,8 +1840,8 @@ main (argc, argv)
   const char * filename = (char *)0;
   crc_t mask32 = 0;
   crc_t v;
-  const int cb  = charbits ();
-  const int ub  = crc_t_bits ();
+  const int cb = charbits ();
+  const int ub = crc_t_bits ();
   const int uib = unsigned_int_bits ();
   const unsigned int batch_limit = safe_batch_limit ();
   const char * const progname =
