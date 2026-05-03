@@ -229,6 +229,30 @@ run_test "Auto: Override (Manual then Auto)" \
 run_test "Auto: Override (Auto then Manual)" \
   "${SEVEN_FILE:?}" --bits=auto --bits=8
 
+run_test "Pad: Auto (Hello - 35 bits, needs pad)" \
+  "${SEVEN_FILE:?}" --bits=auto --pad=auto
+
+run_test "Pad: Auto (3 bytes - 24 bits, no pad needed)" \
+  "${ZERO_FILE:?}" --bits=8 --pad=auto -v
+
+run_test "Pad: Auto (limit exact, no pad needed)" \
+  "${ZERO_FILE:?}" --bits=8 --limit=16 --pad=auto -v
+
+run_test "Pad: Auto (limit mid-char, needs pad)" \
+  "${ZERO_FILE:?}" --bits=8 --limit=12 --pad=auto -v
+
+run_test "Pad: Auto (Synthesis, needs pad)" \
+  "${ZERO_FILE:?}" --bits=8 --limit=32 --pad=auto -v
+
+run_test "Pad: Mixed (needs pad then doesn't)" \
+  "${SEVEN_FILE:?}" "${ZERO_FILE:?}" --bits=auto --pad=auto
+
+run_test "Pad: Override (Manual then Auto)" \
+  "${SEVEN_FILE:?}" --bits=auto --pad --pad=auto
+
+run_test "Pad: Override (Auto then Manual)" \
+  "${SEVEN_FILE:?}" --bits=auto --pad=auto --pad
+
 rm -f ./nonexistent > /dev/null 2>&1 || :
 rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
 

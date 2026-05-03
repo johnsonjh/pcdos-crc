@@ -78,15 +78,17 @@ able to be built anywhere else with little to no porting effort required.
 ```
 Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads as N bits per storage character (or 'auto')
+  --bits=N         Reads as N bits per storage character
+  --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
+  --pad=auto       Automatically pads bits when necessary
   --limit=N        Stops processing after N bits
   --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
 ```
 
-* If multiple `--bits` or `--limit` options are provided, only the last value
-  is effective.
+* If multiple `--bits`, `--pad`, or `--limit` options are provided, only the last
+  value is effective.
 
 * If the specified `--bits` value is larger than the host's native character
   size, a warning is displayed at startup to indicate that each character
@@ -110,6 +112,22 @@ verbose output is automatically enabled for that file.
 If all bits in a file are zero (including empty files), the program defaults
 to the host's native character width and appends `(empty)` to the verbose
 output.
+
+### Automatic padding
+
+When using `--pad=auto`, the program automatically applies zero-padding to the
+bitstream in the following scenarios:
+
+1.  **Dangling bits**: If the file ends mid-character (e.g., a file with 11
+    bits when reading 8 bits per character), the final partial character is
+    zero-padded.
+2.  **Truncated limits**: If an input `--limit` is reached mid-character,
+    the program pads the remaining bits of that character.
+3.  **Synthesis**: If the specified `--limit` exceeds the file size, the
+    program zero-fills the stream to the limit.
+
+If automatic padding is applied, the program automatically enables verbose
+output for that file and appends `( - padded)` to the processing details.
 
 ### Verbose output
 

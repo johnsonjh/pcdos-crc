@@ -159,6 +159,7 @@ static int g_anyerr    = 0;
 static int g_fileerr   = 0;
 static int g_verbose   = 0;
 static int g_bits_auto = 0;
+static int g_pad_auto  = 0;
 
 /******************************************************************************/
 
@@ -1031,10 +1032,11 @@ compute_crc_fb (
   const int pad,
   const counter_t * const lim_bits,
   counter_t * const processed_bits,
-  counter_t * const processed_chars)
+  counter_t * const processed_chars,
+  int * const actually_padded)
 #else
 compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
-                processed_bits, processed_chars)
+                processed_bits, processed_chars, actually_padded)
   FILE * const fp;
   const char * const filename;
   const crc_t * const tbl;
@@ -1045,6 +1047,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   const counter_t * const lim_bits;
   counter_t * const processed_bits;
   counter_t * const processed_chars;
+  int * const actually_padded;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
@@ -1077,7 +1080,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         }
 
         if (0 > cb_cmp (& rem_bits, & uc_cb)) {
-          if (0 == pad) {
+          if (0 == pad && 0 == g_pad_auto) {
             (void)fprintf (stderr,
               "WARNING: --limit ended mid 8-bit octet; use --pad if needed.\n");
             cb_zero (& rem_bits);
@@ -1187,9 +1190,12 @@ done:
     int hinted = 0;
 
     if (0 < bib) {
-      if (0 != pad) {
+      if (0 != pad || 0 != g_pad_auto) {
         oct = (unsigned char)(buf & (crc_t)0xFF);
         crc = crc_update_byte (crc, tbl, mask32, oct);
+        if (0 != g_pad_auto) {
+          * actually_padded = 1;
+        }
       } else {
         (void)fprintf (stderr,
           "WARNING: File ended with %d dangling bit%s ",
@@ -1219,15 +1225,21 @@ done:
         }
       }
 
-      (void)fprintf (stderr, "WARNING: File ended after ");
-      cb_printf (stderr, & used_bits);
-      (void)fprintf (stderr, " bits, but --limit=");
-      cb_printf (stderr, lim_bits);
-      (void)fprintf (stderr, " was requested.\n");
-      hinted = 1;
+      if (0 == pad && 0 == g_pad_auto) {
+        (void)fprintf (stderr, "WARNING: File ended after ");
+        cb_printf (stderr, & used_bits);
+        (void)fprintf (stderr, " bits, but --limit=");
+        cb_printf (stderr, lim_bits);
+        (void)fprintf (stderr, " was requested.\n");
+        hinted = 1;
+      } else {
+        if (0 != g_pad_auto) {
+          * actually_padded = 1;
+        }
+      }
     }
 
-    if (0 != hinted && 0 == pad) {
+    if (0 != hinted && 0 == pad && 0 == g_pad_auto) {
       (void)fprintf (stderr,
         "         Use --pad to zero-fill remaining bits.\n");
     }
@@ -1252,10 +1264,11 @@ compute_crc (
   const int pad,
   const counter_t * const lim_bits,
   counter_t * const processed_bits,
-  counter_t * const processed_chars)
+  counter_t * const processed_chars,
+  int * const actually_padded)
 #else
 compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
-             lim_bits, processed_bits, processed_chars)
+             lim_bits, processed_bits, processed_chars, actually_padded)
   FILE * const fp;
   const char * const filename;
   const crc_t * const tbl;
@@ -1268,6 +1281,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   const counter_t * const lim_bits;
   counter_t * const processed_bits;
   counter_t * const processed_chars;
+  int * const actually_padded;
 #endif
 {
   if ((FILE *)0 == fp) {
@@ -1349,7 +1363,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       if (0 == cb_is_zero (lim_bits) &&
           0 == cb_is_zero (& rem_bits) &&
           nread > bytes_to_process) {
-        if (0 != pad) {
+        if (0 != pad || 0 != g_pad_auto) {
           unsigned char mask;
           unsigned char final_byte = rbuf [bytes_to_process];
           unsigned long rb_val = 0;
@@ -1374,6 +1388,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
           crc = crc_update_byte (crc, tbl, mask32, final_byte);
 
+          if (0 != g_pad_auto) {
+            * actually_padded = 1;
+          }
+
           cb_zero (& rem_bits);
         } else {
           (void)fprintf (stderr, "WARNING: Input --limit caused truncation");
@@ -1394,7 +1412,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
     clearerr (fp);
 
     if (0 == cb_is_zero (lim_bits) && 0 == cb_is_zero (& rem_bits)) {
-      if (0 != pad) {
+      if (0 != pad || 0 != g_pad_auto) {
         unsigned char zbuf [32];
         long k;
         counter_t eight;
@@ -1419,18 +1437,26 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             return (crc_t)0;
           }
 
+          if (0 < chunk && 0 != g_pad_auto) {
+            * actually_padded = 1;
+          }
+
           crc = crc_update_buffer (crc, tbl, mask32, zbuf, chunk);
         }
 
         if (0 == cb_is_zero (& rem_bits)) {
-          (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
-          (void)fprintf (stderr, "trailing ");
-          cb_printf (stderr, & rem_bits);
-          (void)fprintf (stderr, " bit%s ignored in 8-bit mode.\n",
-            (1 == rem_bits.d [0] && 0 == rem_bits.d [1]) ? "" : "s");
-          (void)fprintf (stderr, "         ");
-          (void)fprintf (stderr,
-            "Result calculated only up to the last full character.\n");
+          if (0 != g_pad_auto) {
+             * actually_padded = 1;
+          } else {
+            (void)fprintf (stderr, "WARNING: --limit not a multiple of 8; ");
+            (void)fprintf (stderr, "trailing ");
+            cb_printf (stderr, & rem_bits);
+            (void)fprintf (stderr, " bit%s ignored in 8-bit mode.\n",
+              (1 == rem_bits.d [0] && 0 == rem_bits.d [1]) ? "" : "s");
+            (void)fprintf (stderr, "         ");
+            (void)fprintf (stderr,
+              "Result calculated only up to the last full character.\n");
+          }
         }
       } else {
         counter_t used_bits;
@@ -1469,7 +1495,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
   return compute_crc_fb (fp,
     filename, tbl, use_cb, mask32, inmask, pad, lim_bits, processed_bits,
-    processed_chars);
+    processed_chars, actually_padded);
 }
 
 /******************************************************************************/
@@ -1553,6 +1579,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   int is_all_zeros = 0;
   int local_use_cb = use_cb;
   int auto_v = 0;
+  int actually_padded = 0;
   crc_t local_inmask = inmask;
   counter_t processed_bits;
   counter_t processed_chars;
@@ -1586,7 +1613,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   {
     const crc_t crcval = compute_crc (fp,
       filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, lim_bits,
-      & processed_bits, & processed_chars);
+      & processed_bits, & processed_chars, & actually_padded);
 
     (void)fclose (fp);
 
@@ -1605,7 +1632,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   (void)fprintf (stdout, "%s\t\tCRC=%s", filename, buf);
 
-  if (0 != g_verbose || 0 != auto_v) {
+  if (0 != g_verbose || 0 != auto_v || (0 != actually_padded && 0 != g_pad_auto)) {
     (void)fprintf (stdout, "\t# ");
     cb_printf (stdout, & processed_bits);
     (void)fprintf (stdout, " bits (");
@@ -1617,10 +1644,11 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
       (void)fprintf (stdout, " - empty");
     }
 
-    (void)fprintf (stdout, ")");
+    if (0 != actually_padded && (0 != pad || 0 != g_pad_auto)) {
+      (void)fprintf (stdout, " - padded");
+    }
 
-    if (0 != pad)
-      (void)fprintf (stdout, " [padded]");
+    (void)fprintf (stdout, ")");
   }
 
   (void)fprintf (stdout, "\n");
@@ -1644,9 +1672,13 @@ usage (progname, cb)
   (void)fprintf (stderr,
     "Options:\n");
   (void)fprintf (stderr,
-    "  --bits=N         Reads N bits per character (or 'auto')\n");
+    "  --bits=N         Reads as N bits per storage character\n");
+  (void)fprintf (stderr,
+    "  --bits=auto      Automatically determines significant bits\n");
   (void)fprintf (stderr,
     "  --pad            Pads trailing bits with zeros\n");
+  (void)fprintf (stderr,
+    "  --pad=auto       Automatically pads bits when necessary\n");
   (void)fprintf (stderr,
     "  --limit=N        Stops processing after N bits\n");
   (void)fprintf (stderr,
@@ -1777,6 +1809,13 @@ bits_error:
 
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--pad")) {
       pad = 1;
+      g_pad_auto = 0;
+      continue;
+    }
+
+    if (0 == stop && 0 == xstrcasecmp (argv [j], "--pad=auto")) {
+      g_pad_auto = 1;
+      pad = 0;
       continue;
     }
 

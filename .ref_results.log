@@ -9,8 +9,10 @@ ARGS:
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads N bits per character (or 'auto')
+  --bits=N         Reads as N bits per storage character
+  --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
+  --pad=auto       Automatically pads bits when necessary
   --limit=N        Stops processing after N bits
   --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
@@ -24,8 +26,10 @@ ARGS: ./.test_data.bin --help
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads N bits per character (or 'auto')
+  --bits=N         Reads as N bits per storage character
+  --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
+  --pad=auto       Automatically pads bits when necessary
   --limit=N        Stops processing after N bits
   --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
@@ -39,8 +43,10 @@ ARGS: ./.test_data.bin -h
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
-  --bits=N         Reads N bits per character (or 'auto')
+  --bits=N         Reads as N bits per storage character
+  --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
+  --pad=auto       Automatically pads bits when necessary
   --limit=N        Stops processing after N bits
   --verbose, -v    Verbose (show processing details)
   --help, -h       Shows this help and usage text
@@ -257,7 +263,6 @@ EXIT: 0
 TEST: Fallback: bits=7, limit=40 (exceeds), pad
 ARGS: ./.test_data.bin --bits=7 --limit=40 --pad
 
-WARNING: File ended after 21 bits, but --limit=40 was requested.
 ./.test_data.bin		CRC=DEA91832
 
 EXIT: 0
@@ -381,7 +386,7 @@ EXIT: 0
 TEST: Verbose: With limit (12) and pad
 ARGS: ./.test_data.bin --limit=12 --pad -v
 
-./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters) [padded]
+./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters)
 
 EXIT: 0
 
@@ -443,7 +448,7 @@ EXIT: 0
 TEST: Auto: 7-bit, limit=10 (mid-char), pad
 ARGS: ./.test_seven.txt --bits=auto --limit=10 --pad
 
-./.test_seven.txt		CRC=4C5D0240	# 10 bits (2 7-bit characters) [padded]
+./.test_seven.txt		CRC=4C5D0240	# 10 bits (2 7-bit characters)
 
 EXIT: 0
 
@@ -494,6 +499,79 @@ TEST: Auto: Override (Auto then Manual)
 ARGS: ./.test_seven.txt --bits=auto --bits=8
 
 ./.test_seven.txt		CRC=B1A1ACA0
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Auto (Hello - 35 bits, needs pad)
+ARGS: ./.test_seven.txt --bits=auto --pad=auto
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Auto (3 bytes - 24 bits, no pad needed)
+ARGS: ./.test_zero.bin --bits=8 --pad=auto -v
+
+./.test_zero.bin		CRC=00000000	# 24 bits (3 8-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Auto (limit exact, no pad needed)
+ARGS: ./.test_zero.bin --bits=8 --limit=16 --pad=auto -v
+
+./.test_zero.bin		CRC=00000000	# 16 bits (2 8-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Auto (limit mid-char, needs pad)
+ARGS: ./.test_zero.bin --bits=8 --limit=12 --pad=auto -v
+
+./.test_zero.bin		CRC=00000000	# 12 bits (2 8-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Auto (Synthesis, needs pad)
+ARGS: ./.test_zero.bin --bits=8 --limit=32 --pad=auto -v
+
+./.test_zero.bin		CRC=00000000	# 32 bits (3 8-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Mixed (needs pad then doesn't)
+ARGS: ./.test_seven.txt ./.test_zero.bin --bits=auto --pad=auto
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
+./.test_zero.bin		CRC=00000000	# 24 bits (3 8-bit characters - empty)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Override (Manual then Auto)
+ARGS: ./.test_seven.txt --bits=auto --pad --pad=auto
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Pad: Override (Auto then Manual)
+ARGS: ./.test_seven.txt --bits=auto --pad=auto --pad
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters)
 
 EXIT: 0
 
