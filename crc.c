@@ -766,13 +766,13 @@ error_msg (m, n, e)
   if (0 != e) {
     (void)fprintf (stderr, " (Error %d", e);
 #ifdef ANSI_COMPILER
-    (void)fprintf (stderr, ": %s", trim_str(strerror (e)));
+    (void)fprintf (stderr, ": %s", trim_str (strerror (e)));
 #else
 # ifdef FORCE_STRERROR
-    (void)fprintf (stderr, ": %s", trim_str(strerror (e)));
+    (void)fprintf (stderr, ": %s", trim_str (strerror (e)));
 # else
 #  ifdef USE_PSYSERROR
-    (void)fprintf (stderr, ": %s", trim_str(psyserror (e)));
+    (void)fprintf (stderr, ": %s", trim_str (psyserror (e)));
 #  endif
 # endif
 #endif
