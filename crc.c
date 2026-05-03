@@ -378,7 +378,8 @@ cb_printf (fp, c)
     started = 1;
   }
 
-  if (0 == started) {
+  if (0 == started)
+  {
     if ((FILE *)0 != fp)
       (void)fputc ('0', fp);
     else
@@ -412,12 +413,11 @@ cb_parse (c, s)
   while ('\0' != * p) {
     int digit = -1;
 
-    for (i = 0; 10 > i; i++) {
+    for (i = 0; 10 > i; i++)
       if (hexdigits [i] == * p) {
         digit = i;
         break;
       }
-    }
 
     if (0 > digit)
       return 0;
@@ -463,10 +463,9 @@ xfold (c)
 {
   int i;
 
-  for (i = 0; 26 > i; i++) {
+  for (i = 0; 26 > i; i++)
     if ((int)(unsigned char)alplowers [i] == c)
       return (int)(unsigned char)alpuppers [i];
-  }
 
   return c;
 }
@@ -865,12 +864,11 @@ test_crc_table (tbl, mask32)
 
     c <<= 24;
 
-    for (j = 0; 8 > j; j++) {
+    for (j = 0; 8 > j; j++)
       if (0 != (c & msb))
         c = (c << 1) ^ poly;
       else
         c <<= 1;
-    }
 
     c &= mask32;
 
@@ -1521,27 +1519,23 @@ find_max_bits (filename, is_all_zeros)
   fp = fopen (filename, "rb");
 
   /* cppcheck-suppress knownConditionTrueFalse */
-  if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
+  if (NULL == fp || (FILE *)0 == fp) /* //-V560 */
     return 0; /* Errors handled via process_file */
-  }
 
-  while (EOF != (ch = fgetc (fp))) {
+  while (EOF != (ch = fgetc (fp)))
     aggregate |= (crc_t)(unsigned char)ch;
-  }
 
   (void)fclose (fp);
 
-  if (0 == aggregate) {
+  if (0 == aggregate)
     return 0;
-  }
 
   * is_all_zeros = 0;
 
   for (bits = 32; bits > 0; bits--) {
     const crc_t bit_mask = (crc_t)1 << (bits - 1);
-    if (0 != (aggregate & bit_mask)) {
+    if (0 != (aggregate & bit_mask))
       return bits;
-    }
   }
 
   return 0;
@@ -1594,15 +1588,13 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     const int max_bits = find_max_bits (filename, & is_all_zeros);
 
     if (0 != g_bits_auto) {
-      if (0 != is_all_zeros) {
+      if (0 != is_all_zeros)
         local_use_cb = cb;
-      } else {
+      else
         local_use_cb = max_bits;
-      }
 
-      if (local_use_cb != cb || 0 != is_all_zeros) {
+      if (local_use_cb != cb || 0 != is_all_zeros)
         auto_v = 1;
-      }
 
       local_inmask = ((crc_t)1 << local_use_cb) - (crc_t)1;
     }
@@ -1648,13 +1640,11 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
     (void)fprintf (stdout, " %d-bit character%s", local_use_cb,
       (1 == processed_chars.d [0] && 0 == processed_chars.d [1]) ? "" : "s");
 
-    if (0 != is_all_zeros) {
+    if (0 != is_all_zeros)
       (void)fprintf (stdout, " - empty");
-    }
 
-    if (0 != actually_padded && (0 != pad || 0 != g_pad_auto)) {
+    if (0 != actually_padded && (0 != pad || 0 != g_pad_auto))
       (void)fprintf (stdout, " - padded");
-    }
 
     (void)fprintf (stdout, ")");
   }
