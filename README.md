@@ -88,7 +88,6 @@ Options:
   --auto           Enables '--bits=auto --pad=auto --verbose'
   --verbose, -v    Verbose mode (shows processing details)
   --help, -h       Shows this help and usage text
-
 ```
 
 * If multiple `--bits`, `--pad`, or `--limit` options are provided, only the
@@ -293,7 +292,7 @@ As explained in the **Cross-Platform Consistency and Bitstreams** section,
 the `--bits` option specifies how many bits to extract from each storage
 character.  On Multics, the native character size is 9 bits.  If a file was
 transferred bit-for-bit from an 8-bit system, you should use `--bits=9` on
-Multics (wnich is the default on Multics if `--bits` is not specified) to pull
+Multics (which is the default on Multics if `--bits` is not specified) to pull
 all 9 bits from each storage nonet.  Conversely, if you are processing 8-bit
 data that was stored "one byte per nonet" (leaving the 9th bit unused), you
 must use `--bits=8` to skip that unused bit.
