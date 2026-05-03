@@ -149,6 +149,8 @@ typedef unsigned long crc_t;
 # define MAX_CB_DIGITS 12 /* ~117 GiB */
 #endif
 
+/******************************************************************************/
+
 typedef struct {
   unsigned char d [MAX_CB_DIGITS];
 } counter_t;
@@ -915,6 +917,29 @@ charbits ()
 
 static int
 #ifdef ANSI_COMPILER
+unsigned_int_bits (void)
+#else
+unsigned_int_bits ()
+#endif
+{
+  unsigned int u      = 1;
+  unsigned int last_u = 0;
+  int bits            = 0;
+
+  while (u > last_u) {
+    bits++;
+
+    last_u = u;
+    u      = u * 2 + 1;
+  }
+
+  return bits;
+}
+
+/******************************************************************************/
+
+static int
+#ifdef ANSI_COMPILER
 crc_t_bits (void)
 #else
 crc_t_bits ()
@@ -932,6 +957,38 @@ crc_t_bits ()
   }
 
   return bits;
+}
+
+/******************************************************************************/
+
+static unsigned int
+#ifdef ANSI_COMPILER
+safe_batch_limit (void)
+#else
+safe_batch_limit ()
+#endif
+{
+  int u_bits = unsigned_int_bits ();
+  int t_bits = crc_t_bits ();
+  unsigned int u_max = 0;
+  unsigned int limit;
+  unsigned int max_inc;
+  int i;
+
+  for (i = 0; u_bits > i; i++)
+    u_max = u_max * 2 + 1;
+
+  max_inc = (t_bits > 8) ? (unsigned int)t_bits : 8;
+
+  limit = u_max / max_inc;
+
+  if (limit > 10000)
+    limit = 10000;
+
+  if (1 > limit)
+    limit = 1;
+
+  return limit;
 }
 
 /******************************************************************************/
@@ -1036,10 +1093,11 @@ compute_crc_fb (
   const counter_t * const lim_bits,
   counter_t * const processed_bits,
   counter_t * const processed_chars,
-  int * const actually_padded)
+  int * const actually_padded,
+  const unsigned int batch_limit)
 #else
 compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
-                processed_bits, processed_chars, actually_padded)
+                processed_bits, processed_chars, actually_padded, batch_limit)
   FILE * const fp;
   const char * const filename;
   const crc_t * const tbl;
@@ -1051,17 +1109,20 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   counter_t * const processed_bits;
   counter_t * const processed_chars;
   int * const actually_padded;
+  const unsigned int batch_limit;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
   unsigned char oct;
   int ch;
   crc_t tmp;
-  crc_t crc  = 0;
-  crc_t buf  = 0;
-  int bib    = 0;
+  crc_t crc = 0;
+  crc_t buf = 0;
+  int bib  = 0;
   long nread = 0;
-  long pos   = 0;
+  long pos = 0;
+  unsigned int acc_bits = 0;
+  unsigned int acc_chars = 0;
   counter_t rem_bits;
 
   cb_copy (& rem_bits, lim_bits);
@@ -1121,10 +1182,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       ch = rbuf [pos];
       pos++;
 
-      if (0 == cb_add (processed_chars, 1)) {
-        error_msg ("Character counter overflow reading", filename, 0);
-        goto done;
-      }
+      acc_chars++;
 
       tmp  = (crc_t)(unsigned char)ch;
 
@@ -1158,9 +1216,21 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         tmp &= inmask;
       }
 
-      if (0 == cb_add (processed_bits, bits_added)) {
-        error_msg ("Bit counter overflow reading", filename, 0);
-        goto done;
+      acc_bits += bits_added;
+
+      if (acc_bits >= batch_limit) {
+        if (0 == cb_add (processed_bits, acc_bits)) {
+          error_msg ("Bit counter overflow reading", filename, 0);
+          goto done;
+        }
+
+        if (0 == cb_add (processed_chars, acc_chars)) {
+          error_msg ("Character counter overflow reading", filename, 0);
+          goto done;
+        }
+
+        acc_bits = 0;
+        acc_chars = 0;
       }
 
       tmp <<= bib;
@@ -1188,6 +1258,16 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   }
 
 done:
+  if (0 == g_fileerr) {
+    if (0 < acc_bits)
+      if (0 == cb_add (processed_bits, acc_bits))
+        error_msg ("Bit counter overflow reading", filename, 0);
+
+    if (0 < acc_chars)
+      if (0 == cb_add (processed_chars, acc_chars))
+        error_msg ("Character counter overflow reading", filename, 0);
+  }
+
   if (0 == g_fileerr) {
     int hinted = 0;
 
@@ -1261,10 +1341,12 @@ compute_crc (
   const counter_t * const lim_bits,
   counter_t * const processed_bits,
   counter_t * const processed_chars,
-  int * const actually_padded)
+  int * const actually_padded,
+  const unsigned int batch_limit)
 #else
 compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
-             lim_bits, processed_bits, processed_chars, actually_padded)
+             lim_bits, processed_bits, processed_chars, actually_padded,
+             batch_limit)
   FILE * const fp;
   const char * const filename;
   const crc_t * const tbl;
@@ -1278,6 +1360,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   counter_t * const processed_bits;
   counter_t * const processed_chars;
   int * const actually_padded;
+  const unsigned int batch_limit;
 #endif
 {
   /* cppcheck-suppress knownConditionTrueFalse */
@@ -1343,15 +1426,23 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       }
 
       if (0 < bytes_to_process) {
-        if (0 == cb_add (processed_bits,
-          (unsigned int)bytes_to_process * 8)) {
-          error_msg ("Bit counter overflow reading", filename, 0);
-          return (crc_t)0;
-        }
+        long remaining = bytes_to_process;
 
-        if (0 == cb_add (processed_chars, (unsigned int)bytes_to_process)) {
-          error_msg ("Character counter overflow reading", filename, 0);
-          return (crc_t)0;
+        while (remaining > 0) {
+          unsigned int chunk = (remaining > (long)batch_limit) ?
+            batch_limit : (unsigned int)remaining;
+
+          if (0 == cb_add (processed_bits, chunk * 8)) {
+            error_msg ("Bit counter overflow reading", filename, 0);
+            return (crc_t)0;
+          }
+
+          if (0 == cb_add (processed_chars, chunk)) {
+            error_msg ("Character counter overflow reading", filename, 0);
+            return (crc_t)0;
+          }
+
+          remaining -= (long)chunk;
         }
 
         crc = crc_update_buffer (crc, tbl, mask32, rbuf, bytes_to_process);
@@ -1424,21 +1515,29 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             (void)cb_sub (& rem_bits, 8);
           }
 
-          if (0 == cb_add (processed_bits, (unsigned int)chunk * 8)) {
-            error_msg ("Bit counter overflow reading", filename, 0);
-            return (crc_t)0;
-          }
-
-          if (0 == cb_add (processed_chars, (unsigned int)chunk)) {
-            error_msg ("Character counter overflow reading", filename, 0);
-            return (crc_t)0;
-          }
-
           if (0 < chunk) {
-            * actually_padded = 1;
-          }
+            long remaining = chunk;
 
-          crc = crc_update_buffer (crc, tbl, mask32, zbuf, chunk);
+            while (remaining > 0) {
+              unsigned int c_chunk = (remaining > (long)batch_limit) ?
+                batch_limit : (unsigned int)remaining;
+
+              if (0 == cb_add (processed_bits, c_chunk * 8)) {
+                error_msg ("Bit counter overflow reading", filename, 0);
+                return (crc_t)0;
+              }
+
+              if (0 == cb_add (processed_chars, c_chunk)) {
+                error_msg ("Character counter overflow reading", filename, 0);
+                return (crc_t)0;
+              }
+
+              remaining -= (long)c_chunk;
+            }
+
+            * actually_padded = 1;
+            crc = crc_update_buffer (crc, tbl, mask32, zbuf, chunk);
+          }
         }
 
         if (0 == cb_is_zero (& rem_bits)) {
@@ -1492,7 +1591,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
   return compute_crc_fb (fp,
     filename, tbl, use_cb, mask32, inmask, pad, lim_bits, processed_bits,
-    processed_chars, actually_padded);
+    processed_chars, actually_padded, batch_limit);
 }
 
 /******************************************************************************/
@@ -1563,9 +1662,11 @@ process_file (
   const crc_t mask32,
   const crc_t inmask,
   const int pad,
-  const counter_t * const lim_bits)
+  const counter_t * const lim_bits,
+  const unsigned int batch_limit)
 #else
-process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
+process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
+              batch_limit)
   const char * const filename;
   const crc_t * const tbl;
   const int cb;
@@ -1575,6 +1676,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   const crc_t inmask;
   const int pad;
   const counter_t * const lim_bits;
+  const unsigned int batch_limit;
 #endif
 {
   FILE * fp;
@@ -1623,11 +1725,10 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   {
     const crc_t crcval = compute_crc (fp,
       filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, lim_bits,
-      & processed_bits, & processed_chars, & actually_padded);
+      & processed_bits, & processed_chars, & actually_padded, batch_limit);
 
-    if (0 != fclose (fp)) {
+    if (0 != fclose (fp))
       error_msg ("Error closing", filename, errno);
-    }
 
     if (0 != g_fileerr)
       return;
@@ -1737,12 +1838,20 @@ main (argc, argv)
   const char * filename = (char *)0;
   crc_t mask32 = 0;
   crc_t v;
-  const int cb = charbits ();
-  const int ub = crc_t_bits ();
+  const int cb  = charbits ();
+  const int ub  = crc_t_bits ();
+  const int uib = unsigned_int_bits ();
+  const unsigned int batch_limit = safe_batch_limit ();
   const char * const progname =
     ((char *)0 != argv [0] && '\0' != * argv [0]) ? argv [0] : "crc";
 
   cb_zero (& lim_bits);
+
+  if (16 > uib) {
+    (void)fprintf (stderr,
+      "FATAL: Non-conforming %d-bit unsigned int (must be >= 16).\n", uib);
+    return EXIT_FAILURE;
+  }
 
   for (j = 0; 32 > j; j++)
     mask32 = (mask32 << 1) | 1;
@@ -1802,8 +1911,12 @@ main (argc, argv)
         {
           int k;
 
-          for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
+          for (k = MAX_CB_DIGITS - 1; 0 <= k; k--) {
+            if (bits > (unsigned long)ub)
+              break;
+
             bits = bits * 10 + (unsigned long)bits_cb.d [k];
+          }
         }
 
         if (0 == bits || bits > (unsigned long)ub)
@@ -1916,7 +2029,8 @@ bits_error:
             if (0 == dir_get_entry_type ()) {
               match_found = 1;
               process_file (dir_get_entry_name (),
-                crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits);
+                crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
+                batch_limit);
 
               if (0 == g_fileerr)
                 processed++;
@@ -1932,7 +2046,8 @@ bits_error:
 #endif
     {
       process_file (filename,
-        crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits);
+        crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
+        batch_limit);
 
 #ifdef __Z88DK
 # ifdef __CPM__
