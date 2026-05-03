@@ -689,6 +689,7 @@ trim_str (s)
   const char * const s;
 # endif
 {
+  /* cppcheck-suppress constVariable */
   static char bufs [TRIM_RING] [TRIM_BUFSIZE];
   static int idx = 0;
 
