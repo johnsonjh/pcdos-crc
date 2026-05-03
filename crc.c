@@ -1786,6 +1786,8 @@ usage (progname, cb)
   (void)fprintf (stderr,
     "Options:\n");
   (void)fprintf (stderr,
+    "  --limit=N        Stops processing after N bits\n");
+  (void)fprintf (stderr,
     "  --bits=N         Reads as N bits per storage character\n");
   (void)fprintf (stderr,
     "  --bits=auto      Automatically determines significant bits\n");
@@ -1794,9 +1796,9 @@ usage (progname, cb)
   (void)fprintf (stderr,
     "  --pad=auto       Automatically pads bits when necessary\n");
   (void)fprintf (stderr,
-    "  --limit=N        Stops processing after N bits\n");
+    "  --auto           Enables '--bits=auto --pad=auto --verbose'\n");
   (void)fprintf (stderr,
-    "  --verbose, -v    Verbose (show processing details)\n");
+    "  --verbose, -v    Verbose mode (shows processing details)\n");
   (void)fprintf (stderr,
     "  --help, -h       Shows this help and usage text\n");
 
@@ -1950,6 +1952,13 @@ bits_error:
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--pad=auto")) {
       g_pad_auto = 1;
       pad = 0;
+      continue;
+    }
+
+    if (0 == stop && 0 == xstrcasecmp (argv [j], "--auto")) {
+      g_verbose = 1;
+      g_bits_auto = 1;
+      g_pad_auto = 1;
       continue;
     }
 

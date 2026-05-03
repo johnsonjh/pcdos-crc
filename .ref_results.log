@@ -9,12 +9,13 @@ ARGS:
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
+  --limit=N        Stops processing after N bits
   --bits=N         Reads as N bits per storage character
   --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
   --pad=auto       Automatically pads bits when necessary
-  --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (show processing details)
+  --auto           Enables '--bits=auto --pad=auto --verbose'
+  --verbose, -v    Verbose mode (shows processing details)
   --help, -h       Shows this help and usage text
 
 EXIT: 1
@@ -26,12 +27,13 @@ ARGS: ./.test_data.bin --help
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
+  --limit=N        Stops processing after N bits
   --bits=N         Reads as N bits per storage character
   --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
   --pad=auto       Automatically pads bits when necessary
-  --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (show processing details)
+  --auto           Enables '--bits=auto --pad=auto --verbose'
+  --verbose, -v    Verbose mode (shows processing details)
   --help, -h       Shows this help and usage text
 
 EXIT: 0
@@ -43,12 +45,13 @@ ARGS: ./.test_data.bin -h
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
+  --limit=N        Stops processing after N bits
   --bits=N         Reads as N bits per storage character
   --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
   --pad=auto       Automatically pads bits when necessary
-  --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (show processing details)
+  --auto           Enables '--bits=auto --pad=auto --verbose'
+  --verbose, -v    Verbose mode (shows processing details)
   --help, -h       Shows this help and usage text
 
 EXIT: 0
@@ -479,6 +482,15 @@ WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
 ./.test_data.bin		CRC=8908927E
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Auto: Alias (--auto)
+ARGS: ./.test_seven.txt --auto
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
 
 EXIT: 0
 

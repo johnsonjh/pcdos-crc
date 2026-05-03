@@ -202,6 +202,9 @@ run_test "Auto: Empty file" \
 run_test "Auto: Mixed files (7-bit and 8-bit)" \
   "${SEVEN_FILE:?}" "${TEST_FILE:?}" --bits=auto
 
+run_test "Auto: Alias (--auto)" \
+  "${SEVEN_FILE:?}" --auto
+
 run_test "Auto: Override (Manual then Auto)" \
   "${SEVEN_FILE:?}" --bits=8 --bits=auto
 
