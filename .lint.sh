@@ -19,6 +19,11 @@ test -d "/usr/pkg/gnu/bin" && {
   export PATH="${PATH:-}:/usr/pkg/gnu/bin"
 }
 
+CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
+  || command -v clang 2> /dev/null || printf '%s\n' cc)"
+
+export CC
+
 set -eux
 :
 :

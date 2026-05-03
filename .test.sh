@@ -30,7 +30,12 @@ OUT_FILE="./.test_results.log"
 REF_FILE="./.ref_results.log"
 SRC_FILE="crc.c"
 
-cc -O3 "${SRC_FILE:?}" -o crc_test
+CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
+  || command -v clang 2> /dev/null || printf '%s\n' cc)"
+
+"${CC:?}" -O3 "${SRC_FILE:?}" -o crc_test
+
+export CC
 
 rm -f "nonexistent" > /dev/null 2>&1 || :
 
