@@ -28,8 +28,9 @@ ZERO_FILE="./.test_zero.bin"
 SEVEN_FILE="./.test_seven.txt"
 OUT_FILE="./.test_results.log"
 REF_FILE="./.ref_results.log"
+SRC_FILE="crc.c"
 
-cc -O3 crc.c -o crc_test
+cc -O3 "${SRC_FILE:?}" -o crc_test
 
 rm -f "nonexistent" > /dev/null 2>&1 || :
 
