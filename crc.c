@@ -677,7 +677,11 @@ error_msg (m, n, e)
   const int e;
 #endif
 {
-  (void)fprintf (stderr, "ERROR: %s%s", m, n);
+  (void)fprintf (stderr, "ERROR: %s", m);
+
+  /* cppcheck-suppress knownConditionTrueFalse */
+  if (NULL != n && (char *)0 != n) /* //-V560 */
+    (void)fprintf (stderr, " %s", n);
 
   if (0 != e) {
     (void)fprintf (stderr, " (Error %d", e);
@@ -1074,7 +1078,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
         cb_zero (& uc_cb);
         if (0 == cb_add (& uc_cb, (unsigned int)use_cb)) {
-          error_msg ("Counter logic error reading ", filename, 0);
+          error_msg ("Counter logic error reading", filename, 0);
           goto done;
         }
 
@@ -1104,7 +1108,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         }
 
         if (0 != ferror (fp)) {
-          error_msg ("Error reading ", filename, errno);
+          error_msg ("Error reading", filename, errno);
           goto done;
         }
 
@@ -1118,7 +1122,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       pos++;
 
       if (0 == cb_add (processed_chars, 1)) {
-        error_msg ("Character counter overflow reading ", filename, 0);
+        error_msg ("Character counter overflow reading", filename, 0);
         goto done;
       }
 
@@ -1145,7 +1149,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
           tmp &= inmask;
 
           if (0 == cb_sub (& rem_bits, bits_added)) {
-            error_msg ("Counter logic error reading ", filename, 0);
+            error_msg ("Counter logic error reading", filename, 0);
             goto done;
           }
         }
@@ -1155,7 +1159,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       }
 
       if (0 == cb_add (processed_bits, bits_added)) {
-        error_msg ("Bit counter overflow reading ", filename, 0);
+        error_msg ("Bit counter overflow reading", filename, 0);
         goto done;
       }
 
@@ -1314,7 +1318,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       }
 
       if (0 != ferror (fp)) {
-        error_msg ("Error reading ", filename, errno);
+        error_msg ("Error reading", filename, errno);
         return (crc_t)0;
       }
 
@@ -1341,12 +1345,12 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       if (0 < bytes_to_process) {
         if (0 == cb_add (processed_bits,
           (unsigned int)bytes_to_process * 8)) {
-          error_msg ("Bit counter overflow reading ", filename, 0);
+          error_msg ("Bit counter overflow reading", filename, 0);
           return (crc_t)0;
         }
 
         if (0 == cb_add (processed_chars, (unsigned int)bytes_to_process)) {
-          error_msg ("Character counter overflow reading ", filename, 0);
+          error_msg ("Character counter overflow reading", filename, 0);
           return (crc_t)0;
         }
 
@@ -1370,12 +1374,12 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           final_byte &= mask;
 
           if (0 == cb_add (processed_bits, (unsigned int)rb_val)) {
-            error_msg ("Bit counter overflow reading ", filename, 0);
+            error_msg ("Bit counter overflow reading", filename, 0);
             return (crc_t)0;
           }
 
           if (0 == cb_add (processed_chars, 1)) {
-            error_msg ("Character counter overflow reading ", filename, 0);
+            error_msg ("Character counter overflow reading", filename, 0);
             return (crc_t)0;
           }
 
@@ -1421,12 +1425,12 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           }
 
           if (0 == cb_add (processed_bits, (unsigned int)chunk * 8)) {
-            error_msg ("Bit counter overflow reading ", filename, 0);
+            error_msg ("Bit counter overflow reading", filename, 0);
             return (crc_t)0;
           }
 
           if (0 == cb_add (processed_chars, (unsigned int)chunk)) {
-            error_msg ("Character counter overflow reading ", filename, 0);
+            error_msg ("Character counter overflow reading", filename, 0);
             return (crc_t)0;
           }
 
@@ -1520,7 +1524,16 @@ find_max_bits (filename, is_all_zeros)
   while (EOF != (ch = fgetc (fp)))
     aggregate |= (crc_t)(unsigned char)ch;
 
-  (void)fclose (fp);
+  if (0 != ferror (fp)) {
+    error_msg ("Error reading", filename, errno);
+    (void)fclose (fp);
+    return -1;
+  }
+
+  if (0 != fclose (fp)) {
+    error_msg ("Error closing", filename, errno);
+    return -1;
+  }
 
   if (0 == aggregate)
     return 0;
@@ -1583,6 +1596,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
   {
     const int max_bits = find_max_bits (filename, & is_all_zeros);
 
+    if (0 > max_bits)
+      return;
+
     if (0 != g_bits_auto) {
       if (0 != is_all_zeros)
         local_use_cb = cb;
@@ -1600,7 +1616,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   /* cppcheck-suppress knownConditionTrueFalse */
   if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
-    error_msg ("Error opening ", filename, errno);
+    error_msg ("Error opening", filename, errno);
     return;
   }
 
@@ -1609,7 +1625,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
       filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, lim_bits,
       & processed_bits, & processed_chars, & actually_padded);
 
-    (void)fclose (fp);
+    if (0 != fclose (fp)) {
+      error_msg ("Error closing", filename, errno);
+    }
 
     if (0 != g_fileerr)
       return;
