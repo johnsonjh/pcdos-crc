@@ -251,3 +251,7 @@ esac
 : Finish
 : ::::::
 rm -f a.out crc log.pvs compile_commands.json selftest
+:
+:
+: You can run "./.test.sh" or "make lint" now.
+:
