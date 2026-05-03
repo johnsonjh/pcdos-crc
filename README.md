@@ -80,13 +80,15 @@ able to be built anywhere else with little to no porting effort required.
 ```
 Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
+  --limit=N        Stops processing after N bits
   --bits=N         Reads as N bits per storage character
   --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
   --pad=auto       Automatically pads bits when necessary
-  --limit=N        Stops processing after N bits
-  --verbose, -v    Verbose (show processing details)
+  --auto           Enables '--bits=auto --pad=auto --verbose'
+  --verbose, -v    Verbose mode (shows processing details)
   --help, -h       Shows this help and usage text
+
 ```
 
 * If multiple `--bits`, `--pad`, or `--limit` options are provided, only the
@@ -118,7 +120,8 @@ If all bits in a file are zero (including empty files), the program will
 default to using the native character width of the host system and adds an
 `empty` note to the verbose output.
 
-This option is usually most useful when combined with the `--pad=auto` option.
+This option is especially useful when combined with the `--pad=auto` option,
+and both options are enabled when the program is invoked with `--auto`.
 
 ### Automatic padding
 
