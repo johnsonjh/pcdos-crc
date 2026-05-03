@@ -1193,8 +1193,7 @@ done:
         crc = crc_update_byte (crc, tbl, mask32, oct);
         * actually_padded = 1;
       } else {
-        (void)fprintf (stderr,
-          "WARNING: File ended with %d dangling bit%s ",
+        (void)fprintf (stderr, "WARNING: File ended with %d dangling bit%s ",
           bib, 1 == bib ? "" : "s");
         (void)fprintf (stderr, "(not a full 8-bit octet).\n");
         hinted = 1;
@@ -1530,6 +1529,7 @@ find_max_bits (filename, is_all_zeros)
 
   for (bits = 32; bits > 0; bits--) {
     const crc_t bit_mask = (crc_t)1 << (bits - 1);
+
     if (0 != (aggregate & bit_mask))
       return bits;
   }
@@ -1619,6 +1619,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits)
 
   for (i = 0; 8 > i; i++) {
     const int ch = hexdigits [(int)(v & 0xF)];
+
     buf [(long)(7 - i)] = (char)ch;
     v >>= 4;
   }
@@ -1782,6 +1783,7 @@ main (argc, argv)
 
         {
           int k;
+
           for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
             bits = bits * 10 + (unsigned long)bits_cb.d [k];
         }
@@ -1821,14 +1823,12 @@ bits_error:
 
     if (0 == stop && 0 == xstrncasecmp (argv [j], "--limit=", 8)) {
       if (0 == cb_parse (& lim_bits, argv [j] + 8)) {
-        (void)fprintf (stderr,
-          "FATAL: --limit must be a positive integer.\n");
+        (void)fprintf (stderr, "FATAL: --limit must be a positive integer.\n");
         return EXIT_FAILURE;
       }
 
       if (0 != cb_is_zero (& lim_bits)) {
-        (void)fprintf (stderr,
-          "FATAL: --limit must be greater than zero.\n");
+        (void)fprintf (stderr, "FATAL: --limit must be greater than zero.\n");
         return EXIT_FAILURE;
       }
 
