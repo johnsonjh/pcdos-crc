@@ -253,6 +253,27 @@ run_test "Auto: Pad only (Auto-Verbosity)" \
 run_test "Auto: Exact match (No Auto-Verbosity)" \
   "${ZERO_FILE:?}" --bits=8 --pad=auto
 
+run_test "Override: --auto then --bits=8" \
+  "${TEST_FILE:?}" --auto --bits=8
+
+run_test "Override: --bits=8 then --auto" \
+  "${SEVEN_FILE:?}" --bits=8 --auto
+
+run_test "Override: --auto then --pad" \
+  "${TEST_FILE:?}" --auto --limit=12 --pad
+
+run_test "Override: --pad then --auto" \
+  "${TEST_FILE:?}" --pad --limit=12 --auto
+
+run_test "Override: --pad=auto then --pad" \
+  "${TEST_FILE:?}" --limit=12 --pad=auto --pad
+
+run_test "Override: --pad then --pad=auto" \
+  "${TEST_FILE:?}" --limit=12 --pad --pad=auto
+
+run_test "Override: --limit=10 then --limit=16" \
+  "${TEST_FILE:?}" --limit=10 --limit=16 -v
+
 rm -f ./nonexistent > /dev/null 2>&1 || :
 rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
 

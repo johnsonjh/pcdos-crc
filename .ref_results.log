@@ -625,4 +625,67 @@ EXIT: 0
 
 ------------------------------------------------------------------------------
 
+TEST: Override: --auto then --bits=8
+ARGS: ./.test_data.bin --auto --bits=8
+
+./.test_data.bin		CRC=8908927E	# 24 bits (3 8-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Override: --bits=8 then --auto
+ARGS: ./.test_seven.txt --bits=8 --auto
+
+./.test_seven.txt		CRC=C52CF678	# 35 bits (5 7-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Override: --auto then --pad
+ARGS: ./.test_data.bin --auto --limit=12 --pad
+
+./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Override: --pad then --auto
+ARGS: ./.test_data.bin --pad --limit=12 --auto
+
+./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Override: --pad=auto then --pad
+ARGS: ./.test_data.bin --limit=12 --pad=auto --pad
+
+./.test_data.bin		CRC=FDEC49D6
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Override: --pad then --pad=auto
+ARGS: ./.test_data.bin --limit=12 --pad --pad=auto
+
+./.test_data.bin		CRC=FDEC49D6	# 12 bits (2 8-bit characters - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST: Override: --limit=10 then --limit=16
+ARGS: ./.test_data.bin --limit=10 --limit=16 -v
+
+./.test_data.bin		CRC=958622F0	# 16 bits (2 8-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
 # EOF
