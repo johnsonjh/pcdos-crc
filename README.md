@@ -107,7 +107,8 @@ When using `--bits=auto`, the program performs two passes on each file:
 If a file contains **only** 7-bit ASCII data, `--bits=auto` will automatically
 process it using 7 bits per character, ensuring a consistent CRC regardless
 of whether the file is stored on system with a wider native character size,
-like a mainframe running Multics (which stores text in 9-bit "bytes").
+like a mainframe running Multics (which stores text 7-bit ASCII characters
+in 9-bit nonets).
 
 If the detected bit-width differs from the host's native character size, the
 verbose output option is automatically enabled for that file.
