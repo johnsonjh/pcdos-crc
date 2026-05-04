@@ -721,7 +721,10 @@ trim_str (s)
   char * d;
 
   buf = bufs [idx];
-  idx = (idx + 1) % TRIM_RING;
+  idx++;
+
+  if (idx >= TRIM_RING)
+    idx = 0;
 
   if (0 == s) {
     buf [0] = '\0';
@@ -1063,8 +1066,8 @@ safe_batch_limit (void)
 safe_batch_limit ()
 #endif
 {
-  int u_bits = unsigned_int_bits ();
-  int t_bits = crc_t_bits ();
+  const int u_bits = unsigned_int_bits ();
+  const int t_bits = crc_t_bits ();
   unsigned int u_max = 0;
   unsigned int limit;
   unsigned int max_inc;
@@ -1073,11 +1076,25 @@ safe_batch_limit ()
   for (i = 0; u_bits > i; i++)
     u_max = u_max * 2 + 1;
 
-  max_inc = (t_bits > 8) ? (unsigned int)t_bits : 8;
+  max_inc = (8 < t_bits) ? (unsigned int)t_bits : 8;
 
-  limit = u_max / max_inc;
+  limit = 0;
 
-  if (limit > 10000)
+  {
+    unsigned int rem = 0;
+
+    for (i = 0; u_bits > i; i++) {
+      rem = (rem << 1) | 1;
+      limit <<= 1;
+
+      if (rem >= max_inc) {
+        rem -= max_inc;
+        limit |= 1;
+      }
+    }
+  }
+
+  if (10000 < limit)
     limit = 10000;
 
   if (1 > limit)
