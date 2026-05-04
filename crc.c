@@ -1243,10 +1243,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
     while (8 > bib) {
       unsigned int bits_added;
 
-      if (0 == cb_is_zero (lim_bits) && 0 != cb_is_zero (& rem_bits))
+      if (0 == cb_is_zero (lim_bits) &&
+          0 != cb_is_zero (& rem_bits))
         break;
 
-      if (0 == cb_is_zero (lim_bits) && 0 == cb_is_zero (& rem_bits)) {
+      if (0 == cb_is_zero (lim_bits) &&
+          0 == cb_is_zero (& rem_bits)) {
         counter_t uc_cb;
 
         cb_zero (& uc_cb);
@@ -1304,7 +1306,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
       tmp = (crc_t)(unsigned char)ch;
 
-      if (0 == cb_is_zero (lim_bits) && 0 == cb_is_zero (& rem_bits)) {
+      if (0 == cb_is_zero (lim_bits) &&
+          0 == cb_is_zero (& rem_bits)) {
         counter_t uc_cb;
 
         cb_zero (& uc_cb);
@@ -1356,11 +1359,13 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       buf |= tmp;
       bib += (int)bits_added;
 
-      if (0 == cb_is_zero (lim_bits) && 0 != cb_is_zero (& rem_bits))
+      if (0 == cb_is_zero (lim_bits) &&
+          0 != cb_is_zero (& rem_bits))
         break;
     }
 
-    if (0 == cb_is_zero (lim_bits) && 0 != cb_is_zero (& rem_bits))
+    if (0 == cb_is_zero (lim_bits) &&
+        0 != cb_is_zero (& rem_bits))
       if (8 > bib)
         break;
 
@@ -1370,7 +1375,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
     buf >>= 8;
     bib -= 8;
 
-    if (0 == cb_is_zero (lim_bits) && 0 != cb_is_zero (& rem_bits))
+    if (0 == cb_is_zero (lim_bits) &&
+        0 != cb_is_zero (& rem_bits))
       if (0 == bib)
         break;
   }
@@ -1402,7 +1408,8 @@ done:
       }
     }
 
-    if (0 == cb_is_zero (lim_bits) && 0 == cb_is_zero (& rem_bits)) {
+    if (0 == cb_is_zero (lim_bits) &&
+        0 == cb_is_zero (& rem_bits)) {
       counter_t used_bits;
 
       {
@@ -1611,14 +1618,16 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         break;
       }
 
-      if (0 != cb_is_zero (lim_bits) || 0 != cb_is_zero (& rem_bits))
+      if (0 != cb_is_zero (lim_bits) ||
+          0 != cb_is_zero (& rem_bits))
         if (0 == cb_is_zero (lim_bits))
           break;
     }
 
     clearerr (fp);
 
-    if (0 == cb_is_zero (lim_bits) && 0 == cb_is_zero (& rem_bits)) {
+    if (0 == cb_is_zero (lim_bits) &&
+        0 == cb_is_zero (& rem_bits)) {
       if (0 != pad || 0 != g_pad_auto) {
         unsigned char zbuf [32];
         long k;
