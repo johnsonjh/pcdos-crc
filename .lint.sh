@@ -73,11 +73,15 @@ command -v shfmt > /dev/null 2>&1 && {
 command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
-      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 "${variant:-}" crc.c
-      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI "${variant:-}" crc.c
+      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 "${variant:-}" \
+        crc.c
+      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI "${variant:-}" \
+        crc.c
     else
-      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 crc.c
-      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI crc.c
+      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 \
+        crc.c
+      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI \
+        crc.c
     fi
   done
 }
