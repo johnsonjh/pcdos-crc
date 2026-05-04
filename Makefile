@@ -30,13 +30,17 @@ lint: .lint.sh
 
 tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
 	@command -v etags > /dev/null 2>&1 && \
-		{ set -x; etags crc.c; }
+		{ { echo etags...; etags crc.c && exit 0; }; \
+			exit 1; } || :
 	@command -v ctags > /dev/null 2>&1 && \
-		{ set -x; ctags crc.c; }
+		{ { echo ctags...; ctags crc.c && exit 0; }; \
+			exit 1; } || :
 	@command -v gtags > /dev/null 2>&1 && \
-		{ set -x; gtags --single-update crc.c; }
+		{ { echo gtags...; gtags --single-update crc.c && exit 0; }; \
+			exit 1; } || :
 	@command -v cscope > /dev/null 2>&1 && \
-		{ set -x; cscope -b crc.c; }
+		{ { echo cscope...; cscope -b crc.c && exit 0; }; \
+			exit 1; } || :
 
 .PHONY: clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
 	GTAGS cscope cscope.out
