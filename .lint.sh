@@ -269,12 +269,12 @@ command -v cppi > /dev/null 2>&1 && {
 :
 : SELFTEST
 : ::::::::
-command -v cc > /dev/null 2>&1 && {
+command -v "${CC:-cc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
-      cc -O -DSELFTEST "${variant:-}" -o selftest crc.c
+      "${CC:-cc}" -O3 -DSELFTEST "${variant:-}" -o selftest crc.c
     else
-      cc -O -DSELFTEST -o selftest crc.c
+      "${CC:-cc}" -O3 -DSELFTEST -o selftest crc.c
     fi
     ./selftest crc.c selftest
     rm -f selftest
