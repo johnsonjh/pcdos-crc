@@ -11,16 +11,16 @@ all: crc
 
 crc: crc.c
 	@eval echo \
-	$${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c || :
+		$${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c || :
 	@eval \
-	$${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c
+		$${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c
 
 clean:
 	rm -f crc
 
 distclean: clean
-	rm -f .test_results.log
-	command -v git > /dev/null 2>&1 && git clean -ndx 2> /dev/null || :
+	rm -f .test_results.log tags cscope.out GPATH GRTAGS GTAGS TAGS
+	git clean -ndx 2> /dev/null || :
 
 test: .test.sh
 	@sh .test.sh
@@ -28,5 +28,16 @@ test: .test.sh
 lint: .lint.sh
 	@sh .lint.sh
 
-.PHONY: clean distclean test lint
+tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
+	@command -v etags > /dev/null 2>&1 && \
+		{ set -x; etags crc.c; }
+	@command -v ctags > /dev/null 2>&1 && \
+		{ set -x; ctags crc.c; }
+	@command -v gtags > /dev/null 2>&1 && \
+		{ set -x; gtags --single-update crc.c; }
+	@command -v cscope > /dev/null 2>&1 && \
+		{ set -x; cscope -b crc.c; }
+
+.PHONY: clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
+	GTAGS cscope cscope.out
 .NOTPARALLEL:
