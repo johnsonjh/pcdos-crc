@@ -27,6 +27,7 @@
     + [CP/M-80 notes](#cpm-80-notes)
   * [Building for ELKS](#building-for-elks)
   * [Building for MS-DOS](#building-for-ms-dos)
+- [Security](#security)
 - [License](#license)
 
 <!-- tocstop -->
@@ -447,6 +448,18 @@ utilized, but might be supported in a future release.
   ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
+
+## Security
+
+* The canonical home of this software is
+  [`https://gitlab.com/dps8m/crc`](https://gitlab.com/dps8m/crc),
+  with a mirror on [GitHub](https://github.com/johnsonjh/pcdos-crc/).
+* This software is intended to be **secure** 🛡️.
+* If you find any security‑related problems, please don’t hesitate to
+  [open a GitLab Issue](https://gitlab.com/dps8m/crc/-/issues/new)
+  (or send an
+  [email](mailto:contact-project+dps8m-crc-81891805-issue-@incoming.gitlab.com)
+  to the author).
 
 ## License
 
