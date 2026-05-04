@@ -1368,7 +1368,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
     crc = crc_update_byte (crc, tbl, mask32, oct);
 
     buf >>= 8;
-    bib  -= 8;
+    bib -= 8;
 
     if (0 == cb_is_zero (lim_bits) && 0 != cb_is_zero (& rem_bits))
       if (0 == bib)
