@@ -1311,8 +1311,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         (void)cb_add (& uc_cb, (unsigned int)use_cb);
 
         if (0 > cb_cmp (& rem_bits, & uc_cb)) {
-          unsigned int rb_val = 0;
           int k;
+          unsigned int rb_val = 0;
 
           for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
             rb_val = rb_val * 10 + (unsigned int)rem_bits.d [k];
@@ -1577,9 +1577,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           nread > bytes_to_process) {
         if (0 != pad || 0 != g_pad_auto) {
           unsigned char mask;
+          int k;
           unsigned char final_byte = rbuf [bytes_to_process];
           unsigned long rb_val = 0;
-          int k;
 
           for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
             rb_val = rb_val * 10 + (unsigned long)rem_bits.d [k];
