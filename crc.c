@@ -2162,7 +2162,7 @@ bits_error:
     return EXIT_FAILURE;
   }
 
-  use_cb = (process_bits > 0) ? process_bits : cb;
+  use_cb = (0 < process_bits) ? process_bits : cb;
 
   if (use_cb > cb) {
     (void)fprintf (stderr, "WARNING: ");
