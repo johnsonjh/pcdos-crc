@@ -74,10 +74,10 @@ run_test_suite()
   run_test "No options"
 
   run_test "Help (--help)" \
-    "${TEST_FILE:?}" --help
+    --help
 
   run_test "Help (-h)" \
-    "${TEST_FILE:?}" -h
+    -h
 
   run_test "Invalid bits (0)" \
     "${TEST_FILE:?}" --bits=0
@@ -104,7 +104,7 @@ run_test_suite()
     "${TEST_FILE:?}" --limit=a
 
   run_test "Nonexistent" \
-    "${TEST_FILE:?}" nonexistent
+    nonexistent
 
   run_test "8-bit: Standard" \
     "${TEST_FILE:?}"

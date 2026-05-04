@@ -23,7 +23,7 @@ EXIT: 1
 ------------------------------------------------------------------------------
 
 TEST: Help (--help)
-ARGS: ./.test_data.bin --help
+ARGS: --help
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
@@ -41,7 +41,7 @@ EXIT: 0
 ------------------------------------------------------------------------------
 
 TEST: Help (-h)
-ARGS: ./.test_data.bin -h
+ARGS: -h
 
 Usage: ./crc_test [option(s)...] <file> [file(s)...]
 Options:
@@ -141,9 +141,8 @@ EXIT: 1
 ------------------------------------------------------------------------------
 
 TEST: Nonexistent
-ARGS: ./.test_data.bin nonexistent
+ARGS: nonexistent
 
-./.test_data.bin		CRC=8908927E
 ERROR: Error opening nonexistent (Error 2: No such file or directory).
 
 EXIT: 1
