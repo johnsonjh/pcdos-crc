@@ -94,6 +94,25 @@ EXIT: 1
 
 ------------------------------------------------------------------------------
 
+TEST: Bits auto, no file
+ARGS: --bits=auto
+
+FATAL: No filename provided.
+Usage: ./crc_test [option(s)...] <file> [file(s)...]
+Options:
+  --limit=N        Stops processing after N bits
+  --bits=N         Reads as N bits per storage character
+  --bits=auto      Automatically determines significant bits
+  --pad            Pads trailing bits with zeros
+  --pad=auto       Automatically pads bits when necessary
+  --auto           Enables '--bits=auto --pad=auto --verbose'
+  --verbose, -v    Verbose mode (shows processing details)
+  --help, -h       Shows this help and usage text
+
+EXIT: 1
+
+------------------------------------------------------------------------------
+
 TEST: Invalid limit (0)
 ARGS: ./.test_data.bin --limit=0
 

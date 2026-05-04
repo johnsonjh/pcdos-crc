@@ -91,6 +91,9 @@ run_test_suite()
   run_test "Invalid bits (65)" \
     "${TEST_FILE:?}" --bits=65
 
+  run_test "Bits auto, no file" \
+    --bits=auto
+
   run_test "Invalid limit (0)" \
     "${TEST_FILE:?}" --limit=0
 
