@@ -695,7 +695,7 @@ psyserror (n)
 
 #ifndef NO_TRIM
 # define TRIM_BUFSIZE 256
-# define TRIM_RING 2
+# define TRIM_RING 2 /* max reentrancy depth */
 
 static char *
 # ifdef ANSI_COMPILER
