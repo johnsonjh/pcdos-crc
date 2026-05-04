@@ -11,7 +11,7 @@
   * [Automatic bit-width detection](#automatic-bit-width-detection)
   * [Automatic padding](#automatic-padding)
   * [Verbose output](#verbose-output)
-  * [Cross-Platform Consistency and Bitstreams](#cross-platform-consistency-and-bitstreams)
+  * [Cross-Platform consistency and bitstreams](#cross-platform-consistency-and-bitstreams)
     + [Bit-for-bit transfers](#bit-for-bit-transfers)
     + [Interaction of `--limit` and `--pad`](#interaction-of---limit-and---pad)
     + [8-bit mode (default)](#8-bit-mode-default)
@@ -149,7 +149,7 @@ processing information to the output (after a `#` character):
 DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
 ```
 
-### Cross-Platform Consistency and Bitstreams
+### Cross-Platform consistency and bitstreams
 
 This program calculates a CRC based on a continuous bitstream.  To ensure the
 same CRC value is obtained for the same data across different platforms, you
@@ -294,7 +294,7 @@ NOTE: This system has a character size of 9-bits.
 Use '--bits=8' to process 8-bit input data on this system.
 ```
 
-As explained in the **Cross-Platform Consistency and Bitstreams** section,
+As explained in the **Cross-Platform consistency and bitstreams** section,
 the `--bits` option specifies how many bits to extract from each storage
 character.  On Multics, the native character size is 9 bits.  If a file was
 transferred bit-for-bit from an 8-bit system, you should use `--bits=9` on
