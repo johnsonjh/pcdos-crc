@@ -304,7 +304,7 @@ command -v "${CC:-cc}" > /dev/null 2>&1 && {
     else
       "${CC:-cc}" -O3 -DSELFTEST -o selftest crc.c
     fi
-    ./selftest crc.c selftest
+    ./selftest --auto crc.c selftest
     rm -f selftest
   done
 }
