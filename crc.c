@@ -26,7 +26,24 @@
 
 /******************************************************************************/
 
+/*
+ * If your environment has a missing or broken "fread" function,
+ * COMMENT OUT "#define USE_FREAD" below (or define NOFREAD).
+ */
+
+#define USE_FREAD
+
+/******************************************************************************/
+
 /* For more detailed information please review the README.md file. */
+
+/******************************************************************************/
+
+#ifdef multics
+typedef unsigned int crc_t;
+#else
+typedef unsigned long crc_t;
+#endif
 
 /******************************************************************************/
 
@@ -38,6 +55,17 @@
 #  undef USE_PSYSERROR
 # endif
 # define USE_PSYSERROR
+# ifndef MAX_CB_DIGITS
+#  define MAX_CB_DIGITS 9 /* ~119 MiB */
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __COMPILER_KCC__
+# ifndef MAX_CB_DIGITS
+#  define MAX_CB_DIGITS 9 /* ~119 MiB */
+# endif
 #endif
 
 /******************************************************************************/
@@ -54,7 +82,16 @@
 #  ifndef BUFSIZ
 #   define BUFSIZ 128
 #  endif
+#  ifndef MAX_CB_DIGITS
+#   define MAX_CB_DIGITS 8 /* ~12 MiB */
+#  endif
 # endif
+#endif
+
+/******************************************************************************/
+
+#ifndef MAX_CB_DIGITS
+# define MAX_CB_DIGITS 12 /* ~117 GiB */
 #endif
 
 /******************************************************************************/
@@ -70,6 +107,14 @@
 #ifdef NOERRNO
 # ifdef USE_ERRNO
 #  undef USE_ERRNO
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef NOFREAD
+# ifdef USE_FREAD
+#  undef USE_FREAD
 # endif
 #endif
 
@@ -119,34 +164,6 @@ extern char * strerror ();
 
 #ifndef EXIT_FAILURE
 # define EXIT_FAILURE 1
-#endif
-
-/******************************************************************************/
-
-#ifdef multics
-typedef unsigned int crc_t;
-#else
-typedef unsigned long crc_t;
-#endif
-
-/******************************************************************************/
-
-#ifdef __Z88DK
-# ifdef __CPM__
-#  define MAX_CB_DIGITS 8 /* ~12 MiB */
-# endif
-#endif
-
-#ifdef multics
-# define MAX_CB_DIGITS 9 /* ~119 MiB */
-#endif
-
-#ifdef __COMPILER_KCC__
-# define MAX_CB_DIGITS 9 /* ~119 MiB */
-#endif
-
-#ifndef MAX_CB_DIGITS
-# define MAX_CB_DIGITS 12 /* ~117 GiB */
 #endif
 
 /******************************************************************************/
@@ -733,7 +750,7 @@ trim_str (s)
 
   d = buf;
 
-  while (p <= last && (d - buf) < (TRIM_BUFSIZE - 1))
+  while (p <= last && d < buf + (TRIM_BUFSIZE - 1))
     * d++ = * p++;
 
   * d = '\0';
@@ -1234,8 +1251,13 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         if (0 != feof (fp))
           goto done;
 
+#ifndef USE_FREAD
         nread = 0;
+#endif
 
+#ifdef USE_FREAD
+        nread = (long)fread (rbuf, 1, sizeof (rbuf), fp);
+#else
         while ((long)sizeof (rbuf) > nread) {
           const int c = fgetc (fp);
 
@@ -1245,6 +1267,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
           rbuf [nread] = (unsigned char)c;
           nread++;
         }
+#endif
 
         if (0 != ferror (fp)) {
           error_msg ("Error reading", filename, errno);
@@ -1467,8 +1490,13 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       if (0 != feof (fp))
         break;
 
+#ifndef USE_FREAD
       nread = 0;
+#endif
 
+#ifdef USE_FREAD
+      nread = (long)fread (rbuf, 1, sizeof (rbuf), fp);
+#else
       while ((long)sizeof (rbuf) > nread) {
         const int c = fgetc (fp);
 
@@ -1477,6 +1505,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
         rbuf [nread++] = (unsigned char)c;
       }
+#endif
 
       if (0 != ferror (fp)) {
         error_msg ("Error reading", filename, errno);
@@ -1687,7 +1716,9 @@ find_max_bits (filename, is_all_zeros)
 {
   FILE * fp;
   crc_t aggregate = 0;
+#ifndef USE_FREAD
   int ch;
+#endif
   int bits = 0;
 
   * is_all_zeros = 1;
@@ -1698,8 +1729,38 @@ find_max_bits (filename, is_all_zeros)
   if (NULL == fp || (FILE *)0 == fp) /* //-V560 */
     return 0; /* Errors handled via process_file */
 
+#ifdef USE_FREAD
+  {
+    unsigned char mbuf [BUFSIZ];
+
+    for (;;) {
+      if (0 != feof (fp) || 0 != ferror (fp)) {
+        break;
+      }
+
+      {
+        const long n = (long)fread (mbuf, 1, sizeof (mbuf), fp);
+
+        if (0 >= n) {
+          break;
+        }
+
+        {
+          long i;
+
+          for (i = 0; n > i; i++) {
+            const crc_t b = (crc_t)mbuf [i];
+
+            aggregate |= b;
+          }
+        }
+      }
+    }
+  }
+#else
   while (EOF != (ch = fgetc (fp)))
     aggregate |= (crc_t)(unsigned char)ch;
+#endif
 
   if (0 != ferror (fp)) {
     error_msg ("Error reading", filename, errno);

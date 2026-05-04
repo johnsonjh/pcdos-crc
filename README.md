@@ -62,7 +62,7 @@ The only current requirements are:
 * a character type with a width of at least 8 but no more than 32 bits, and
 * a minimal `stdio` implementation (only needing to support `fprintf` or
   `printf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, `clearerr`, and
-  optionally `setbuf`).
+  optionally `setbuf` and `fread`).
 
 It has been tested on various exotic and retro platforms including
 **Multics**
@@ -245,6 +245,12 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 * If your environment does not have the `errno.h` header file, you may need
   to define `NOERRNO` or modify the source code to comment out the
   `#define USE_ERRNO` directive.
+
+* If your environment has a missing or broken `fread` function, you may need
+  to define `NOFREAD` or modify the source code to comment out the
+  `#define USE_FREAD` directive.  This will cause the program to use much
+  slower (and in some environments, less reliable) character-by-character
+  file reading routines.
 
 * For non-ANSI compilers or environments offering an ANSI-conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you

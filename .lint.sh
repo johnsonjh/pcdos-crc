@@ -71,8 +71,15 @@ command -v shfmt > /dev/null 2>&1 && {
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
 command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
-  /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 crc.c
-  /opt/oracle/developerstudio12.6/bin/lint -DNOANSI crc.c
+  for variant in "" "-DNOFREAD"; do
+    if [ -n "${variant:-}" ]; then
+      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 "${variant:-}" crc.c
+      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI "${variant:-}" crc.c
+    else
+      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 crc.c
+      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI crc.c
+    fi
+  done
 }
 :
 :
@@ -81,39 +88,48 @@ command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
 command -v clang > /dev/null 2>&1 && {
   CLANG_ANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Werror"
-  # shellcheck disable=SC2086
-  clang ${CLANG_ANSI_CFLAGS:?} crc.c
-  rm -f a.out
+  for variant in "" "-DNOFREAD"; do
+    if [ -n "${variant:-}" ]; then
+      # shellcheck disable=SC2086
+      clang "${variant:-}" ${CLANG_ANSI_CFLAGS:?} crc.c
+    else
+      # shellcheck disable=SC2086
+      clang ${CLANG_ANSI_CFLAGS:?} crc.c
+    fi
+    rm -f a.out
+  done
 }
 :
 :
-: Clang Analyzer - ANSI
-: :::::::::::::::::::::
+: Clang and PVS-Studio Analyzers - ANSI
+: :::::::::::::::::::::::::::::::::::::
 command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
     command -v clang > /dev/null 2>&1 && {
-      env CC=clang CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
-        bear -- scan-build --use-cc=clang --status-bugs make crc
-      rm -f crc
-    }
-  }
-}
-:
-:
-: PVS-Studio Analyzer - ANSI
-: ::::::::::::::::::::::::::
-command -v clang > /dev/null 2>&1 && {
-  command -v bear > /dev/null 2>&1 && {
-    command -v pvs-studio-analyzer > /dev/null 2>&1 && {
-      command -v plog-converter > /dev/null 2>&1 && {
-        test -f compile_commands.json && {
-          rm -f log.pvs
-          pvs-studio-analyzer analyze --intermodular \
-            -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
-          plog-converter -a "GA:1,2,3" -t markdown log.pvs -w \
-            || plog-converter -a "GA:1,2,3" -t fullhtml log.pvs -w -o pvsreport
+      for variant in "" "-DNOFREAD"; do
+        if [ -n "${variant:-}" ]; then
+          env CC=clang CFLAGS="${variant:-} ${CLANG_ANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc=clang --status-bugs \
+            make crc
+        else
+          env CC=clang CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc=clang --status-bugs \
+            make crc
+        fi
+        rm -f crc
+
+        command -v pvs-studio-analyzer > /dev/null 2>&1 && {
+          command -v plog-converter > /dev/null 2>&1 && {
+            test -f compile_commands.json && {
+              pvs-studio-analyzer analyze --intermodular \
+                -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
+              plog-converter -a "GA:1,2,3" -t markdown log.pvs -w \
+                || plog-converter -a "GA:1,2,3" -t fullhtml \
+                  log.pvs -w -o pvsreport
+            }
+          }
         }
-      }
+      done
     }
   }
 }
@@ -122,9 +138,16 @@ command -v clang > /dev/null 2>&1 && {
 : GCC Analyzer - ANSI
 : :::::::::::::::::::
 command -v gcc > /dev/null 2>&1 && {
-  gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-    -std=c89 -o crc crc.c
-  rm -f crc
+  for variant in "" "-DNOFREAD"; do
+    if [ -n "${variant:-}" ]; then
+      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+        -std=c89 "${variant:-}" -o crc crc.c
+    else
+      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+        -std=c89 -o crc crc.c
+    fi
+    rm -f crc
+  done
 }
 :
 :
@@ -134,39 +157,48 @@ command -v clang > /dev/null 2>&1 && {
   CLANG_NOANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Wno-deprecated-non-prototype \
    -Wno-strict-prototypes -Werror"
-  # shellcheck disable=SC2086
-  clang -DNOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
-  rm -f a.out
+  for variant in "" "-DNOFREAD"; do
+    if [ -n "${variant:-}" ]; then
+      # shellcheck disable=SC2086
+      clang -DNOANSI "${variant:-}" ${CLANG_NOANSI_CFLAGS:?} crc.c
+    else
+      # shellcheck disable=SC2086
+      clang -DNOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
+    fi
+    rm -f a.out
+  done
 }
 :
 :
-: Clang Analyzer - non-ANSI
-: :::::::::::::::::::::::::
+: Clang and PVS-Studio Analyzers - non-ANSI
+: :::::::::::::::::::::::::::::::::::::::::
 command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
     command -v clang > /dev/null 2>&1 && {
-      env CC=clang CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
-        bear -- scan-build --use-cc=clang --status-bugs make crc
-      rm -f crc
-    }
-  }
-}
-:
-:
-: PVS-Studio Analyzer - non-ANSI
-: ::::::::::::::::::::::::::::::
-command -v clang > /dev/null 2>&1 && {
-  command -v bear > /dev/null 2>&1 && {
-    command -v pvs-studio-analyzer > /dev/null 2>&1 && {
-      command -v plog-converter > /dev/null 2>&1 && {
-        test -f compile_commands.json && {
-          rm -f log.pvs
-          pvs-studio-analyzer analyze --intermodular \
-            -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
-          plog-converter -a "GA:1,2,3" -t markdown log.pvs -w \
-            || plog-converter -a "GA:1,2,3" -t fullhtml log.pvs -w -o pvsreport
+      for variant in "" "-DNOFREAD"; do
+        if [ -n "${variant:-}" ]; then
+          env CC=clang CFLAGS="-DNOANSI ${variant:-} ${CLANG_NOANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc=clang --status-bugs \
+            make crc
+        else
+          env CC=clang CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc=clang --status-bugs \
+            make crc
+        fi
+        rm -f crc
+
+        command -v pvs-studio-analyzer > /dev/null 2>&1 && {
+          command -v plog-converter > /dev/null 2>&1 && {
+            test -f compile_commands.json && {
+              pvs-studio-analyzer analyze --intermodular \
+                -j "$(nproc || printf '%s\n' '1' || :)" -o log.pvs
+              plog-converter -a "GA:1,2,3" -t markdown log.pvs -w \
+                || plog-converter -a "GA:1,2,3" -t fullhtml \
+                  log.pvs -w -o pvsreport
+            }
+          }
         }
-      }
+      done
     }
   }
 }
@@ -175,9 +207,16 @@ command -v clang > /dev/null 2>&1 && {
 : GCC Analyzer - non-ANSI
 : :::::::::::::::::::::::
 command -v gcc > /dev/null 2>&1 && {
-  gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-    -DNOANSI -Wno-old-style-definition -o crc crc.c
-  rm -f crc
+  for variant in "" "-DNOFREAD"; do
+    if [ -n "${variant:-}" ]; then
+      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+        -DNOANSI "${variant:-}" -Wno-old-style-definition -o crc crc.c
+    else
+      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+        -DNOANSI -Wno-old-style-definition -o crc crc.c
+    fi
+    rm -f crc
+  done
 }
 :
 :
@@ -227,9 +266,15 @@ command -v cppi > /dev/null 2>&1 && {
 : SELFTEST
 : ::::::::
 command -v cc > /dev/null 2>&1 && {
-  cc -O -DSELFTEST -o selftest crc.c
-  ./selftest crc.c selftest
-  rm -f selftest
+  for variant in "" "-DNOFREAD"; do
+    if [ -n "${variant:-}" ]; then
+      cc -O -DSELFTEST "${variant:-}" -o selftest crc.c
+    else
+      cc -O -DSELFTEST -o selftest crc.c
+    fi
+    ./selftest crc.c selftest
+    rm -f selftest
+  done
 }
 :
 :
