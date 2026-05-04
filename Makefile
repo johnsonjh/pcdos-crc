@@ -12,7 +12,8 @@ all: crc
 crc: crc.c
 	@eval echo \
 	$${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c || :
-	@eval $${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c
+	@eval \
+	$${CC-$(CC)} $${CFLAGS--O3} $${LDFLAGS-} -o $@ crc.c
 
 clean:
 	rm -f crc
