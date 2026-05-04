@@ -2062,8 +2062,8 @@ main (argc, argv)
       continue;
     }
 
-    if (0 == stop && (0 == xstrcasecmp (argv [j], "--help") ||
-                      0 == xstrcasecmp (argv [j], "-h"))) {
+    if (0 == stop && (0 == xstrcasecmp (argv [j], "-h") ||
+                      0 == xstrcasecmp (argv [j], "--help"))) {
       usage (progname, cb);
       return 0;
     }
