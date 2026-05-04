@@ -68,6 +68,14 @@ command -v shfmt > /dev/null 2>&1 && {
 }
 :
 :
+: Banned operations
+: :::::::::::::::::
+grep -n -E '( / | /= | % | %= )' crc.c && {
+  : ERROR: Banned operations found
+  exit 1
+}
+:
+:
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
 command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
