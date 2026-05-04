@@ -31,12 +31,25 @@ set -eux
 : :::::::
 rm -f a.out crc log.pvs compile_commands.json selftest
 rm -rf ./pvsreport
+make clean
+:
+:
+: Tag generation
+: ::::::::::::::
+make tags
 :
 :
 : codespell
 : :::::::::
 command -v codespell > /dev/null 2>&1 && {
-  codespell .
+  command -v git > /dev/null 2>&1 && {
+    CODESPELL_EXCLUDE=$({
+      git ls-files --ignored --exclude-standard --others \
+        | sed 's/["\\]/\\&/g' \
+        | paste -sd',' -
+    } | sed 's/^/"/; s/$/"/')
+    codespell --skip "${CODESPELL_EXCLUDE:?}" .
+  }
 }
 :
 :
