@@ -68,6 +68,13 @@ command -v shfmt > /dev/null 2>&1 && {
 }
 :
 :
+: Flawfinder
+: ::::::::::
+command -v flawfinder > /dev/null 2>&1 && {
+  flawfinder --quiet --omittime --error-level=3 --context --minlevel=3 crc.c
+}
+:
+:
 : Banned operations
 : :::::::::::::::::
 grep -n -E '( / | /= | % | %= )' crc.c && {
