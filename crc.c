@@ -1318,6 +1318,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   unsigned int acc_bits = 0;
   unsigned int acc_chars = 0;
   counter_t rem_bits;
+  int limit_reached = 0;
 
   cb_copy (& rem_bits, lim_bits);
 
@@ -1332,8 +1333,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       unsigned int bits_added;
 
       if (0 == cb_is_zero (lim_bits) &&
-          0 != cb_is_zero (& rem_bits))
+          0 != cb_is_zero (& rem_bits)) {
+        limit_reached = 1;
         break;
+      }
 
       if (0 == cb_is_zero (lim_bits) &&
           0 == cb_is_zero (& rem_bits)) {
@@ -1466,14 +1469,14 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       bib += (int)bits_added;
 
       if (0 == cb_is_zero (lim_bits) &&
-          0 != cb_is_zero (& rem_bits))
+          0 != cb_is_zero (& rem_bits)) {
+        limit_reached = 1;
         break;
+      }
     }
 
-    if (0 == cb_is_zero (lim_bits) &&
-        0 != cb_is_zero (& rem_bits))
-      if (8 > bib)
-        break;
+    if (0 != limit_reached && 8 > bib)
+      break;
 
     oct = (unsigned char)(buf & (crc_t)0xFF);
     crc = crc_update_byte (crc, tbl, mask32, oct);
@@ -1481,10 +1484,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
     buf >>= 8;
     bib -= 8;
 
-    if (0 == cb_is_zero (lim_bits) &&
-        0 != cb_is_zero (& rem_bits))
-      if (0 == bib)
-        break;
+    if (0 != limit_reached && 0 == bib)
+      break;
   }
 
 done:
@@ -1500,6 +1501,56 @@ done:
 
   if (0 == g_fileerr) {
     int hinted = 0;
+
+    if (0 != pad || 0 != g_pad_auto) {
+      while (0 == cb_is_zero (lim_bits) &&
+             0 == cb_is_zero (& rem_bits)) {
+        unsigned int bits_to_add;
+        counter_t uc_cb;
+
+        cb_zero (& uc_cb);
+        (void)cb_add (& uc_cb, (unsigned int)use_cb);
+
+        if (0 > cb_cmp (& rem_bits, & uc_cb)) {
+          int k;
+          unsigned int rb_val = 0;
+
+          for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
+            rb_val = rb_val * 10 + (unsigned int)rem_bits.d [k];
+
+          bits_to_add = rb_val;
+          cb_zero (& rem_bits);
+        } else {
+          bits_to_add = (unsigned int)use_cb;
+
+          if (0 == cb_sub (& rem_bits, bits_to_add)) {
+            error_msg ("Counter logic error reading", filename, 0);
+            return (crc_t)0;
+          }
+        }
+
+        bib += (int)bits_to_add;
+
+        if (0 == cb_add (processed_bits, bits_to_add)) {
+          error_msg ("Bit counter overflow reading", filename, 0);
+          return (crc_t)0;
+        }
+
+        if (0 == cb_add (processed_chars, 1)) {
+          error_msg ("Character counter overflow reading", filename, 0);
+          return (crc_t)0;
+        }
+
+        while (8 <= bib) {
+          oct = (unsigned char)(buf & (crc_t)0xFF);
+          crc = crc_update_byte (crc, tbl, mask32, oct);
+
+          buf >>= 8;
+          bib -= 8;
+          * actually_padded = 1;
+        }
+      }
+    }
 
     if (0 < bib) {
       if (0 != pad || 0 != g_pad_auto) {
