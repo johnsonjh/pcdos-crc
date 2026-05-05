@@ -18,6 +18,7 @@
     + [Fallback mode](#fallback-mode)
 - [Building](#building)
   * [Porting tips](#porting-tips)
+  * [Developer notes](#developer-notes)
 - [Platform specifics](#platform-specifics)
   * [Building for Multics](#building-for-multics)
     + [Multics notes](#multics-notes)
@@ -278,6 +279,25 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   ```
 
 Most users won't need to do any of these things.
+
+### Developer notes
+
+The `Makefile` provides three convenience targets for developers:
+
+1. `make tags` generates source code tags using `etags`, `ctags`, `gtags`,
+   and `cscope`, if those programs are available.
+
+2. `make lint` runs the [`.lint.sh`](.lint.sh) shell script, which checks
+   the source code for many issues.  Anyone interested in modifying the
+   program should install all the optional tools and ensure that all the
+   tests pass.
+
+3. `make test` runs the [`.test.sh`](.test.sh) shell script, which runs a
+   comprehensive test suite.
+
+* The linting script and test suite is intended to run on any system that
+  provides a POSIX-conforming shell environment, and is regularly tested
+  on AIX, FreeBSD, Linux, NetBSD, and OpenBSD.
 
 ## Platform specifics
 
