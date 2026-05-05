@@ -1132,15 +1132,14 @@ safe_batch_limit (void)
 safe_batch_limit ()
 #endif
 {
-  const int u_bits = unsigned_int_bits ();
+  int u_bits = unsigned_int_bits ();
   const int t_bits = crc_t_bits ();
-  unsigned int u_max = 0;
   unsigned int limit;
   unsigned int max_inc;
   int i;
 
-  for (i = 0; u_bits > i; i++)
-    u_max = u_max * 2 + 1;
+  if (u_bits > 32)
+    u_bits = 32;
 
   max_inc = (8 < t_bits) ? (unsigned int)t_bits : 8;
 
