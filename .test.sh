@@ -69,7 +69,7 @@ export CC
 
 export FIND_COMMAND_FATAL=1
 
-find_command "${CC:?}" "diff" "rm" "sed"
+find_command "${CC:?}" diff rm sed
 
 ################################################################################
 

@@ -78,7 +78,7 @@ export CC
 
 export FIND_COMMAND_FATAL=1
 
-find_command "${CC:?}" "awk" "grep" "make" "paste" "rm" "sed" "sleep" "uname"
+find_command "${CC:?}" awk grep make paste rm sed sleep uname
 
 ################################################################################
 
