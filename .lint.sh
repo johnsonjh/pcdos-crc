@@ -61,8 +61,8 @@ find_command "bear" "ch" "clang" "codespell" "cppcheck" "cppi" "diff" \
   "editorconfig-checker" "flawfinder" "gcc" "git" "markdown-toc" \
   "plog-converter" "pvs-studio-analyzer" "reuse" "scan-build" "shellcheck" \
   "shfmt" || {
-  printf '%s\n' "         Some checks will be skipped! [pausing 5s]"
-  sleep 5
+  printf '%s\n' "         Some checks will be skipped! [pausing 10s]"
+  sleep 10
 }
 
 ################################################################################
