@@ -26,6 +26,19 @@ test -d "/usr/pkg/gnu/bin" && {
 
 ################################################################################
 
+# shellcheck disable=SC2065
+test -f "./.common.sh" > /dev/null 2>&1 || {
+  printf '%s\n' "ERROR: Could not locate .common.sh in current directory."
+  exit 1
+}
+
+################################################################################
+
+# shellcheck disable=SC1091
+. ./.common.sh
+
+################################################################################
+
 CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
   || command -v clang 2> /dev/null || printf '%s\n' cc)"
 
@@ -33,7 +46,27 @@ export CC
 
 ################################################################################
 
-set -eux
+set -eu
+
+################################################################################
+
+export FIND_COMMAND_FATAL=1
+find_command "${CC:?}" "grep" "make" "paste" "rm" "sed" "sleep" "uname"
+
+################################################################################
+
+export FIND_COMMAND_FATAL=0
+find_command "bear" "ch" "clang" "codespell" "cppcheck" "cppi" "diff" \
+  "editorconfig-checker" "flawfinder" "gcc" "git" "markdown-toc" \
+  "plog-converter" "pvs-studio-analyzer" "reuse" "scan-build" "shellcheck" \
+  "shfmt" || {
+  printf '%s\n' "         Some checks will be skipped! [pausing 5s]"
+  sleep 5
+}
+
+################################################################################
+
+set -x
 
 ################################################################################
 
@@ -97,7 +130,7 @@ command -v diff > /dev/null 2>&1 && {
 : ShellCheck
 : ::::::::::
 command -v shellcheck > /dev/null 2>&1 && {
-  shellcheck -o any,all .lint.sh .test.sh
+  shellcheck -o any,all .common.sh .lint.sh .test.sh
 }
 
 ################################################################################
@@ -107,7 +140,7 @@ command -v shellcheck > /dev/null 2>&1 && {
 : shfmt
 : :::::
 command -v shfmt > /dev/null 2>&1 && {
-  shfmt -bn -sr -fn -i 2 -s -d .lint.sh .test.sh
+  shfmt -bn -sr -fn -i 2 -s -d .common.sh .lint.sh .test.sh
 }
 
 ################################################################################
