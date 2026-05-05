@@ -474,11 +474,13 @@ for config in "default" "NOFREAD"; do
   case "${config:?}" in
   default)
     printf '%s' "Running test suite (default)... "
-    "${CC:?}" -O3 "${SRC_FILE:?}" -o crc_test
+    # shellcheck disable=SC2086
+    "${CC:?}" ${CFLAGS:--O3} ${LDFLAGS:-} "${SRC_FILE:?}" -o crc_test
     ;;
   NOFREAD)
     printf '%s' "Running test suite (-DNOFREAD)... "
-    "${CC:?}" -O3 -DNOFREAD "${SRC_FILE:?}" -o crc_test
+    # shellcheck disable=SC2086
+    "${CC:?}" ${CFLAGS:--O3} ${LDFLAGS:-} -DNOFREAD "${SRC_FILE:?}" -o crc_test
     ;;
   *)
     printf '%s\n' "FATAL ERROR: Missing configuration!"

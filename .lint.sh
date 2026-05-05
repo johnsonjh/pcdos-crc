@@ -496,9 +496,13 @@ command -v cppi > /dev/null 2>&1 && {
 command -v "${CC:-cc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
-      "${CC:-cc}" -O3 -DSELFTEST "${variant:-}" -o selftest crc.c
+      # shellcheck disable=SC2086
+      "${CC:-cc}" ${CFLAGS:--O3} ${LDFLAGS:-} -DSELFTEST "${variant:-}" \
+        -o selftest crc.c
     else
-      "${CC:-cc}" -O3 -DSELFTEST -o selftest crc.c
+      # shellcheck disable=SC2086
+      "${CC:-cc}" ${CFLAGS:--O3} ${LDFLAGS:-} -DSELFTEST \
+        -o selftest crc.c
     fi
     ./selftest --auto crc.c selftest
     rm -f selftest
