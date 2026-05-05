@@ -44,6 +44,7 @@ tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
 
 .PHONY: clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
 	GTAGS cscope cscope.out
+
 .NOTPARALLEL:
 
 # Local Variables:
