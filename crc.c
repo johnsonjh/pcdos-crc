@@ -54,10 +54,9 @@ typedef unsigned long crc_t;
 # ifdef USE_FREAD
 #  undef USE_FREAD
 # endif
-# ifdef USE_PSYSERROR
-#  undef USE_PSYSERROR
+# ifndef USE_PSYSERROR
+#  define USE_PSYSERROR
 # endif
-# define USE_PSYSERROR
 # ifndef MAX_CB_DIGITS
 #  define MAX_CB_DIGITS 9 /* ~119 MiB */
 # endif
