@@ -458,8 +458,7 @@ cb_printf (fp, c)
   for (; 0 <= i; i--) {
     const int ch = hexdigits [c -> d [i]];
 
-    /* cppcheck-suppress knownConditionTrueFalse */
-    if (NULL != fp || (FILE *)0 != fp) /* //-V560 */
+    if (NULL != fp)
       (void)fputc (ch, fp);
     else
       (void)printf ("%c", ch);
@@ -468,8 +467,7 @@ cb_printf (fp, c)
   }
 
   if (0 == started) {
-    /* cppcheck-suppress knownConditionTrueFalse */
-    if (NULL != fp || (FILE *)0 != fp) /* //-V560 */
+    if (NULL != fp)
       (void)fputc ('0', fp);
     else
       (void)printf ("0");
@@ -848,8 +846,7 @@ error_msg (m, n, e)
 {
   (void)fprintf (stderr, "ERROR: %s", m);
 
-  /* cppcheck-suppress knownConditionTrueFalse */
-  if (NULL != n && (char *)0 != n) /* //-V560 */
+  if (NULL != n)
     (void)fprintf (stderr, " %s", n);
 
   if (0 != e) {
@@ -1404,8 +1401,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
             break;
           }
 
-          rbuf [nread] = (unsigned char)c;
-          nread++;
+          rbuf [nread++] = (unsigned char)c;
         }
 #endif
 
@@ -1611,8 +1607,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   const counter_t * const expected_chars;
 #endif
 {
-  /* cppcheck-suppress knownConditionTrueFalse */
-  if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
+  if (NULL == fp) {
     (void)fprintf (stderr,
       "FATAL: compute_crc called with NULL file pointer.\n");
     exit (EXIT_FAILURE);
@@ -1896,8 +1891,7 @@ find_max_bits (filename, is_all_zeros, num_chars)
 
   fp = fopen (filename, "rb");
 
-  /* cppcheck-suppress knownConditionTrueFalse */
-  if (NULL == fp || (FILE *)0 == fp) /* //-V560 */
+  if (NULL == fp)
     return 0; /* Errors handled via process_file */
 
 #ifdef USE_FREAD
@@ -2064,8 +2058,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
   fp = fopen (filename, "rb");
 
-  /* cppcheck-suppress knownConditionTrueFalse */
-  if (NULL == fp || (FILE *)0 == fp) { /* //-V560 */
+  if (NULL == fp) {
     error_msg ("Error opening", filename, errno);
     return;
   }
