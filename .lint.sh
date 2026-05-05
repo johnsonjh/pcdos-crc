@@ -61,6 +61,47 @@ find_command "bear" "ch" "clang" "codespell" "cppcheck" "cppi" "diff" \
   "editorconfig-checker" "flawfinder" "gcc" "git" "markdown-toc" \
   "plog-converter" "pvs-studio-analyzer" "reuse" "scan-build" "shellcheck" \
   "shfmt" || {
+  NEED_PAUSE=1
+}
+
+################################################################################
+
+os="$(uname -s 2> /dev/null)"
+
+unset CHECK_OLINT
+
+case "${os:?}" in
+Linux)
+  CHECK_OLINT=1
+  ;;
+Solaris)
+  CHECK_OLINT=1
+  ;;
+*) : ;;
+esac
+
+unset OLINT
+
+if [ "${CHECK_OLINT:-0}" -eq 1 ]; then
+  if command -v "/opt/solarisstudio12.6/bin/lint" \
+    > /dev/null 2>&1; then
+    OLINT="/opt/solarisstudio12.6/bin/lint"
+  elif command -v "/opt/oracle/developerstudio12.6/bin/lint" \
+    > /dev/null 2>&1; then
+    OLINT="/opt/oracle/developerstudio12.6/bin/lint"
+  fi
+
+  export OLINT
+
+  if [ -z "${OLINT+x}" ]; then
+    printf '%s\n' "WARNING: Oracle Developer Studio Lint was not found!"
+    NEED_PAUSE=1
+  fi
+fi
+
+################################################################################
+
+test "${NEED_PAUSE:-0}" -ne 1 || {
   printf '%s\n' "         Some checks will be skipped! [pausing 10s]"
   sleep 10
 }
@@ -171,7 +212,7 @@ grep -n -E '( / | /= | % | %= )' crc.c && {
 :
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
-command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
+command -v "${OLINT:-}" > /dev/null 2>&1 && {
 
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
