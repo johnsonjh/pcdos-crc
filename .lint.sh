@@ -90,8 +90,10 @@ else
   status="$?"
 fi
 
+width="$(detect_width)"
+
 # shellcheck disable=SC2310
-printf '%s\n' "${out:-}" | wrap "$(detect_width || :)"
+printf '%s\n' "${out:-}" | wrap "${width:?}"
 
 unset NEED_PAUSE
 
