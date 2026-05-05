@@ -71,18 +71,33 @@ set -eu
 ################################################################################
 
 export FIND_COMMAND_FATAL=1
-find_command "${CC:?}" "grep" "make" "paste" "rm" "sed" "sleep" "uname"
+
+find_command "${CC:?}" "awk" "grep" "make" "paste" "rm" "sed" "sleep" "uname"
 
 ################################################################################
 
 export FIND_COMMAND_FATAL=0
+
 # shellcheck disable=SC2310
-find_command "bear" "ch" "clang" "codespell" "cppcheck" "cppi" "diff" \
-  "editorconfig-checker" "flawfinder" "gcc" "git" "markdown-toc" \
-  "plog-converter" "pvs-studio-analyzer" "reuse" "scan-build" "shellcheck" \
-  "shfmt" || {
+if out=$(
+  find_command \
+    bear ch clang codespell cppcheck cppi diff editorconfig-checker \
+    flawfinder gcc git markdown-toc plog-converter pvs-studio-analyzer \
+    reuse scan-build shellcheck shfmt 2>&1
+); then
+  status=0
+else
+  status="$?"
+fi
+
+# shellcheck disable=SC2310
+printf '%s\n' "${out:-}" | wrap "$(detect_width || :)"
+
+unset NEED_PAUSE
+
+if [ "${status:?}" -ne 0 ]; then
   NEED_PAUSE=1
-}
+fi
 
 ################################################################################
 
@@ -110,8 +125,6 @@ if [ "${CHECK_OLINT:-0}" -eq 1 ]; then
     > /dev/null 2>&1; then
     OLINT="/opt/oracle/developerstudio12.6/bin/lint"
   fi
-
-  export OLINT
 
   if [ -z "${OLINT+x}" ]; then
     printf '%s\n' "WARNING: Oracle Developer Studio Lint was not found!"

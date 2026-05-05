@@ -71,6 +71,66 @@ find_command()
 
 ################################################################################
 
+detect_width()
+{
+  width=${width:-80}
+
+  if cols=$(tput cols 2> /dev/null); then
+    case ${cols:-} in
+    *[!0-9]* | '')
+      :
+      ;;
+    *)
+      w=$((cols - 2))
+      case ${w:-} in
+      *[!0-9]* | '' | 0)
+        :
+        ;;
+      *)
+        width=${w:-}
+        ;;
+      esac
+      ;;
+    esac
+  fi
+
+  if [ "${width:?}" -eq 80 ]; then
+    case ${COLUMNS:-} in
+    *[!0-9]* | '')
+      :
+      ;;
+    *)
+      width=${COLUMNS:-}
+      ;;
+    esac
+  fi
+
+  printf '%s\n' "${width:?}"
+}
+
+################################################################################
+
+wrap()
+{
+  awk -v width="${1:?}" '
+    {
+      for (i = 1; i <= NF; i++) {
+        if (length(out) + length($i) + 1 > width) {
+          print out
+          out = $i
+        } else {
+          out = (out ? out " " $i : $i)
+        }
+      }
+    }
+    END {
+      if (out) print out
+    }
+  '
+}
+
+################################################################################
+
 # Local Variables:
 # mode: shell
 # indent-tabs-mode: nil
