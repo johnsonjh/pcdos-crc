@@ -372,16 +372,17 @@ cb_cmp (a, b)
 
 /******************************************************************************/
 
+#ifdef SELFTEST
 static void
-#ifdef ANSI_COMPILER
+# ifdef ANSI_COMPILER
 cb_mul (
   counter_t * const c,
   const unsigned int v)
-#else
+# else
 cb_mul (c, v)
   counter_t * const c;
   const unsigned int v;
-#endif
+# endif
 {
   int i;
   unsigned int carry = 0;
@@ -400,19 +401,21 @@ cb_mul (c, v)
     carry = q;
   }
 }
+#endif
 
 /******************************************************************************/
 
+#ifdef SELFTEST
 static void
-#ifdef ANSI_COMPILER
+# ifdef ANSI_COMPILER
 cb_sub_counter (
   counter_t * const a,
   const counter_t * const b)
-#else
+# else
 cb_sub_counter (a, b)
   counter_t * const a;
   const counter_t * const b;
-#endif
+# endif
 {
   int i;
   int borrow = 0;
@@ -431,6 +434,7 @@ cb_sub_counter (a, b)
     a -> d [i] = (unsigned char)diff;
   }
 }
+#endif
 
 /******************************************************************************/
 
@@ -1331,6 +1335,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
   cb_copy (& rem_bits, lim_bits);
 
+#ifndef multics
+  /*cppcheck-suppress knownConditionTrueFalse */ /*LINTED E_FALSE_LOGICAL_EXPR*/
+  if ((0) && (expected_chars)) {
+  } /* Multics-specific */
+#endif
+
   for (;;) {
     while (8 > bib) {
       unsigned int bits_added;
@@ -1374,7 +1384,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 # endif
 
           if (EOF == c) {
-#ifdef multics
+# ifdef multics
             if (0 != expected_chars &&
                 0 != cb_cmp (processed_chars, expected_chars)) {
                const int w = getw (fp);
@@ -1390,7 +1400,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
                   }
                }
             }
-#endif
+# endif
             break;
           }
 
@@ -1639,7 +1649,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 # endif
 
         if (EOF == c) {
-#ifdef multics
+# ifdef multics
           if (0 != expected_chars &&
               0 != cb_cmp (processed_chars, expected_chars)) {
              const int w = getw (fp);
@@ -1655,7 +1665,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
                 }
              }
           }
-#endif
+# endif
           break;
         }
 
@@ -1933,7 +1943,7 @@ find_max_bits (filename, is_all_zeros, num_chars)
 # endif
 
     if (EOF == ch) {
-#ifdef multics
+# ifdef multics
       const int w = getw (fp);
 
       if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
@@ -1945,7 +1955,7 @@ find_max_bits (filename, is_all_zeros, num_chars)
         (void)clearerr (fp);
         continue;
       }
-#endif
+# endif
       break;
     }
 
@@ -2033,7 +2043,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   g_fileerr = 0;
 
   {
-    const int max_bits = find_max_bits (filename, & is_all_zeros, & expected_chars);
+    const int max_bits = find_max_bits (filename,
+      & is_all_zeros, & expected_chars);
 
     if (0 > max_bits)
       return;
