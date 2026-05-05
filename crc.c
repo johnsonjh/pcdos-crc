@@ -487,7 +487,7 @@ cb_parse (c, s)
 #endif
 {
   int i;
-  /* cppcheck-suppress constStatement */
+  /*cppcheck-suppress constStatement*/
   const char * p;
 
   if ((const char *)0 == s || '\0' == * s)
@@ -772,15 +772,15 @@ trim_str (s)
   const char * const s;
 # endif
 {
-  /* cppcheck-suppress constVariable */
+  /*cppcheck-suppress constVariable*/
   static char bufs [TRIM_RING] [TRIM_BUFSIZE];
   static int idx = 0;
 
-  /* cppcheck-suppress constStatement */
+  /*cppcheck-suppress constStatement*/
   const char * p;
-  /* cppcheck-suppress constStatement */
+  /*cppcheck-suppress constStatement*/
   const char * q;
-  /* cppcheck-suppress constStatement */
+  /*cppcheck-suppress constStatement*/
   const char * last;
 
   char * buf;
@@ -1322,7 +1322,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   cb_copy (& rem_bits, lim_bits);
 
 #ifndef multics
-  /*cppcheck-suppress knownConditionTrueFalse */ /*LINTED E_FALSE_LOGICAL_EXPR*/
+  /*cppcheck-suppress knownConditionTrueFalse*/ /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) {
   } /* Multics-specific */
 #endif
@@ -2288,7 +2288,7 @@ main (argc, argv)
 
   v = mask32;
 
-  /* cppcheck-suppress knownConditionTrueFalse */
+  /*cppcheck-suppress knownConditionTrueFalse*/
   if (v == (v >> 1)) { /* //-V547 */
     (void)fprintf (stderr,
       "FATAL: Broken compiler: logical right-shift is not logical.\n");
@@ -2431,7 +2431,7 @@ bits_error:
       cb, use_cb);
   }
 
-  /* cppcheck-suppress knownConditionTrueFalse */
+  /*cppcheck-suppress knownConditionTrueFalse*/
   if ((1 > use_cb) || ((ub - 8) < use_cb)) { /* //-V560 */
     (void)fprintf (stderr,
       "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n",
