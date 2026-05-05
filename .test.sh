@@ -2,13 +2,16 @@
 # Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
 # SPDX-License-Identifier: MIT-0
 # scspell-id: c3b38310-44f4-11f1-89aa-80ee73e9b8e7
-# vim: set ft=sh ts=2 sw=2 tw=0 ai expandtab cc=80 :
 # shellcheck disable=SC2129
+
+################################################################################
 
 if [ -n "${ZSH_VERSION-}" ]; then
   emulate sh
   setopt sh_word_split
 fi
+
+################################################################################
 
 # shellcheck disable=SC2065
 test -f "./${0##*/}" > /dev/null 2>&1 || {
@@ -16,11 +19,17 @@ test -f "./${0##*/}" > /dev/null 2>&1 || {
   exit 1
 }
 
+################################################################################
+
 test -d "/usr/pkg/gnu/bin" && {
   export PATH="${PATH:-}:/usr/pkg/gnu/bin"
 }
 
+################################################################################
+
 set -eu
+
+################################################################################
 
 PROG="./crc_test"
 TEST_FILE="./.test_data.bin"
@@ -30,14 +39,20 @@ OUT_FILE="./.test_results.log"
 REF_FILE="./.ref_results.log"
 SRC_FILE="crc.c"
 
+################################################################################
+
 CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
   || command -v clang 2> /dev/null || printf '%s\n' cc)"
 
 export CC
 
+################################################################################
+
 printf '\252\125\377' > "${TEST_FILE:?}"
 printf '\0\0\0' > "${ZERO_FILE:?}"
 printf 'Hello' > "${SEVEN_FILE:?}"
+
+################################################################################
 
 run_test()
 {
@@ -52,6 +67,8 @@ run_test()
   printf '\n%s' "----------------------------------------" >> "${OUT_FILE:?}"
   printf '%s\n\n' "--------------------------------------" >> "${OUT_FILE:?}"
 }
+
+################################################################################
 
 run_test_suite()
 {
@@ -288,6 +305,8 @@ run_test_suite()
   }
 }
 
+################################################################################
+
 for config in "default" "NOFREAD"; do
   case "${config:?}" in
   default)
@@ -312,11 +331,17 @@ for config in "default" "NOFREAD"; do
   printf '%s\n' "done."
 done
 
+################################################################################
+
 rm -f "./nonexistent" > /dev/null 2>&1 || :
 rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
 
+################################################################################
+
 printf '%s\n' "SUCCESS!!! Test suite completed with no errors detected."
 exit 0
+
+################################################################################
 
 # Local Variables:
 # mode: shell
@@ -325,4 +350,10 @@ exit 0
 # tab-width: 2
 # eval: (add-hook 'before-save-hook 'untabify nil t)
 # fill-column: 80
+# eval: (setq-local display-fill-column-indicator-column 80)
+# eval: (display-fill-column-indicator-mode 1)
 # End:
+
+################################################################################
+# vim: set ft=sh ts=2 sw=2 tw=0 ai expandtab cc=80 :
+################################################################################

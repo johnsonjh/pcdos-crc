@@ -2,12 +2,15 @@
 # Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
 # SPDX-License-Identifier: MIT-0
 # scspell-id: 9637d8e2-40d4-11f1-ab65-80ee73e9b8e7
-# vim: set ft=sh ts=2 sw=2 tw=0 ai expandtab cc=80 :
+
+################################################################################
 
 if [ -n "${ZSH_VERSION-}" ]; then
   emulate sh
   setopt sh_word_split
 fi
+
+################################################################################
 
 # shellcheck disable=SC2065
 test -f "./${0##*/}" > /dev/null 2>&1 || {
@@ -15,16 +18,25 @@ test -f "./${0##*/}" > /dev/null 2>&1 || {
   exit 1
 }
 
+################################################################################
+
 test -d "/usr/pkg/gnu/bin" && {
   export PATH="${PATH:-}:/usr/pkg/gnu/bin"
 }
+
+################################################################################
 
 CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
   || command -v clang 2> /dev/null || printf '%s\n' cc)"
 
 export CC
 
+################################################################################
+
 set -eux
+
+################################################################################
+
 :
 :
 : Cleanup
@@ -32,11 +44,17 @@ set -eux
 rm -f a.out crc log.pvs compile_commands.json selftest
 rm -rf ./pvsreport
 make clean
+
+################################################################################
+
 :
 :
 : Tag generation
 : ::::::::::::::
 make tags
+
+################################################################################
+
 :
 :
 : codespell
@@ -51,6 +69,9 @@ command -v codespell > /dev/null 2>&1 && {
     codespell --skip "${CODESPELL_EXCLUDE:?}" .
   }
 }
+
+################################################################################
+
 :
 :
 : reuse
@@ -58,6 +79,9 @@ command -v codespell > /dev/null 2>&1 && {
 command -v reuse > /dev/null 2>&1 && {
   reuse lint -q || reuse lint
 }
+
+################################################################################
+
 :
 :
 : diff
@@ -65,6 +89,9 @@ command -v reuse > /dev/null 2>&1 && {
 command -v diff > /dev/null 2>&1 && {
   diff LICENSES/MIT-0.txt LICENSE
 }
+
+################################################################################
+
 :
 :
 : ShellCheck
@@ -72,6 +99,9 @@ command -v diff > /dev/null 2>&1 && {
 command -v shellcheck > /dev/null 2>&1 && {
   shellcheck -o any,all .lint.sh .test.sh
 }
+
+################################################################################
+
 :
 :
 : shfmt
@@ -79,6 +109,9 @@ command -v shellcheck > /dev/null 2>&1 && {
 command -v shfmt > /dev/null 2>&1 && {
   shfmt -bn -sr -fn -i 2 -s -d .lint.sh .test.sh
 }
+
+################################################################################
+
 :
 :
 : Flawfinder
@@ -86,6 +119,9 @@ command -v shfmt > /dev/null 2>&1 && {
 command -v flawfinder > /dev/null 2>&1 && {
   flawfinder --quiet --omittime --error-level=3 --context --minlevel=3 crc.c
 }
+
+################################################################################
+
 :
 :
 : Banned operations
@@ -94,6 +130,9 @@ grep -n -E '( / | /= | % | %= )' crc.c && {
   : ERROR: Banned operations found
   exit 1
 }
+
+################################################################################
+
 :
 :
 : Oracle Lint - ANSI and non-ANSI
@@ -113,6 +152,9 @@ command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
     fi
   done
 }
+
+################################################################################
+
 :
 :
 : Clang - ANSI
@@ -131,6 +173,9 @@ command -v clang > /dev/null 2>&1 && {
     rm -f a.out
   done
 }
+
+################################################################################
+
 :
 :
 : Clang and PVS-Studio Analyzers - ANSI
@@ -165,6 +210,9 @@ command -v bear > /dev/null 2>&1 && {
     }
   }
 }
+
+################################################################################
+
 :
 :
 : GCC Analyzer - ANSI
@@ -181,6 +229,9 @@ command -v gcc > /dev/null 2>&1 && {
     rm -f crc
   done
 }
+
+################################################################################
+
 :
 :
 : Clang - non-ANSI
@@ -200,6 +251,9 @@ command -v clang > /dev/null 2>&1 && {
     rm -f a.out
   done
 }
+
+################################################################################
+
 :
 :
 : Clang and PVS-Studio Analyzers - non-ANSI
@@ -234,6 +288,9 @@ command -v bear > /dev/null 2>&1 && {
     }
   }
 }
+
+################################################################################
+
 :
 :
 : GCC Analyzer - non-ANSI
@@ -250,6 +307,9 @@ command -v gcc > /dev/null 2>&1 && {
     rm -f crc
   done
 }
+
+################################################################################
+
 :
 :
 : Cppcheck
@@ -265,6 +325,9 @@ command -v cppcheck > /dev/null 2>&1 && {
     --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 \
     -D__CPPCHECK__ --inline-suppr --inconclusive crc.c
 }
+
+################################################################################
+
 :
 :
 : markdown-toc
@@ -272,6 +335,9 @@ command -v cppcheck > /dev/null 2>&1 && {
 command -v markdown-toc > /dev/null 2>&1 && {
   markdown-toc -i README.md
 }
+
+################################################################################
+
 :
 :
 : editorconfig-checker
@@ -279,6 +345,9 @@ command -v markdown-toc > /dev/null 2>&1 && {
 command -v editorconfig-checker > /dev/null 2>&1 && {
   editorconfig-checker
 }
+
+################################################################################
+
 :
 :
 : Ch
@@ -286,6 +355,9 @@ command -v editorconfig-checker > /dev/null 2>&1 && {
 command -v ch > /dev/null 2>&1 && {
   ch -w -n crc.c
 }
+
+################################################################################
+
 :
 :
 : Cppi
@@ -293,6 +365,9 @@ command -v ch > /dev/null 2>&1 && {
 command -v cppi > /dev/null 2>&1 && {
   cppi -ac crc.c
 }
+
+################################################################################
+
 :
 :
 : SELFTEST
@@ -308,6 +383,9 @@ command -v "${CC:-cc}" > /dev/null 2>&1 && {
     rm -f selftest
   done
 }
+
+################################################################################
+
 :
 :
 : NetBSD Lint
@@ -323,15 +401,23 @@ NetBSD)
   ;;
 *) : ;;
 esac
+
+################################################################################
+
 :
 :
 : Finish
 : ::::::
 rm -f a.out crc log.pvs compile_commands.json selftest
+
+################################################################################
+
 :
 :
 : You can run "./.test.sh" or "make test" now.
 :
+
+################################################################################
 
 # Local Variables:
 # mode: shell
@@ -340,4 +426,10 @@ rm -f a.out crc log.pvs compile_commands.json selftest
 # tab-width: 2
 # eval: (add-hook 'before-save-hook 'untabify nil t)
 # fill-column: 80
+# eval: (setq-local display-fill-column-indicator-column 80)
+# eval: (display-fill-column-indicator-mode 1)
 # End:
+
+################################################################################
+# vim: set ft=sh ts=2 sw=2 tw=0 ai expandtab cc=80 :
+################################################################################
