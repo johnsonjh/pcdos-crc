@@ -258,9 +258,17 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   have the pre-ANSI BSD/System V `sys_errlist` / `sys_nerr` interface, you
   should define `USE_PSYSERROR`.
 
-* Defining `SELFTEST` adds a (rather heavyweight) startup test which verifies
-  the CRC lookup table in the source code is uncorrupted and consistent with
-  the polynomial (`0x51F9D3DE`).
+* Defining `SELFTEST` adds two extra validation checks:
+
+  1. A (rather heavyweight) startup test which verifies the CRC lookup
+     table in the source code is uncorrupted and consistent with the
+     polynomial (`0x51F9D3DE`).
+
+  2. A bit-count discrepancy check that runs after each file is processed when
+     `--bits=auto` is used which verifies that the size detection pass and the
+     CRC calculation saw the same number of bits.  This check is mostly useful
+     for programmers working to develop workarounds for buggy C library `stdio`
+     implementations.
 
 * If you are trying to build in an environment providing a C preprocessor
   that does not deal with indentation, you can "flatten" the source code
@@ -315,6 +323,17 @@ which are indicated by a directory tagged with a non-zero bit count equal to
 the number of component segments of the MSF.  This CRC program does not
 provide special treatment for MSFs; each component segment should be processed
 independently.
+
+To ensure proper functionality on Multics, the program uses a very specific
+read strategy to bypass several known bugs in the Multics C `stdio` library.
+The primary workaround addresses sign‑extension issues when detecting `EOF`,
+and batching reads of full 36‑bit words whenever possible as this is immune
+to sign‑extension issues.  For non‑word‑aligned data, we fall back to "slow
+but safe" logic to process any remaining characters.  Additionally, when
+using `--bits=auto`, the bit count as determined during the initial pass is
+compared with the actual number of bits processed during the CRC calculation,
+ensuring that system library bugs that result in short reads are detected and
+can be recovered.
 
 ### Building for TOPS-20
 
