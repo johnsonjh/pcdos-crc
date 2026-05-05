@@ -93,7 +93,8 @@ fi
 width="$(detect_width)"
 
 # shellcheck disable=SC2310
-printf '%s\n' "${out:-}" | wrap "${width:?}"
+printf '%s\n' "${out:-}" \
+  | wrap "${width:?}"
 
 unset NEED_PAUSE
 
@@ -129,7 +130,8 @@ if [ "${CHECK_OLINT:-0}" -eq 1 ]; then
   fi
 
   if [ -z "${OLINT+x}" ]; then
-    printf '%s\n' "WARNING: Oracle Developer Studio Lint was not found!"
+    printf '%s\n' "WARNING: Oracle Developer Studio Lint was not found!" \
+      | wrap "${width:?}"
     NEED_PAUSE=1
   fi
 fi
@@ -137,7 +139,8 @@ fi
 ################################################################################
 
 test "${NEED_PAUSE:-0}" -ne 1 || {
-  printf '%s\n' "         Some checks will be skipped! [pausing 10s]"
+  printf '%s\n' "         Some checks will be skipped! [pausing 10s]" \
+    | wrap "${width:?}"
   sleep 10
 }
 
