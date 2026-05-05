@@ -51,6 +51,9 @@ typedef unsigned long crc_t;
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
 # endif
+# ifdef USE_FREAD
+#  undef USE_FREAD
+# endif
 # ifdef USE_PSYSERROR
 #  undef USE_PSYSERROR
 # endif
@@ -365,6 +368,68 @@ cb_cmp (a, b)
   }
 
   return 0;
+}
+
+/******************************************************************************/
+
+static void
+#ifdef ANSI_COMPILER
+cb_mul (
+  counter_t * const c,
+  const unsigned int v)
+#else
+cb_mul (c, v)
+  counter_t * const c;
+  const unsigned int v;
+#endif
+{
+  int i;
+  unsigned int carry = 0;
+
+  for (i = 0; MAX_CB_DIGITS > i; i++) {
+    const unsigned int val = (unsigned int)c -> d [i] * v + carry;
+    unsigned int q = 0;
+    unsigned int r = val;
+
+    while (10 <= r) {
+      r -= 10;
+      q++;
+    }
+
+    c -> d [i] = (unsigned char)r;
+    carry = q;
+  }
+}
+
+/******************************************************************************/
+
+static void
+#ifdef ANSI_COMPILER
+cb_sub_counter (
+  counter_t * const a,
+  const counter_t * const b)
+#else
+cb_sub_counter (a, b)
+  counter_t * const a;
+  const counter_t * const b;
+#endif
+{
+  int i;
+  int borrow = 0;
+
+  for (i = 0; MAX_CB_DIGITS > i; i++) {
+    const int val_a = (int)a -> d [i];
+    const int val_b = (int)b -> d [i];
+    int diff = val_a - val_b - borrow;
+
+    if (0 > diff) {
+      diff += 10;
+      borrow = 1;
+    } else
+      borrow = 0;
+
+    a -> d [i] = (unsigned char)diff;
+  }
 }
 
 /******************************************************************************/
@@ -1192,6 +1257,30 @@ crc_update_buffer (crc, tbl, mask32, buf, n)
 
 /******************************************************************************/
 
+#ifdef multics
+static int
+# ifdef ANSI_COMPILER
+mgetc (
+  FILE * fp)
+# else
+mgetc (fp)
+  FILE * fp;
+# endif
+{
+  const int c = fgetc (fp);
+
+  if (-1 != c)
+    return c;
+
+  if (0 != feof (fp) || 0 != ferror (fp))
+    return EOF;
+
+  return 0x1FF;
+}
+#endif
+
+/******************************************************************************/
+
 static crc_t
 #ifdef ANSI_COMPILER
 compute_crc_fb (
@@ -1206,10 +1295,12 @@ compute_crc_fb (
   counter_t * const processed_bits,
   counter_t * const processed_chars,
   int * const actually_padded,
-  const unsigned int batch_limit)
+  const unsigned int batch_limit,
+  const counter_t * const expected_chars)
 #else
 compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
-                processed_bits, processed_chars, actually_padded, batch_limit)
+                processed_bits, processed_chars, actually_padded, batch_limit,
+                expected_chars)
   FILE * const fp;
   const char * const filename;
   const crc_t * const tbl;
@@ -1222,6 +1313,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   counter_t * const processed_chars;
   int * const actually_padded;
   const unsigned int batch_limit;
+  const counter_t * const expected_chars;
 #endif
 {
   unsigned char rbuf [BUFSIZ];
@@ -1267,9 +1359,6 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       }
 
       if (nread <= pos) {
-        if (0 != feof (fp))
-          goto done;
-
 #ifndef USE_FREAD
         nread = 0;
 #endif
@@ -1278,10 +1367,32 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         nread = (long)fread (rbuf, 1, sizeof (rbuf), fp);
 #else
         while ((long)sizeof (rbuf) > nread) {
+# ifdef multics
+          const int c = mgetc (fp);
+# else
           const int c = fgetc (fp);
+# endif
 
-          if (EOF == c)
+          if (EOF == c) {
+#ifdef multics
+            if (0 != expected_chars &&
+                0 != cb_cmp (processed_chars, expected_chars)) {
+               const int w = getw (fp);
+
+               if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
+                  if (nread <= (long)(sizeof (rbuf) - 4)) {
+                     rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+                     rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+                     rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+                     rbuf [nread++] = (unsigned char)(w & 0x1FF);
+                     (void)clearerr (fp);
+                     continue;
+                  }
+               }
+            }
+#endif
             break;
+          }
 
           rbuf [nread] = (unsigned char)c;
           nread++;
@@ -1467,11 +1578,12 @@ compute_crc (
   counter_t * const processed_bits,
   counter_t * const processed_chars,
   int * const actually_padded,
-  const unsigned int batch_limit)
+  const unsigned int batch_limit,
+  const counter_t * const expected_chars)
 #else
 compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
              lim_bits, processed_bits, processed_chars, actually_padded,
-             batch_limit)
+             batch_limit, expected_chars)
   FILE * const fp;
   const char * const filename;
   const crc_t * const tbl;
@@ -1486,6 +1598,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   counter_t * const processed_chars;
   int * const actually_padded;
   const unsigned int batch_limit;
+  const counter_t * const expected_chars;
 #endif
 {
   /* cppcheck-suppress knownConditionTrueFalse */
@@ -1511,9 +1624,6 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
     for (;;) {
       long nread, bytes_to_process;
 
-      if (0 != feof (fp))
-        break;
-
 #ifndef USE_FREAD
       nread = 0;
 #endif
@@ -1522,10 +1632,32 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       nread = (long)fread (rbuf, 1, sizeof (rbuf), fp);
 #else
       while ((long)sizeof (rbuf) > nread) {
+# ifdef multics
+        const int c = mgetc (fp);
+# else
         const int c = fgetc (fp);
+# endif
 
-        if (EOF == c)
+        if (EOF == c) {
+#ifdef multics
+          if (0 != expected_chars &&
+              0 != cb_cmp (processed_chars, expected_chars)) {
+             const int w = getw (fp);
+
+             if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
+                if (nread <= (long)(sizeof (rbuf) - 4)) {
+                   rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+                   rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+                   rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+                   rbuf [nread++] = (unsigned char)(w & 0x1FF);
+                   (void)clearerr (fp);
+                   continue;
+                }
+             }
+          }
+#endif
           break;
+        }
 
         rbuf [nread++] = (unsigned char)c;
       }
@@ -1724,7 +1856,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
   return compute_crc_fb (fp,
     filename, tbl, use_cb, mask32, inmask, pad, lim_bits, processed_bits,
-    processed_chars, actually_padded, batch_limit);
+    processed_chars, actually_padded, batch_limit, expected_chars);
 }
 
 /******************************************************************************/
@@ -1733,11 +1865,13 @@ static int
 #ifdef ANSI_COMPILER
 find_max_bits (
   const char * const filename,
-  int * const is_all_zeros)
+  int * const is_all_zeros,
+  counter_t * const num_chars)
 #else
-find_max_bits (filename, is_all_zeros)
+find_max_bits (filename, is_all_zeros, num_chars)
   const char * const filename;
   int * const is_all_zeros;
+  counter_t * const num_chars;
 #endif
 {
   FILE * fp;
@@ -1748,6 +1882,7 @@ find_max_bits (filename, is_all_zeros)
   int bits = 0;
 
   * is_all_zeros = 1;
+  cb_zero (num_chars);
 
   fp = fopen (filename, "rb");
 
@@ -1779,13 +1914,48 @@ find_max_bits (filename, is_all_zeros)
 
             aggregate |= b;
           }
+
+          if (0 == cb_add (num_chars, (unsigned int)n)) {
+            error_msg ("Character counter overflow reading", filename, 0);
+            (void)fclose (fp);
+            return -1;
+          }
         }
       }
     }
   }
 #else
-  while (EOF != (ch = fgetc (fp)))
+  for (;;) {
+# ifdef multics
+    ch = mgetc (fp);
+# else
+    ch = fgetc (fp);
+# endif
+
+    if (EOF == ch) {
+#ifdef multics
+      const int w = getw (fp);
+
+      if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
+        aggregate |= (crc_t)((w >> 27) & 0x1FF);
+        aggregate |= (crc_t)((w >> 18) & 0x1FF);
+        aggregate |= (crc_t)((w >> 9) & 0x1FF);
+        aggregate |= (crc_t)(w & 0x1FF);
+        (void)cb_add (num_chars, 4);
+        (void)clearerr (fp);
+        continue;
+      }
+#endif
+      break;
+    }
+
     aggregate |= (crc_t)(unsigned char)ch;
+    if (0 == cb_add (num_chars, 1)) {
+      error_msg ("Character counter overflow reading", filename, 0);
+      (void)fclose (fp);
+      return -1;
+    }
+  }
 #endif
 
   if (0 != ferror (fp)) {
@@ -1855,13 +2025,15 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   crc_t local_inmask = inmask;
   counter_t processed_bits;
   counter_t processed_chars;
+  counter_t expected_chars;
 
   cb_zero (& processed_bits);
   cb_zero (& processed_chars);
+  cb_zero (& expected_chars);
   g_fileerr = 0;
 
   {
-    const int max_bits = find_max_bits (filename, & is_all_zeros);
+    const int max_bits = find_max_bits (filename, & is_all_zeros, & expected_chars);
 
     if (0 > max_bits)
       return;
@@ -1875,7 +2047,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
       if (local_use_cb != cb || 0 != is_all_zeros)
         auto_v = 1;
 
-      local_inmask = ((crc_t)1 << local_use_cb) - (crc_t)1;
+      local_inmask = make_mask (local_use_cb);
     }
   }
 
@@ -1890,7 +2062,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   {
     const crc_t crcval = compute_crc (fp,
       filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, lim_bits,
-      & processed_bits, & processed_chars, & actually_padded, batch_limit);
+      & processed_bits, & processed_chars, & actually_padded, batch_limit,
+      & expected_chars);
 
     if (0 != fclose (fp))
       error_msg ("Error closing", filename, errno);
@@ -1900,6 +2073,43 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
     v = (crc_t)crcval & mask32;
   }
+
+#ifdef SELFTEST
+  if (0 != g_bits_auto && 0 != cb_is_zero (lim_bits)) {
+    counter_t expected_bits;
+
+    cb_copy (& expected_bits, & expected_chars);
+    cb_mul (& expected_bits, (unsigned int)local_use_cb);
+
+    if (0 != cb_cmp (& processed_bits, & expected_bits)) {
+      const int cmp = cb_cmp (& processed_bits, & expected_bits);
+
+      (void)fprintf (stderr, "ERROR: %s: bit count discrepancy detected.\n",
+        filename);
+      (void)fprintf (stderr, "       Expected: ");
+      cb_printf (stderr, & expected_bits);
+      (void)fprintf (stderr, " bits, Got: ");
+      cb_printf (stderr, & processed_bits);
+      (void)fprintf (stderr, " bits.\n");
+
+      if (1 == cmp) {
+        cb_sub_counter (& processed_bits, & expected_bits);
+        (void)fprintf (stderr, "       Bit count was above expected by ");
+        cb_printf (stderr, & processed_bits);
+        (void)fprintf (stderr, " bits.\n");
+      } else {
+        cb_sub_counter (& expected_bits, & processed_bits);
+        (void)fprintf (stderr, "       Bit count was below expected by ");
+        cb_printf (stderr, & expected_bits);
+        (void)fprintf (stderr, " bits.\n");
+      }
+
+      g_anyerr = 1;
+      g_fileerr = 1;
+      return;
+    }
+  }
+#endif
 
   for (i = 0; 8 > i; i++) {
     const int ch = hexdigits [(int)(v & 0xF)];
@@ -2183,7 +2393,7 @@ bits_error:
     return EXIT_FAILURE;
   }
 
-  inmask = ((crc_t)1 << use_cb) - (crc_t)1;
+  inmask = make_mask (use_cb);
 
   stop = 0;
 
