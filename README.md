@@ -295,9 +295,9 @@ The `Makefile` provides three convenience targets for developers:
 3. `make test` runs the [`.test.sh`](.test.sh) shell script, which runs a
    comprehensive test suite.
 
-* The linting script and test suite is intended to run on any system that
-  provides a POSIX-conforming shell environment, and is regularly tested
-  on AIX, FreeBSD, Linux, NetBSD, and OpenBSD.
+The linting script and test suite are intended to run on any system that
+provides a POSIX-conforming shell environment, and is regularly tested on
+AIX, FreeBSD, Linux, NetBSD, and OpenBSD.
 
 ## Platform specifics
 
