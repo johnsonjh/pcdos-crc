@@ -297,7 +297,7 @@ The `Makefile` provides three convenience targets for developers:
 
 The linting script and test suite are intended to run on any system that
 provides a POSIX-conforming shell environment, and is regularly tested on
-AIX, FreeBSD, Linux, NetBSD, and OpenBSD.
+AIX, FreeBSD, Haiku, Linux, NetBSD, and OpenBSD.
 
 ## Platform specifics
 
