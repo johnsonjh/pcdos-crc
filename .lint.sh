@@ -424,8 +424,8 @@ rm -f a.out crc log.pvs compile_commands.json selftest
 # indent-tabs-mode: nil
 # sh-basic-offset: 2
 # tab-width: 2
-# eval: (add-hook 'before-save-hook 'untabify nil t)
 # fill-column: 80
+# eval: (add-hook 'before-save-hook 'untabify nil t)
 # eval: (setq-local display-fill-column-indicator-column 80)
 # eval: (display-fill-column-indicator-mode 1)
 # End:
