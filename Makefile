@@ -45,3 +45,19 @@ tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
 .PHONY: clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
 	GTAGS cscope cscope.out
 .NOTPARALLEL:
+
+# Local Variables:
+# mode: makefile
+# indent-tabs-mode: t
+# tab-width: 8
+# whitespace-style: (tabs tab-mark)
+# whitespace-display-mappings: ((tab-mark 9 [45] [45]))
+# fill-column: 80
+# eval: (setq-local whitespace-display-mappings
+#                   '((tab-mark 9
+#                               [45 45 45 45 45 45 62]
+#                               [45 45 45 45 45 45 62])))
+# eval: (whitespace-mode 1)
+# eval: (setq-local display-fill-column-indicator-column 80)
+# eval: (display-fill-column-indicator-mode 1)
+# End:

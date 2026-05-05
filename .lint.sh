@@ -332,3 +332,12 @@ rm -f a.out crc log.pvs compile_commands.json selftest
 :
 : You can run "./.test.sh" or "make test" now.
 :
+
+# Local Variables:
+# mode: shell
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# tab-width: 2
+# eval: (add-hook 'before-save-hook 'untabify nil t)
+# fill-column: 80
+# End:

@@ -317,3 +317,12 @@ rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
 
 printf '%s\n' "SUCCESS!!! Test suite completed with no errors detected."
 exit 0
+
+# Local Variables:
+# mode: shell
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# tab-width: 2
+# eval: (add-hook 'before-save-hook 'untabify nil t)
+# fill-column: 80
+# End:
