@@ -1062,16 +1062,12 @@ charbits (void)
 charbits ()
 #endif
 {
-  unsigned char c = 1;
-  unsigned char last_c = 0;
+  unsigned char x = 1;
   int bits = 0;
 
-  while (c > last_c) {
+  while (0 != x) {
     bits++;
-
-    last_c = c;
-    c = (unsigned char)(c << 1);
-    c |= 1;
+    x = (unsigned char)(x << 1);
   }
 
   return bits;
@@ -1086,15 +1082,12 @@ unsigned_int_bits (void)
 unsigned_int_bits ()
 #endif
 {
-  unsigned int u = 1;
-  unsigned int last_u = 0;
+  unsigned int x = 1;
   int bits = 0;
 
-  while (u > last_u) {
+  while (0 != x) {
     bits++;
-
-    last_u = u;
-    u = u * 2 + 1;
+    x <<= 1;
   }
 
   return bits;
@@ -1109,15 +1102,12 @@ crc_t_bits (void)
 crc_t_bits ()
 #endif
 {
-  crc_t v = 1;
-  crc_t last_v = 0;
+  crc_t x = 1;
   int bits = 0;
 
-  while (v > last_v) {
+  while (0 != (crc_t)x) {
     bits++;
-
-    last_v = v;
-    v = v * 2 + 1;
+    x <<= 1;
   }
 
   return bits;
@@ -1136,7 +1126,6 @@ safe_batch_limit ()
   const int t_bits = crc_t_bits ();
   unsigned int limit;
   unsigned int max_inc;
-  int i;
 
   if (u_bits > 32)
     u_bits = 32;
@@ -1146,6 +1135,7 @@ safe_batch_limit ()
   limit = 0;
 
   {
+    int i;
     unsigned int rem = 0;
 
     for (i = 0; u_bits > i; i++) {
@@ -1870,14 +1860,12 @@ static int
 find_max_bits (
   const char * const filename,
   const int cb,
-  const int ub,
   int * const is_all_zeros,
   counter_t * const num_chars)
 #else
-find_max_bits (filename, cb, ub, is_all_zeros, num_chars)
+find_max_bits (filename, cb, is_all_zeros, num_chars)
   const char * const filename;
   const int cb;
-  const int ub;
   int * const is_all_zeros;
   counter_t * const num_chars;
 #endif
@@ -2041,7 +2029,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   g_fileerr = 0;
 
   {
-    const int max_bits = find_max_bits (filename, cb, ub,
+    const int max_bits = find_max_bits (filename, cb,
       & is_all_zeros, & expected_chars);
 
     if (0 > max_bits)
