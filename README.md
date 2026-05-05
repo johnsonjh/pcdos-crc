@@ -303,14 +303,13 @@ NOTE: This system has a character size of 9-bits.
 Use '--bits=8' to process 8-bit input data on this system.
 ```
 
-As explained in the **Cross-platform consistency and bitstreams** section,
-the `--bits` option specifies how many bits to extract from each storage
-character.  On Multics, the native character size is 9 bits.  If a file was
-transferred bit-for-bit from an 8-bit system, you should use `--bits=9` on
-Multics (which is the default on Multics if `--bits` is not specified) to pull
-all 9 bits from each storage nonet.  Conversely, if you are processing 8-bit
-data that was stored "one byte per nonet" (leaving the 9th bit unused), you
-must use `--bits=8` to skip that unused bit.
+As explained above the `--bits` option specifies how many bits to extract from
+each native storage character.  On Multics, the native character size is 9
+bits.  If a file was transferred "bit-for-bit" from an 8-bit system, you
+should use `--bits=9` on Multics (which is the default on Multics if `--bits`
+is not specified) to pull all 9 bits from each storage nonet.  Conversely,
+if you are processing 8-bit data that was stored "one byte per nonet" (leaving
+the 9th bit unused), you must use `--bits=8` to skip that unused bit.
 
 Note that changing the number of bits processed per character will shift the
 bit-alignment of subsequent characters and result in a different CRC value.
