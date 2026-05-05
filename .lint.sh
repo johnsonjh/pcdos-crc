@@ -138,17 +138,22 @@ grep -n -E '( / | /= | % | %= )' crc.c && {
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
 command -v /opt/oracle/developerstudio12.6/bin/lint > /dev/null 2>&1 && {
+  OLINTFLAGS="-err=warn -XCC=no -errchk=structarg,parentheses,locfmtchk"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
+      # shellcheck disable=SC2086
       /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 "${variant:-}" \
-        crc.c
-      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI "${variant:-}" \
-        crc.c
+        ${OLINTFLAGS:?} crc.c
+      # shellcheck disable=SC2086
+      /opt/oracle/developerstudio12.6/bin/lint -Xa -DNOANSI "${variant:-}" \
+        ${OLINTFLAGS:?} crc.c
     else
+      # shellcheck disable=SC2086
       /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 \
-        crc.c
-      /opt/oracle/developerstudio12.6/bin/lint -DNOANSI \
-        crc.c
+        ${OLINTFLAGS:?} crc.c
+      # shellcheck disable=SC2086
+      /opt/oracle/developerstudio12.6/bin/lint -Xa -DNOANSI \
+        ${OLINTFLAGS:?} crc.c
     fi
   done
 }
