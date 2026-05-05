@@ -325,10 +325,10 @@ independently.
 
 To ensure proper functionality on Multics, the program uses a very specific
 read strategy to bypass several known bugs in the Multics C `stdio` library.
-The primary workaround addresses sign‑extension issues when detecting `EOF`,
-and batching reads of full 36‑bit words whenever possible as this is immune
-to sign‑extension issues.  For non‑word‑aligned data, we fall back to "slow
-but safe" logic to process any remaining characters.  Additionally, when
+The primary workaround addresses sign‑extension bugs when detecting `EOF`
+by batching reads of full 36‑bit words (whenever possible) as this is immune
+to sign‑extension issues.  For non‑word‑aligned data, we fall back on a "slow
+but safe" algorithm to process any remaining characters.  Additionally, when
 using `--bits=auto`, the bit count as determined during the initial pass is
 compared with the actual number of bits processed during the CRC calculation,
 ensuring that system library bugs that result in short reads are detected and
