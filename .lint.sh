@@ -141,7 +141,7 @@ fi
 test "${NEED_PAUSE:-0}" -ne 1 || {
   printf '%s\n' "         Some checks will be skipped! [pausing 10s]" \
     | wrap "${width:?}"
-  sleep 10
+  sleep "${OVERRIDE_PAUSE:-10}"
 }
 
 ################################################################################
