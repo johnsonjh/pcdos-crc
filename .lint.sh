@@ -152,7 +152,7 @@ case ${OVERRIDE_PAUSE:-} in
 esac
 
 test "${NEED_PAUSE:-0}" -ne 1 || {
-  printf '%s\n' "         Some checks will be skipped! [pausing 10s]" \
+  printf '%s\n' "Some checks will be skipped! [pausing 10s]" \
     | wrap "${width:?}"
   sleep "${OVERRIDE_PAUSE:-10}"
 }
