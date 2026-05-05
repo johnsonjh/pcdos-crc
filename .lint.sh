@@ -5,6 +5,26 @@
 
 ################################################################################
 
+# The following tools are optional; they will be used if available:
+# Bear: https://github.com/rizsotto/bear
+# Ch: https://www.softintegration.com/
+# Clang: https://clang.llvm.org/
+# Codespell: https://github.com/codespell-project/codespell
+# Cppcheck: https://cppcheck.sourceforge.io/
+# Cppi: https://www.gnu.org/software/cppi/
+# Diff: https://www.gnu.org/software/diffutils/
+# Editorconfig-Checker: https://editorconfig-checker.github.io/
+# GCC: https://gcc.gnu.org/
+# Markdown-toc: https://github.com/jonschlinkert/markdown-toc
+# Oracle Lint - https://www.oracle.com/application-development/developerstudio/
+# PVS-Studio: https://pvs-studio.com/
+# REUSE: https://codeberg.org/fsfe/reuse-tool
+# Scan-Build: https://clang-analyzer.llvm.org/
+# ShellCheck: https://www.shellcheck.net/
+# Shfmt: https://github.com/mvdan/sh
+
+################################################################################
+
 if [ -n "${ZSH_VERSION-}" ]; then
   emulate sh
   setopt sh_word_split
