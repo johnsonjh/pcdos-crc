@@ -59,7 +59,7 @@ test -f "./.common.sh" > /dev/null 2>&1 || {
 
 ################################################################################
 
-CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
+CC="$(command -v cc 2> /dev/null || command -v "${GCC_CMD:-gcc}" 2> /dev/null \
   || command -v clang 2> /dev/null || printf '%s\n' cc)"
 
 export CC
@@ -82,8 +82,8 @@ export FIND_COMMAND_FATAL=0
 if out=$(
   find_command \
     bear ch clang codespell cppcheck cppi diff editorconfig-checker \
-    flawfinder gcc git markdown-toc plog-converter pvs-studio-analyzer \
-    reuse scan-build shellcheck shfmt 2>&1
+    flawfinder "${GCC_CMD:-gcc}" git markdown-toc plog-converter \
+    pvs-studio-analyzer reuse scan-build shellcheck shfmt 2>&1
 ); then
   status=0
 else
@@ -338,13 +338,13 @@ command -v bear > /dev/null 2>&1 && {
 :
 : GCC Analyzer - ANSI
 : :::::::::::::::::::
-command -v gcc > /dev/null 2>&1 && {
+command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
-      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+      "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
         -std=c89 "${variant:-}" -o crc crc.c
     else
-      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+      "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
         -std=c89 -o crc crc.c
     fi
     rm -f crc
@@ -416,13 +416,13 @@ command -v bear > /dev/null 2>&1 && {
 :
 : GCC Analyzer - non-ANSI
 : :::::::::::::::::::::::
-command -v gcc > /dev/null 2>&1 && {
+command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
-      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+      "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
         -DNOANSI "${variant:-}" -Wno-old-style-definition -o crc crc.c
     else
-      gcc -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
+      "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
         -DNOANSI -Wno-old-style-definition -o crc crc.c
     fi
     rm -f crc

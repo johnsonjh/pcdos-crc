@@ -54,7 +54,7 @@ SRC_FILE="crc.c"
 
 ################################################################################
 
-CC="$(command -v cc 2> /dev/null || command -v gcc 2> /dev/null \
+CC="$(command -v cc 2> /dev/null || command -v "${GCC_CMD:-gcc}" 2> /dev/null \
   || command -v clang 2> /dev/null || printf '%s\n' cc)"
 
 export CC
