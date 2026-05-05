@@ -56,6 +56,7 @@ find_command "${CC:?}" "grep" "make" "paste" "rm" "sed" "sleep" "uname"
 ################################################################################
 
 export FIND_COMMAND_FATAL=0
+# shellcheck disable=SC2310
 find_command "bear" "ch" "clang" "codespell" "cppcheck" "cppi" "diff" \
   "editorconfig-checker" "flawfinder" "gcc" "git" "markdown-toc" \
   "plog-converter" "pvs-studio-analyzer" "reuse" "scan-build" "shellcheck" \
