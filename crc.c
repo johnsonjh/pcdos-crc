@@ -1323,8 +1323,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
 #ifndef multics
   /*cppcheck-suppress knownConditionTrueFalse*/ /*LINTED E_FALSE_LOGICAL_EXPR*/
-  if ((0) && (expected_chars)) {
-  } /* Multics-specific */
+  if ((0) && (expected_chars)) { /* Multics */ }
 #endif
 
   for (;;) {
