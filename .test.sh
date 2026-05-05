@@ -69,7 +69,7 @@ export CC
 
 export FIND_COMMAND_FATAL=1
 
-find_command "${CC:?}" diff rm sed
+find_command "${CC:?}" diff mv rm sed
 
 ################################################################################
 
@@ -100,6 +100,7 @@ run_test_suite()
   set -e
 
   rm -f "./nonexistent" > /dev/null 2>&1 || :
+  rm -f "./.log.sed" > /dev/null 2>&1 || :
 
   #############################################################################
 
@@ -464,6 +465,12 @@ run_test_suite()
   printf '%s\n' "# EOF" >> "${OUT_FILE:?}"
 
   #############################################################################
+
+  sed \
+    -e '/^ERROR: Error opening nonexistent / s/(.*$//' \
+    -e 's/[[:space:]]*$//' "${OUT_FILE:?}" \
+    > ./.log.sed
+  mv -f ./.log.sed "${OUT_FILE:?}"
 
   # shellcheck disable=SC2015
   diff "${REF_FILE:?}" "${OUT_FILE:?}" > /dev/null 2>&1 && {

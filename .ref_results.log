@@ -143,7 +143,7 @@ EXIT: 1
 TEST: Nonexistent
 ARGS: nonexistent
 
-ERROR: Error opening nonexistent (Error 2: No such file or directory).
+ERROR: Error opening nonexistent
 
 EXIT: 1
 
@@ -358,7 +358,7 @@ ARGS: ./.test_data.bin ./.test_data.bin nonexistent
 
 ./.test_data.bin		CRC=8908927E
 ./.test_data.bin		CRC=8908927E
-ERROR: Error opening nonexistent (Error 2: No such file or directory).
+ERROR: Error opening nonexistent
 
 EXIT: 1
 
@@ -367,7 +367,7 @@ EXIT: 1
 TEST: Edge: Nonexistent + multiple files
 ARGS: nonexistent ./.test_data.bin ./.test_data.bin
 
-ERROR: Error opening nonexistent (Error 2: No such file or directory).
+ERROR: Error opening nonexistent
 ./.test_data.bin		CRC=8908927E
 ./.test_data.bin		CRC=8908927E
 

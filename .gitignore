@@ -26,6 +26,7 @@
 /GTAGS
 /*.log
 /log.pvs
+/.log.sed
 /nonexistent
 /NOTES.TXT
 /*.out
