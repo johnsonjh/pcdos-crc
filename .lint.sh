@@ -474,7 +474,7 @@ command -v editorconfig-checker > /dev/null 2>&1 && {
 : Ch
 : ::
 command -v ch > /dev/null 2>&1 && {
-  ch -w -n crc.c
+  ch -w -n ./crc.c
 }
 
 ################################################################################
