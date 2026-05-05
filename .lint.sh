@@ -138,6 +138,13 @@ fi
 
 ################################################################################
 
+case ${OVERRIDE_PAUSE:-} in
+'' | *[!0-9]*)
+  unset OVERRIDE_PAUSE
+  ;;
+*) : ;;
+esac
+
 test "${NEED_PAUSE:-0}" -ne 1 || {
   printf '%s\n' "         Some checks will be skipped! [pausing 10s]" \
     | wrap "${width:?}"
