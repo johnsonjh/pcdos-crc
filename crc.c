@@ -1870,11 +1870,15 @@ static int
 #ifdef ANSI_COMPILER
 find_max_bits (
   const char * const filename,
+  const int cb,
+  const int ub,
   int * const is_all_zeros,
   counter_t * const num_chars)
 #else
-find_max_bits (filename, is_all_zeros, num_chars)
+find_max_bits (filename, cb, ub, is_all_zeros, num_chars)
   const char * const filename;
+  const int cb;
+  const int ub;
   int * const is_all_zeros;
   counter_t * const num_chars;
 #endif
@@ -1954,6 +1958,7 @@ find_max_bits (filename, is_all_zeros, num_chars)
     }
 
     aggregate |= (crc_t)(unsigned char)ch;
+
     if (0 == cb_add (num_chars, 1)) {
       error_msg ("Character counter overflow reading", filename, 0);
       (void)fclose (fp);
@@ -1978,7 +1983,7 @@ find_max_bits (filename, is_all_zeros, num_chars)
 
   * is_all_zeros = 0;
 
-  for (bits = 32; bits > 0; bits--) {
+  for (bits = cb; bits > 0; bits--) {
     const crc_t bit_mask = (crc_t)1 << (bits - 1);
 
     if (0 != (aggregate & bit_mask))
@@ -2037,7 +2042,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   g_fileerr = 0;
 
   {
-    const int max_bits = find_max_bits (filename,
+    const int max_bits = find_max_bits (filename, cb, ub,
       & is_all_zeros, & expected_chars);
 
     if (0 > max_bits)
