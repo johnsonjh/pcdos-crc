@@ -1450,8 +1450,14 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   cb_copy (& rem_bits, lim_bits);
 
 #ifndef multics
-  /*cppcheck-suppress knownConditionTrueFalse*/ /*LINTED E_FALSE_LOGICAL_EXPR*/
+# ifndef __LINT__
+#  ifndef __CPPCHECK__
+  /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) { /* Multics */ }
+#  else
+  (void)expected_chars;
+#  endif
+# endif
 #endif
 
   for (;;) {

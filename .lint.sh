@@ -538,12 +538,17 @@ command -v "${CC:-cc}" > /dev/null 2>&1 && {
 : :::::::::::
 case "$(uname -s 2> /dev/null || :)" in
 NetBSD)
-  {
-    command -v lint > /dev/null 2>&1 && {
-      lint -a -aa -b -c -e -g -h -P -r -u -z crc.c 2>&1 \
-        | grep -Ev '(^lint: cannot find llib-lc\.ln$|^crc\.c:$)' || :
-    }
-  }
+  if command -p -v lint > /dev/null 2>&1; then
+    lint_output="$(lint -a -aa -b -c -e -g -h -P -r -T -u -w -z crc.c 2>&1)"
+    lint_status="$?"
+
+    printf '%s\n' "${lint_output:-}" \
+      | grep -Ev '(^lint: cannot find llib-lc\.ln$|^crc\.c:$)' || :
+
+    if [ "${lint_status:-1}" -ne 0 ]; then
+      exit "${lint_status:-1}"
+    fi
+  fi
   ;;
 *) : ;;
 esac
