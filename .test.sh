@@ -83,7 +83,8 @@ run_test()
 {
   label="${1:?}"
   shift
-  printf '%s\n' "TEST: ${label:?}" >> "${OUT_FILE:?}"
+  TEST_NUM=$((TEST_NUM + 1))
+  printf '%s\n' "TEST #${TEST_NUM}: ${label:?}" >> "${OUT_FILE:?}"
   printf '%s\n\n' "ARGS: $*" | sed 's/[[:space:]]*$//' >> "${OUT_FILE}"
   set +e
   env "${PROG:?}" "$@" >> "${OUT_FILE:?}" 2>&1
@@ -98,6 +99,8 @@ run_test()
 run_test_suite()
 {
   set -e
+
+  TEST_NUM=0
 
   rm -f "./nonexistent" > /dev/null 2>&1 || :
   rm -f "./.log.sed" > /dev/null 2>&1 || :
