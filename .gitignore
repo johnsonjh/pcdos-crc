@@ -12,6 +12,8 @@
 /core
 /core-*
 /crc
+/crc32
+/crc64
 /crc.com
 /CRC.COM
 /crc.exe
