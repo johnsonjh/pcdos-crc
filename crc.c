@@ -2053,9 +2053,6 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
 {
   FILE * fp;
   crc_t aggregate = 0;
-#ifndef USE_FREAD
-  int ch;
-#endif
   int bits = 0;
 
   * is_all_zeros = 1;
@@ -2103,8 +2100,9 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
 #else
   {
     unsigned char mbuf [BUFSIZ];
+    int hit_eof = 0;
 
-    for (;;) {
+    while (0 == hit_eof) {
       long nread = 0;
 
       while ((long)sizeof (mbuf) > nread) {
@@ -2129,6 +2127,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
             }
           }
 # endif
+          hit_eof = 1;
           break;
         }
 
