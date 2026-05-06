@@ -1451,12 +1451,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
 #ifndef multics
 # ifndef __LINT__
-#  ifndef __CPPCHECK__
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) { /* Multics */ }
-#  else
+# else
   (void)expected_chars;
-#  endif
 # endif
 #endif
 

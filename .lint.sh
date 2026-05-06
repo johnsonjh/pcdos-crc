@@ -465,7 +465,7 @@ command -v cppcheck > /dev/null 2>&1 && {
   # shellcheck disable=2086
   cppcheck --enable=warning,style,performance,portability,unusedFunction \
     --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 \
-    -D__CPPCHECK__ --inline-suppr --inconclusive crc.c
+    -D__CPPCHECK__ -D__LINT__ --inline-suppr --inconclusive crc.c
 }
 
 ################################################################################
