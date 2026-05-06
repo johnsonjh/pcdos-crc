@@ -51,7 +51,7 @@ with a C compiler, such as:
   Honeywell 600/6000‑series),
 * systems using one's‑complement integer representation (*e.g.*, Unisys
   ClearPath Dorado / OS 2200),
-* systems with byte sizes other than 8 bits (*e.g.*, DEC PDP‑10, H6000,
+* systems with character sizes other than 8 bits (*e.g.*, DEC PDP‑10, H6000,
   Unisys), and
 * systems using non‑ASCII character sets (*e.g.*, IBM mainframes, Unisys MCP),
   or even
