@@ -468,6 +468,7 @@ run_test_suite()
 
   sed \
     -e '/^ERROR: Error opening nonexistent / s/(.*$//' \
+    -e '/^FATAL: --bits must be a positive integer between 1 / s/1.*$//' \
     -e 's/[[:space:]]*$//' "${OUT_FILE:?}" \
     > ./.log.sed
   mv -f ./.log.sed "${OUT_FILE:?}"

@@ -2341,14 +2341,14 @@ main (argc, argv)
           int k;
 
           for (k = MAX_CB_DIGITS - 1; 0 <= k; k--) {
-            if (bits > (unsigned long)ub)
+            if (bits > (unsigned long)(ub - 8))
               break;
 
             bits = bits * 10 + (unsigned long)bits_cb.d [k];
           }
         }
 
-        if (0 == bits || bits > (unsigned long)ub)
+        if (0 == bits || bits > (unsigned long)(ub - 8))
           goto bits_error;
 
         process_bits = (int)bits;
@@ -2357,7 +2357,7 @@ main (argc, argv)
 
 bits_error:
         (void)fprintf (stderr, "FATAL: --bits must be a positive integer ");
-        (void)fprintf (stderr, "between 1 and %d (or 'auto').\n", ub);
+        (void)fprintf (stderr, "between 1 and %d (or 'auto').\n", ub - 8);
         return EXIT_FAILURE;
       }
     }

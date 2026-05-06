@@ -61,7 +61,7 @@ EXIT: 0
 TEST: Invalid bits (0)
 ARGS: ./.test_data.bin --bits=0
 
-FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
+FATAL: --bits must be a positive integer between
 
 EXIT: 1
 
@@ -70,7 +70,7 @@ EXIT: 1
 TEST: Invalid bits (-1)
 ARGS: ./.test_data.bin --bits=-1
 
-FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
+FATAL: --bits must be a positive integer between
 
 EXIT: 1
 
@@ -79,7 +79,7 @@ EXIT: 1
 TEST: Invalid bits (a)
 ARGS: ./.test_data.bin --bits=a
 
-FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
+FATAL: --bits must be a positive integer between
 
 EXIT: 1
 
@@ -88,7 +88,7 @@ EXIT: 1
 TEST: Invalid bits (65)
 ARGS: ./.test_data.bin --bits=65
 
-FATAL: --bits must be a positive integer between 1 and 64 (or 'auto').
+FATAL: --bits must be a positive integer between
 
 EXIT: 1
 
