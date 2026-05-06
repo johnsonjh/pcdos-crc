@@ -1,4 +1,5 @@
 #!/bin/sh
+# .common.sh
 # Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
 # SPDX-License-Identifier: MIT-0
 # scspell-id: 16923886-48a8-11f1-9483-80ee73e9b8e7

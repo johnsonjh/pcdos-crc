@@ -1,4 +1,5 @@
 #!/bin/sh
+# .test.sh
 # Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
 # SPDX-License-Identifier: MIT-0
 # scspell-id: c3b38310-44f4-11f1-89aa-80ee73e9b8e7
