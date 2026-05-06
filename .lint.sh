@@ -26,6 +26,15 @@
 
 ################################################################################
 
+# It is also recommended to (manually) run the following periodically:
+# DUMA: https://github.com/johnsonjh/duma
+# Funcheck: https://github.com/froz42/funcheck
+# Hunspell: https://hunspell.github.io/
+# Smatch: https://repo.or.cz/w/smatch.git
+# Valgrind: https://valgrind.org/
+
+################################################################################
+
 if [ -n "${ZSH_VERSION-}" ]; then
   emulate sh
   setopt sh_word_split
