@@ -46,6 +46,8 @@ test -f "./.common.sh" > /dev/null 2>&1 || {
 
 ################################################################################
 
+export CPE1704TKS=1
+
 # shellcheck disable=SC1091
 . ./.common.sh
 

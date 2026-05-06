@@ -6,6 +6,14 @@
 
 ################################################################################
 
+if [ -z "${CPE1704TKS:-}" ]; then
+  printf '%s\n' \
+    "ERROR: This script must be sourced; it is not directly executable!" >&2
+  exit 1
+fi
+
+################################################################################
+
 find_command()
 {
   missing=${missing-}
