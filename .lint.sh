@@ -84,7 +84,7 @@ export CPE1704TKS=1
 ################################################################################
 
 CC="$(command -v cc 2> /dev/null || command -v "${GCC_CMD:-gcc}" 2> /dev/null \
-  || command -v clang 2> /dev/null || printf '%s\n' cc)"
+  || command -v "${CLANG_CMD:-clang}" 2> /dev/null || printf '%s\n' cc)"
 
 export CC
 
@@ -101,9 +101,9 @@ export FIND_COMMAND_FATAL=0
 # shellcheck disable=SC2310
 if out=$(
   find_command \
-    bear ch clang codespell cppcheck cppi diff editorconfig-checker \
-    flawfinder "${GCC_CMD:-gcc}" git markdown-toc plog-converter \
-    pvs-studio-analyzer reuse scan-build shellcheck shfmt 2>&1
+    bear ch "${CLANG_CMD:-clang}" codespell cppcheck cppi diff \
+    editorconfig-checker flawfinder "${GCC_CMD:-gcc}" git markdown-toc \
+    plog-converter pvs-studio-analyzer reuse scan-build shellcheck shfmt 2>&1
 ); then
   status=0
 else
@@ -301,16 +301,16 @@ command -v "${OLINT:-}" > /dev/null 2>&1 && {
 :
 : Clang - ANSI
 : ::::::::::::
-command -v clang > /dev/null 2>&1 && {
+command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
   CLANG_ANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Werror"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       # shellcheck disable=SC2086
-      clang "${variant:-}" ${CLANG_ANSI_CFLAGS:?} crc.c
+      "${CLANG_CMD:-clang}" "${variant:-}" ${CLANG_ANSI_CFLAGS:?} crc.c
     else
       # shellcheck disable=SC2086
-      clang ${CLANG_ANSI_CFLAGS:?} crc.c
+      "${CLANG_CMD:-clang}" ${CLANG_ANSI_CFLAGS:?} crc.c
     fi
     rm -f a.out
   done
@@ -324,15 +324,17 @@ command -v clang > /dev/null 2>&1 && {
 : :::::::::::::::::::::::::::::::::::::
 command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
-    command -v clang > /dev/null 2>&1 && {
+    command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
       for variant in "" "-DNOFREAD"; do
         if [ -n "${variant:-}" ]; then
-          env CC=clang CFLAGS="${variant:-} ${CLANG_ANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc=clang --status-bugs \
+          env CC="${CLANG_CMD:-clang}" \
+            CFLAGS="${variant:-} ${CLANG_ANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         else
-          env CC=clang CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc=clang --status-bugs \
+          env CC="${CLANG_CMD:-clang}" \
+            CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         fi
         rm -f crc
@@ -378,17 +380,19 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
 :
 : Clang - non-ANSI
 : ::::::::::::::::
-command -v clang > /dev/null 2>&1 && {
+command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
   CLANG_NOANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Wno-deprecated-non-prototype \
    -Wno-strict-prototypes -Werror"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       # shellcheck disable=SC2086
-      clang -DNOANSI "${variant:-}" ${CLANG_NOANSI_CFLAGS:?} crc.c
+      "${CLANG_CMD:-clang}" -DNOANSI \
+        "${variant:-}" ${CLANG_NOANSI_CFLAGS:?} crc.c
     else
       # shellcheck disable=SC2086
-      clang -DNOANSI ${CLANG_NOANSI_CFLAGS:?} crc.c
+      "${CLANG_CMD:-clang}" -DNOANSI \
+        ${CLANG_NOANSI_CFLAGS:?} crc.c
     fi
     rm -f a.out
   done
@@ -402,15 +406,17 @@ command -v clang > /dev/null 2>&1 && {
 : :::::::::::::::::::::::::::::::::::::::::
 command -v bear > /dev/null 2>&1 && {
   command -v scan-build > /dev/null 2>&1 && {
-    command -v clang > /dev/null 2>&1 && {
+    command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
       for variant in "" "-DNOFREAD"; do
         if [ -n "${variant:-}" ]; then
-          env CC=clang CFLAGS="-DNOANSI ${variant:-} ${CLANG_NOANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc=clang --status-bugs \
+          env CC="${CLANG_CMD:-clang}" \
+            CFLAGS="-DNOANSI ${variant:-} ${CLANG_NOANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         else
-          env CC=clang CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc=clang --status-bugs \
+          env CC="${CLANG_CMD:-clang}" \
+            CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
+            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         fi
         rm -f crc
