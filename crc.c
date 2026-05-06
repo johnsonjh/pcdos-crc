@@ -2101,36 +2101,63 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
     }
   }
 #else
-  for (;;) {
+  {
+    unsigned char mbuf [BUFSIZ];
+
+    for (;;) {
+      long nread = 0;
+
+      while ((long)sizeof (mbuf) > nread) {
 # ifdef multics
-    ch = mgetc (fp);
+        const int c = mgetc (fp);
 # else
-    ch = fgetc (fp);
+        const int c = fgetc (fp);
 # endif
 
-    if (EOF == ch) {
+        if (EOF == c) {
 # ifdef multics
-      const int w = getw (fp);
+          const int w = getw (fp);
 
-      if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
-        aggregate |= (crc_t)((w >> 27) & 0x1FF);
-        aggregate |= (crc_t)((w >> 18) & 0x1FF);
-        aggregate |= (crc_t)((w >> 9) & 0x1FF);
-        aggregate |= (crc_t)(w & 0x1FF);
-        (void)cb_add (num_chars, 4);
-        (void)clearerr (fp);
-        continue;
-      }
+          if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
+            if (nread <= (long)(sizeof (mbuf) - 4)) {
+              mbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+              mbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+              mbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+              mbuf [nread++] = (unsigned char)(w & 0x1FF);
+              (void)clearerr (fp);
+              continue;
+            }
+          }
 # endif
-      break;
-    }
+          break;
+        }
 
-    aggregate |= (crc_t)(unsigned char)ch;
+        mbuf [nread++] = (unsigned char)c;
+      }
 
-    if (0 == cb_add (num_chars, 1)) {
-      error_msg ("Character counter overflow reading", filename, 0);
-      (void)fclose (fp);
-      return -1;
+      if (0 != ferror (fp)) {
+        break;
+      }
+
+      if (0 == nread) {
+        break;
+      }
+
+      {
+        long i;
+
+        for (i = 0; nread > i; i++) {
+          const crc_t b = (crc_t)mbuf [i];
+
+          aggregate |= b;
+        }
+
+        if (0 == cb_add (num_chars, (unsigned int)nread)) {
+          error_msg ("Character counter overflow reading", filename, 0);
+          (void)fclose (fp);
+          return -1;
+        }
+      }
     }
   }
 #endif
