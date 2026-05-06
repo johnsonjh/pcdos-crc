@@ -86,15 +86,11 @@ detect_width()
 
   if cols=$(tput cols 2> /dev/null); then
     case ${cols:-} in
-    *[!0-9]* | '')
-      :
-      ;;
+    *[!0-9]* | '') : ;;
     *)
       w=$((cols - 2))
       case ${w:-} in
-      *[!0-9]* | '' | 0)
-        :
-        ;;
+      *[!0-9]* | '' | 0) : ;;
       *)
         width=${w:-}
         ;;
@@ -105,9 +101,7 @@ detect_width()
 
   if [ "${width:?}" -eq 80 ]; then
     case ${COLUMNS:-} in
-    *[!0-9]* | '')
-      :
-      ;;
+    *[!0-9]* | '') : ;;
     *)
       width=${COLUMNS:-}
       ;;
