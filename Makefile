@@ -59,7 +59,7 @@ tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
 
 ################################################################################
 
-.PHONY: clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
+.PHONY: all clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
 	GTAGS cscope cscope.out
 
 ################################################################################
