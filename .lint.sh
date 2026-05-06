@@ -16,7 +16,8 @@
 # Editorconfig-Checker: https://editorconfig-checker.github.io/
 # GCC: https://gcc.gnu.org/
 # Markdown-toc: https://github.com/jonschlinkert/markdown-toc
-# Oracle Lint - https://www.oracle.com/application-development/developerstudio/
+# NetBSD Lint: https://man.netbsd.org/lint.1
+# Oracle Lint: https://www.oracle.com/application-development/developerstudio/
 # PVS-Studio: https://pvs-studio.com/
 # REUSE: https://codeberg.org/fsfe/reuse-tool
 # Scan-Build: https://clang-analyzer.llvm.org/
