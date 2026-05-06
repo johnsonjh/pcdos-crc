@@ -284,8 +284,12 @@ Most users won't need to do any of these things.
 
 The `Makefile` provides three convenience targets for developers:
 
-1. `make tags` generates source code tags using `etags`, `ctags`, `gtags`,
-   and `cscope`, if those programs are available.
+1. `make tags` generates source code tags using
+   [`etags`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Create-Tags-Table.html),
+   [`ctags`](https://ctags.io/),
+   [`gtags`](https://www.gnu.org/software/global/), and
+   [`cscope`](https://cscope.sourceforge.net/),
+   if those programs are available.
 
 2. `make lint` runs the [`.lint.sh`](.lint.sh) shell script, which checks
    the source code for many issues.  Anyone interested in modifying the
