@@ -279,14 +279,14 @@ command -v "${OLINT:-}" > /dev/null 2>&1 && {
 
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
-      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 "${variant:-}" \
+      "${OLINT:?}" -fd -std=c89 "${variant:-}" \
         -err=warn -XCC=no -errchk=structarg,parentheses,locfmtchk crc.c
-      /opt/oracle/developerstudio12.6/bin/lint -Xa -DNOANSI "${variant:-}" \
+      "${OLINT:?}" -Xa -DNOANSI "${variant:-}" \
         -err=warn -XCC=no -errchk=structarg,parentheses,locfmtchk crc.c
     else
-      /opt/oracle/developerstudio12.6/bin/lint -fd -std=c89 \
+      "${OLINT:?}" -fd -std=c89 \
         -err=warn -XCC=no -errchk=structarg,parentheses,locfmtchk crc.c
-      /opt/oracle/developerstudio12.6/bin/lint -Xa -DNOANSI \
+      "${OLINT:?}" -Xa -DNOANSI \
         -err=warn -XCC=no -errchk=structarg,parentheses,locfmtchk crc.c
     fi
   done
