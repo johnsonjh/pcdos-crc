@@ -45,7 +45,7 @@ fi
 
 # shellcheck disable=SC2065
 test -f "./${0##*/}" > /dev/null 2>&1 || {
-  printf '%s\n' "ERROR: Cannot locate script in current directory."
+  printf '%s\n' "ERROR: Could not locate script in current directory."
   exit 1
 }
 
