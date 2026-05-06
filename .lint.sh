@@ -30,6 +30,7 @@
 # DUMA: https://github.com/johnsonjh/duma
 # Funcheck: https://github.com/froz42/funcheck
 # Hunspell: https://hunspell.github.io/
+# Semgrep: https://semgrep.dev/
 # Smatch: https://repo.or.cz/w/smatch.git
 # Valgrind: https://valgrind.org/
 
