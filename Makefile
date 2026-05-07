@@ -43,7 +43,7 @@ lint: .lint.sh .common.sh
 
 ################################################################################
 
-tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
+tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out tag: crc.c
 	@command -v etags > /dev/null 2>&1 && \
 		{ { echo etags...; etags crc.c && exit 0; }; \
 			exit 1; } || :
@@ -60,7 +60,7 @@ tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out: crc.c
 ################################################################################
 
 .PHONY: all clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
-	GTAGS cscope cscope.out
+	GTAGS cscope cscope.out tag
 
 ################################################################################
 
