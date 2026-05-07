@@ -410,7 +410,7 @@ cb_cmp (a, b)
 
 /******************************************************************************/
 
-static void
+static int
 #ifdef ANSI_COMPILER
 cb_mul (
   counter_t * const c,
@@ -437,6 +437,11 @@ cb_mul (c, v)
     c -> d [i] = (unsigned char)r;
     carry = q;
   }
+
+  if (0 != carry)
+    return 0;
+
+  return 1;
 }
 
 /******************************************************************************/
@@ -2374,9 +2379,11 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
     counter_t expected_bits;
 
     cb_copy (& expected_bits, & expected_chars);
-    cb_mul (& expected_bits, (unsigned int)local_use_cb);
-
-    if (0 != cb_cmp (& processed_bits, & expected_bits)) {
+    if (0 == cb_mul (& expected_bits, (unsigned int)local_use_cb)) {
+      out_err_check_int (
+        fprintf (stderr, "ERROR: %s: bit count overflow during validation.\n",
+          filename));
+    } else if (0 != cb_cmp (& processed_bits, & expected_bits)) {
       const int cmp = cb_cmp (& processed_bits, & expected_bits);
 
       out_err_check_int (
