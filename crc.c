@@ -512,7 +512,6 @@ cb_printf (fp, c)
 #endif
 {
   int i = MAX_CB_DIGITS - 1;
-  int started = 0;
 
   while (0 < i && 0 == c -> d [i])
     i--;
@@ -524,15 +523,6 @@ cb_printf (fp, c)
       out_err_check_fputc (fputc (ch, fp));
     else
       out_err_check_int (printf ("%c", ch));
-
-    started = 1;
-  }
-
-  if (0 == started) {
-    if (NULL != fp)
-      out_err_check_fputc (fputc ('0', fp));
-    else
-      out_err_check_int (printf ("0"));
   }
 }
 
