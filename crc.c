@@ -2319,6 +2319,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
       & is_all_zeros, & expected_chars);
 
     if (0 > max_bits) {
+      if (0 != g_fileerr)
+        return;
+
       is_all_zeros = 0;
       bit_check_failed = 1;
     }
