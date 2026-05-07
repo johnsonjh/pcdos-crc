@@ -31,6 +31,7 @@
 # DUMA: https://github.com/johnsonjh/duma
 # Funcheck: https://github.com/froz42/funcheck
 # Hunspell: https://hunspell.github.io/
+# IBM Lint: https://www.ibm.com/docs/en/aix/7.3.0?topic=l-lint-command
 # Semgrep: https://semgrep.dev/
 # Smatch: https://repo.or.cz/w/smatch.git
 # Valgrind: https://valgrind.org/
@@ -470,8 +471,8 @@ command -v cppcheck > /dev/null 2>&1 && {
     }
   # shellcheck disable=2086
   cppcheck --enable=warning,style,performance,portability,unusedFunction \
-    --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 \
-    -D__CPPCHECK__ -D__LINT__ --inline-suppr --inconclusive crc.c
+    --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 -D__CPPCHECK__ \
+    -D__LINT__ --inline-suppr --inconclusive --error-exitcode=99 crc.c
 }
 
 ################################################################################
