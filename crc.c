@@ -1211,9 +1211,9 @@ test_crc_table (tbl, mask32)
 
 static int
 #ifdef ANSI_COMPILER
-charbits (void)
+char_bits (void)
 #else
-charbits ()
+char_bits ()
 #endif
 {
   unsigned char x = 1;
@@ -2509,7 +2509,7 @@ main (argc, argv)
   const char * filename = (char *)0;
   crc_t mask32 = 0;
   crc_t v;
-  const int cb = charbits ();
+  const int cb = char_bits ();
   const int ub = crc_t_bits ();
   const int uib = unsigned_int_bits ();
   const unsigned int batch_limit = safe_batch_limit ();
