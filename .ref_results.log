@@ -706,4 +706,22 @@ EXIT: 0
 
 ------------------------------------------------------------------------------
 
+TEST #70: Pluralization: 1 character
+ARGS: /dev/null --limit=8 --pad -v
+
+/dev/null		CRC=00000000	# 8 bits (1 8-bit character - padded)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
+TEST #71: Pluralization: 101 characters
+ARGS: ./.test_plural.bin -v
+
+./.test_plural.bin		CRC=6140B5AE	# 808 bits (101 8-bit characters)
+
+EXIT: 0
+
+------------------------------------------------------------------------------
+
 # EOF

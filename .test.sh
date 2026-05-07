@@ -59,6 +59,7 @@ ZERO_FILE="./.test_zero.bin"
 SEVEN_FILE="./.test_seven.txt"
 OUT_FILE="./.test_results.log"
 REF_FILE="./.ref_results.log"
+PLURAL_FILE="./.test_plural.bin"
 SRC_FILE="crc.c"
 
 ################################################################################
@@ -79,6 +80,12 @@ find_command "${CC:?}" diff mv rm sed
 printf '\252\125\377' > "${TEST_FILE:?}"
 printf '\0\0\0' > "${ZERO_FILE:?}"
 printf 'Hello' > "${SEVEN_FILE:?}"
+
+i=0
+while [ "${i:?}" -lt 101 ]; do
+  printf '%s' "a"
+  i="$((i + 1))"
+done > "${PLURAL_FILE:?}"
 
 ################################################################################
 
@@ -468,6 +475,16 @@ run_test_suite()
 
   #############################################################################
 
+  run_test "Pluralization: 1 character" \
+    /dev/null --limit=8 --pad -v
+
+  #############################################################################
+
+  run_test "Pluralization: 101 characters" \
+    "${PLURAL_FILE:?}" -v
+
+  #############################################################################
+
   printf '%s\n' "# EOF" >> "${OUT_FILE:?}"
 
   #############################################################################
@@ -519,7 +536,8 @@ done
 ################################################################################
 
 rm -f "./nonexistent" > /dev/null 2>&1 || :
-rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}"
+rm -f "${PROG:?}" "${TEST_FILE:?}" "${ZERO_FILE:?}" "${SEVEN_FILE:?}" \
+  "${PLURAL_FILE:?}"
 
 ################################################################################
 

@@ -266,6 +266,29 @@ cb_is_zero (c)
 
 /******************************************************************************/
 
+static int
+#ifdef ANSI_COMPILER
+cb_is_one (
+  const counter_t * const c)
+#else
+cb_is_one (c)
+  const counter_t * const c;
+#endif
+{
+  int i;
+
+  if (1 != c -> d [0])
+    return 0;
+
+  for (i = 1; MAX_CB_DIGITS > i; i++)
+    if (0 != c -> d [i])
+      return 0;
+
+  return 1;
+}
+
+/******************************************************************************/
+
 static void
 #ifdef ANSI_COMPILER
 cb_copy (
@@ -2060,7 +2083,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             cb_printf (stderr, & rem_bits);
             out_err_check_int (
               fprintf (stderr, " bit%s ignored in 8-bit mode.\n",
-                (1 == rem_bits.d [0] && 0 == rem_bits.d [1]) ? "" : "s"));
+                cb_is_one (& rem_bits) ? "" : "s"));
             out_err_check_int (fprintf (stderr, "         "));
             out_err_check_int (fprintf (stderr,
               "Result calculated only up to the last full character.\n"));
@@ -2089,13 +2112,13 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         out_err_check_int (fprintf (stderr, "WARNING: File ended after "));
         cb_printf (stderr, & used_bits);
         out_err_check_int (fprintf (stderr, " bit%s, but --limit=",
-           (1 == used_bits.d [0] && 0 == used_bits.d [1]) ? "" : "s"));
+           cb_is_one (& used_bits) ? "" : "s"));
         cb_printf (stderr, lim_bits);
         out_err_check_int (fprintf (stderr, " requested.\n"));
         out_err_check_int (fprintf (stderr, "         "));
         out_err_check_int (
           fprintf (stderr, "Use --pad to zero-fill the remaining bit%s.\n",
-            (1 == rem_bits.d [0] && 0 == rem_bits.d [1]) ? "" : "s"));
+            cb_is_one (& rem_bits) ? "" : "s"));
       }
     }
 
@@ -2435,7 +2458,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
     out_err_check_int (fprintf (stdout, " bits ("));
     cb_printf (stdout, & processed_chars);
     out_err_check_int (fprintf (stdout, " %d-bit character%s", local_use_cb,
-      (1 == processed_chars.d [0] && 0 == processed_chars.d [1]) ? "" : "s"));
+      cb_is_one (& processed_chars) ? "" : "s"));
 
     if (0 != is_all_zeros && 0 == bit_check_failed &&
         0 != cb_is_zero (& processed_bits))
