@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com -->
 <!-- SPDX-License-Identifier: MIT-0 -->
 <!-- scspell-id: dea16a3a-40d9-11f1-8a31-80ee73e9b8e7 -->
-# pcdos-crc
+# CRC
 
 [![CodeQL](https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql)
 <!--[![REUSE status](https://api.reuse.software/badge/gitlab.com/dps8m/crc)](https://api.reuse.software/info/gitlab.com/dps8m/crc)-->
