@@ -170,6 +170,14 @@ extern char * strerror ();
 
 /******************************************************************************/
 
+#ifdef LINT
+# ifndef __LINT__
+#  define __LINT__ LINT
+# endif
+#endif
+
+/******************************************************************************/
+
 typedef struct {
   unsigned char d [MAX_CB_DIGITS];
 } counter_t;
@@ -1481,7 +1489,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) { /* Multics */ }
 # else
+#  ifdef _AIX
+  /*cppcheck-suppress duplicateExpression*/
+  if (expected_chars != expected_chars) { /* AIX Lint */ }
+#  else
   (void)expected_chars;
+#  endif
 # endif
 #endif
 
