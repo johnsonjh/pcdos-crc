@@ -4,7 +4,7 @@
 # pcdos-crc
 
 [![CodeQL](https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql)
-[![Dependabot Updates](https://github.com/johnsonjh/pcdos-crc/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/johnsonjh/pcdos-crc/actions/workflows/dependabot/dependabot-updates)
+[![REUSE status](https://api.reuse.software/badge/gitlab.com/dps8m/crc)](https://api.reuse.software/info/gitlab.com/dps8m/crc)
 
 <!-- toc -->
 
