@@ -28,6 +28,7 @@
 ################################################################################
 
 # It is also recommended to (manually) run the following periodically:
+# CodeQL: https://codeql.github.com/
 # DUMA: https://github.com/johnsonjh/duma
 # Funcheck: https://github.com/froz42/funcheck
 # Hunspell: https://hunspell.github.io/
