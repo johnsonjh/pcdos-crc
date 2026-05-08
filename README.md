@@ -185,11 +185,6 @@ file stored locally results in pulling 9 bits from each native 8-bit character
 
 The behavior of these options depends on the CRC processing mode:
 
-| Mode | `limit` > file size (no `pad`) | `limit` > file size (with `pad`) |
-| :--- | :--- | :--- |
-| **8-bit mode** (*default*) | Warns, stops at end of file. | **Zero-fills to the limit**. |
-| **Fallback mode** (`bits`≠`8`) | Warns, stops at end of file. | Warns, stops at end of file. |
-
 #### 8-bit mode (default)
 
 When processing 8-bit characters on a system with an 8-bit native character
