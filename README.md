@@ -119,9 +119,8 @@ in 9-bit nonets).
 If the detected bit-width differs from the host's native character size, the
 verbose output option is automatically enabled for that file.
 
-If all bits in a file are zero (including empty files), the program will
-default to using the native character width of the host system and adds an
-`empty` note to the verbose output.
+If a file is empty, the program will default to using the native character
+width of the host system and add an `empty` note to the verbose output.
 
 This option is especially useful when combined with the `--pad=auto` option,
 (and both options are enabled when the program is invoked with `--auto`).

@@ -2393,9 +2393,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
     cb_copy (& expected_bits, & expected_chars);
     if (0 == cb_mul (& expected_bits, (unsigned int)local_use_cb)) {
-      out_err_check_int (
-        fprintf (stderr, "ERROR: %s: bit count overflow during validation.\n",
-          filename));
+      error_msg ("Bit count overflow validating", filename, 0);
+      return;
     } else if (0 != cb_cmp (& processed_bits, & expected_bits)) {
       const int cmp = cb_cmp (& processed_bits, & expected_bits);
 
