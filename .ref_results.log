@@ -220,7 +220,7 @@ EXIT: 0
 TEST #20: Fallback: bits=7
 ARGS: ./.test_data.bin --bits=7
 
-WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 5 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=D50157AC
 
@@ -240,7 +240,7 @@ EXIT: 0
 TEST #22: Fallback: bits=7, limit=7 (1 char)
 ARGS: ./.test_data.bin --bits=7 --limit=7
 
-WARNING: File ended with 7 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 7 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=00000000
 
@@ -251,8 +251,8 @@ EXIT: 0
 TEST #23: Fallback: bits=7, limit=10, no pad
 ARGS: ./.test_data.bin --bits=7 --limit=10
 
-WARNING: --limit ended mid 8-bit octet; use --pad if needed.
-WARNING: File ended with 7 dangling bits (not a full 8-bit octet).
+WARNING: --limit ended mid 7-bit character; use --pad if needed.
+WARNING: File ended with 7 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=00000000
 
@@ -272,7 +272,7 @@ EXIT: 0
 TEST #25: Fallback: bits=7, limit=40 (exceeds), no pad
 ARGS: ./.test_data.bin --bits=7 --limit=40
 
-WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 5 dangling bits (not a full 8-bit CRC input octet).
 WARNING: File ended after 21 bits, but --limit=40 was requested.
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=D50157AC
@@ -295,7 +295,7 @@ ARGS: ./.test_data.bin --bits=9
 
 WARNING: Specified --bits=9 is greater than host 8-bit character size.
          Each 8-bit character read will be zero-filled to reach 9 bits.
-WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 3 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=34F08A0A
 
@@ -396,7 +396,7 @@ EXIT: 0
 TEST #37: Verbose: With bits (7)
 ARGS: ./.test_data.bin --bits=7 -v
 
-WARNING: File ended with 5 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 5 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=D50157AC	# 21 bits (3 7-bit characters)
 
@@ -435,7 +435,7 @@ EXIT: 0
 TEST #41: Auto: 7-bit (Hello)
 ARGS: ./.test_seven.txt --bits=auto
 
-WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 3 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
 
@@ -446,7 +446,7 @@ EXIT: 0
 TEST #42: Auto: 7-bit, limit=14 (2 chars)
 ARGS: ./.test_seven.txt --bits=auto --limit=14
 
-WARNING: File ended with 6 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 6 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=7C0D138E	# 14 bits (2 7-bit characters)
 
@@ -457,8 +457,8 @@ EXIT: 0
 TEST #43: Auto: 7-bit, limit=10 (mid-char), no pad
 ARGS: ./.test_seven.txt --bits=auto --limit=10
 
-WARNING: --limit ended mid 8-bit octet; use --pad if needed.
-WARNING: File ended with 7 dangling bits (not a full 8-bit octet).
+WARNING: --limit ended mid 7-bit character; use --pad if needed.
+WARNING: File ended with 7 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=00000000	# 7 bits (1 7-bit character)
 
@@ -496,7 +496,7 @@ EXIT: 0
 TEST #47: Auto: Mixed files (7-bit and 8-bit)
 ARGS: ./.test_seven.txt ./.test_data.bin --bits=auto
 
-WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 3 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
 ./.test_data.bin		CRC=8908927E
@@ -517,7 +517,7 @@ EXIT: 0
 TEST #49: Auto: Override (Manual then Auto)
 ARGS: ./.test_seven.txt --bits=8 --bits=auto
 
-WARNING: File ended with 3 dangling bits (not a full 8-bit octet).
+WARNING: File ended with 3 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=AB7E2256	# 35 bits (5 7-bit characters)
 

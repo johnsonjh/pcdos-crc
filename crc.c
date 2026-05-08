@@ -1539,7 +1539,8 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         if (0 > cb_cmp (& rem_bits, & uc_cb))
           if (0 == pad && 0 == g_pad_auto) {
             out_err_check_int (
-              fprintf (stderr, "WARNING: --limit ended mid 8-bit octet;"));
+              fprintf (stderr, "WARNING: --limit ended mid %d-bit character;",
+                (int)use_cb));
             out_err_check_int (
               fprintf (stderr, " use --pad if needed.\n"));
             cb_zero (& rem_bits);
@@ -1763,7 +1764,8 @@ done:
         out_err_check_int (
           fprintf (stderr, "WARNING: File ended with %d dangling bit%s ",
             bib, 1 == bib ? "" : "s"));
-        out_err_check_int (fprintf (stderr, "(not a full 8-bit octet).\n"));
+        out_err_check_int (
+          fprintf (stderr, "(not a full 8-bit CRC input octet).\n"));
         hinted = 1;
       }
     }
