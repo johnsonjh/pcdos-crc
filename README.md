@@ -220,10 +220,12 @@ In this mode:
 
 * The `--pad` option is used to zero-fill any remaining bits of
   the *final character read from the file* if the input ends mid-character,
-  or to allow processing a final partial character to satisfy a `--limit`.
+  or to allow processing final partial characters to satisfy a `--limit`.
 
-* The program **does not** synthesize data to reach a specified `--limit`.
-  If the file ends before the limit is reached, a warning is displayed.
+* In this mode, the program **will** synthesize zero data to reach a
+  specified `--limit` if the `--pad` option is specified. Without
+  `--pad`, if the file ends before the limit is reached, a warning
+  is displayed.
 
 ## Building
 
