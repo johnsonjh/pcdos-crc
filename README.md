@@ -3,9 +3,8 @@
 <!-- scspell-id: dea16a3a-40d9-11f1-8a31-80ee73e9b8e7 -->
 # CRC
 
-[![CodeQL][CodeQL-Badge]][CodeQL-Workflow]
-[CodeQL-Badge]: https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql/badge.svg
-[CodeQL-Workflow]: https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql
+[![CodeQL](https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/johnsonjh/pcdos-crc/actions/workflows/github-code-scanning/codeql)
+<!--[![REUSE status](https://api.reuse.software/badge/gitlab.com/dps8m/crc)](https://api.reuse.software/info/gitlab.com/dps8m/crc)-->
 
 <!-- toc -->
 
