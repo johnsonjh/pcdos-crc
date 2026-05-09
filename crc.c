@@ -1579,18 +1579,18 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 # ifdef multics
             if (0 != expected_chars &&
                 0 != cb_cmp (processed_chars, expected_chars)) {
-               const int w = getw (fp);
+              const int w = getw (fp);
 
-               if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
-                  if (nread <= (long)(sizeof (rbuf) - 4)) {
-                     rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
-                     rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
-                     rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
-                     rbuf [nread++] = (unsigned char)(w & 0x1FF);
-                     (void)clearerr (fp);
-                     continue;
-                  }
-               }
+              if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
+                if (nread <= (long)(sizeof (rbuf) - 4)) {
+                  rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+                  rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+                  rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+                  rbuf [nread++] = (unsigned char)(w & 0x1FF);
+                  (void)clearerr (fp);
+                  continue;
+                }
+              }
             }
 # endif
             break;
@@ -1912,18 +1912,18 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 # ifdef multics
           if (0 != expected_chars &&
               0 != cb_cmp (processed_chars, expected_chars)) {
-             const int w = getw (fp);
+            const int w = getw (fp);
 
-             if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
-                if (nread <= (long)(sizeof (rbuf) - 4)) {
-                   rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
-                   rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
-                   rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
-                   rbuf [nread++] = (unsigned char)(w & 0x1FF);
-                   (void)clearerr (fp);
-                   continue;
-                }
-             }
+            if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
+              if (nread <= (long)(sizeof (rbuf) - 4)) {
+                rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+                rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+                rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+                rbuf [nread++] = (unsigned char)(w & 0x1FF);
+                (void)clearerr (fp);
+                continue;
+              }
+            }
           }
 # endif
           break;
