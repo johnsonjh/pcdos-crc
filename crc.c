@@ -1531,6 +1531,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         counter_t uc_cb;
 
         cb_zero (& uc_cb);
+
         if (0 == cb_add (& uc_cb, (unsigned int)use_cb)) {
           error_msg ("Counter logic error reading", filename, 0);
           goto done;
@@ -1597,8 +1598,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
           if (0 == feof (fp)) {
             if (0 != expected_chars) {
               counter_t cur_chars;
+
               cb_copy (& cur_chars, processed_chars);
               (void)cb_add (& cur_chars, acc_chars);
+
               if (0 == cb_cmp (& cur_chars, expected_chars)) {
                 goto done;
               }
@@ -2394,6 +2397,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
     counter_t expected_bits;
 
     cb_copy (& expected_bits, & expected_chars);
+
     if (0 == cb_mul (& expected_bits, (unsigned int)local_use_cb)) {
       error_msg ("Bit count overflow validating", filename, 0);
       return;
