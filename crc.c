@@ -2848,9 +2848,9 @@ bits_error:
 #endif
 
   if (0 != g_out_err) {
-    (void)fprintf(stderr, "\nWARNING: %ld output operation%s failed; ",
+    (void)fprintf (stderr, "\nWARNING: %ld output operation%s failed; ",
       g_out_err, (1 == g_out_err ? "" : "s"));
-    (void)fprintf(stderr, "displayed results may not be reliable!\n");
+    (void)fprintf (stderr, "displayed results may not be reliable!\n");
     return EXIT_FAILURE;
   }
 
