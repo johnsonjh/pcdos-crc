@@ -2181,9 +2181,8 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
     unsigned char mbuf [BUFSIZ];
 
     for (;;) {
-      if (0 != feof (fp) || 0 != ferror (fp)) {
+      if (0 != feof (fp) || 0 != ferror (fp))
         break;
-      }
 
       {
         const long n = (long)fread (mbuf, 1, sizeof (mbuf), fp);
@@ -2252,9 +2251,8 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
         mbuf [nread++] = (unsigned char)c;
       }
 
-      if (0 != ferror (fp)) {
+      if (0 != ferror (fp))
         break;
-      }
 
       if (0 == nread) {
         if (0 == feof (fp) && 0 == ferror (fp)) {
