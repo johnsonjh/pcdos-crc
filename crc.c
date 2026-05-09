@@ -1617,8 +1617,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
                 goto done;
               }
             }
+
             error_msg ("Error reading", filename, errno);
           }
+
           goto done;
         }
 
@@ -1942,8 +1944,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
               0 == cb_cmp (processed_chars, expected_chars)) {
             break;
           }
+
           error_msg ("Error reading", filename, errno);
         }
+
         break;
       }
 
@@ -2193,6 +2197,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
             (void)fclose (fp);
             return -1;
           }
+
           break;
         }
 
@@ -2260,6 +2265,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
           (void)fclose (fp);
           return -1;
         }
+
         break;
       }
 
