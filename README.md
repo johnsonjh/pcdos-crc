@@ -255,6 +255,10 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   have the pre-ANSI BSD/System V `sys_errlist` / `sys_nerr` interface, you
   should define `USE_PSYSERROR`.
 
+* Defining `HAVE_SYS_STAT` indicates the availability of the POSIX `stat`
+  function and the existence of the `sys/types.h` and `sys/stat.h` header
+  files, if not automatically detected.
+
 * Defining `SELFTEST` adds a (rather heavyweight) startup test which verifies
   the CRC lookup table in the source code is uncorrupted and consistent with
   the polynomial (`0x51F9D3DE`).

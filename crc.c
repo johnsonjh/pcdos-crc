@@ -84,6 +84,9 @@ typedef unsigned long crc_t;
 #  ifndef BUFSIZ
 #   define BUFSIZ 128
 #  endif
+#  ifndef NOFREAD
+#   define NOFREAD
+#  endif
 #  ifndef MAX_CB_DIGITS
 #   define MAX_CB_DIGITS 8 /* ~12 MiB */
 #  endif
@@ -122,10 +125,128 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+#ifdef __has_include
+# define HAS_INCLUDE(inc) __has_include(inc)
+#else
+# define HAS_INCLUDE(inc) 0
+#endif
+
+#ifndef __CPPCHECK__
+# ifndef multics
+#  if HAS_INCLUDE(<unistd.h>)
+#   include <unistd.h>
+#  endif
+#  if HAS_INCLUDE(<sys/stat.h>)
+#   ifndef HAVE_SYS_STAT
+#    define HAVE_SYS_STAT
+#   endif
+#  endif
+# endif
+#endif
+
+#ifdef _POSIX_VERSION
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __unix
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __UNIX__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __unix__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef unix
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __HAIKU__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __WATCOMC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __DJGPP__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __APPLE__
+# ifdef __MACH__
+#  ifndef HAVE_SYS_STAT
+#   define HAVE_SYS_STAT
+#  endif
+# endif
+#endif
+
+#ifdef __NeXT__
+# ifdef __MACH__
+#  ifndef HAVE_SYS_STAT
+#   define HAVE_SYS_STAT
+#  endif
+# endif
+#endif
+
+#ifdef _AIX
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef _MSC_VER
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __BORLANDC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __IMPORTC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef _CH_
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+/******************************************************************************/
+
 #include <stdio.h>
 
 #ifndef multics
 # include <stdlib.h>
+#else
+# include <types.h>
+# include <stat.h>
 #endif
 
 #ifdef USE_ERRNO
@@ -142,6 +263,37 @@ typedef unsigned long crc_t;
 #else
 # ifdef FORCE_STRERROR
 extern char * strerror ();
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef HAVE_SYS_STAT
+# include <sys/types.h> /* Exists if we have sys/stat.h */
+# include <sys/stat.h>
+#endif
+
+#ifdef multics
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifndef S_ISDIR
+# ifndef S_IFMT
+#  ifdef _S_IFMT
+#   define S_IFMT _S_IFMT
+#  endif
+# endif
+# ifndef S_IFDIR
+#  ifdef _S_IFDIR
+#   define S_IFDIR _S_IFDIR
+#  endif
+# endif
+# ifdef S_IFMT
+#  ifdef S_IFDIR
+#   define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
+#  endif
 # endif
 #endif
 
@@ -1516,11 +1668,11 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 #ifndef multics
 # ifndef __LINT__
   /*LINTED E_FALSE_LOGICAL_EXPR*/
-  if ((0) && (expected_chars)) { /* Multics */ }
+  if ((0) && (expected_chars)) { }
 # else
 #  ifdef _AIX
   /*cppcheck-suppress duplicateExpression*/
-  if (expected_chars != expected_chars) { /* AIX Lint */ }
+  if (expected_chars != expected_chars) { }
 #  else
   (void)expected_chars;
 #  endif
@@ -2316,6 +2468,48 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
 
 /******************************************************************************/
 
+static int
+#ifdef ANSI_COMPILER
+check_is_directory (
+  const char * const filename)
+#else
+check_is_directory (filename)
+  const char * const filename;
+#endif
+{
+#ifdef HAVE_SYS_STAT
+# ifdef S_ISDIR
+  struct stat st;
+
+  if (0 == stat (filename, & st))
+    if (0 != S_ISDIR (st.st_mode)) {
+#  ifdef EISDIR
+      error_msg ("Error opening", filename, EISDIR);
+#  else
+      error_msg ("Is a directory:", filename, 0);
+#  endif
+      return 1;
+    }
+# endif
+#endif
+
+#ifndef __LINT__
+  /*LINTED E_FALSE_LOGICAL_EXPR*/
+  if ((0) && (filename)) { }
+#else
+# ifdef _AIX
+  /*cppcheck-suppress duplicateExpression*/
+  if (filename != filename) { }
+# else
+  (void)filename;
+# endif
+#endif
+
+  return 0;
+}
+
+/******************************************************************************/
+
 static void
 #ifdef ANSI_COMPILER
 process_file (
@@ -2362,6 +2556,10 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   cb_zero (& processed_chars);
   cb_zero (& expected_chars);
   g_fileerr = 0;
+
+  /*cppcheck-suppress knownConditionTrueFalse*/
+  if (0 != check_is_directory (filename))
+    return;
 
   {
     const int max_bits = find_max_bits (filename, cb,
