@@ -133,11 +133,25 @@ typedef unsigned long crc_t;
 
 #ifdef HAS_INCLUDE
 # ifndef __CPPCHECK__
-#  if HAS_INCLUDE(<sys/stat.h>)
+#  if HAS_INCLUDE(<sys/stat.h>) /* stat */
 #   ifndef HAVE_SYS_STAT
 #    define HAVE_SYS_STAT
 #   endif
 #  endif
+# endif
+#endif
+
+#ifdef HAS_INCLUDE
+# ifndef __CPPCHECK__
+#  if HAS_INCLUDE(<unistd.h>)
+#   include <unistd.h> /* _POSIX_VERSION */
+#  endif
+# endif
+#endif
+
+#ifdef _POSIX_VERSION
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
 # endif
 #endif
 
