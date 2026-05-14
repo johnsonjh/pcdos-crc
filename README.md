@@ -71,7 +71,7 @@ It has been tested on various exotic and retro platforms including
 **TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)),
 **MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), Watcom,
 Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
-**Windows** (MSVC, GCC, Clang), **ELKS** (IA16-GCC),
+**Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC),
 **Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
 and systems supported by
 [SoftIntegration **Ch**](https://www.softintegration.com/), but should be
