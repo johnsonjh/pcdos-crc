@@ -191,6 +191,12 @@ typedef unsigned long crc_t;
 # endif
 #endif
 
+#ifdef _AIX
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
 #ifdef _CH_
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
@@ -238,6 +244,16 @@ extern char * strerror ();
 #endif
 
 #ifndef S_ISDIR
+# ifndef S_IFMT
+#  ifdef _S_IFMT
+#   define S_IFMT _S_IFMT
+#  endif
+# endif
+# ifndef S_IFDIR
+#  ifdef _S_IFDIR
+#   define S_IFDIR _S_IFDIR
+#  endif
+# endif
 # ifdef S_IFMT
 #  ifdef S_IFDIR
 #   define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
