@@ -209,6 +209,12 @@ typedef unsigned long crc_t;
 # endif
 #endif
 
+#ifdef __IMPORTC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
 #ifdef _CH_
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
