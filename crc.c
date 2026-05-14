@@ -191,6 +191,14 @@ typedef unsigned long crc_t;
 # endif
 #endif
 
+#ifdef __NeXT__
+# ifdef __MACH__
+#  ifndef HAVE_SYS_STAT
+#   define HAVE_SYS_STAT
+#  endif
+# endif
+#endif
+
 #ifdef _AIX
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
