@@ -32,6 +32,7 @@
 /.log.sed
 /nonexistent
 /NOTES.TXT
+/*.o
 /*.obj
 /*.out
 /popcom.com
