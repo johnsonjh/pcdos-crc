@@ -256,7 +256,8 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   should define `USE_PSYSERROR`.
 
 * Defining `HAVE_SYS_STAT` indicates the availability of the POSIX `stat`
-  function and the `sys/stat.h` header file if not automatically detected.
+  function and the existence of the `sys/types.h` and `sys/stat.h` header
+  files, if not automatically detected.
 
 * Defining `SELFTEST` adds a (rather heavyweight) startup test which verifies
   the CRC lookup table in the source code is uncorrupted and consistent with
