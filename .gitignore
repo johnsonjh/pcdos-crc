@@ -32,6 +32,7 @@
 /.log.sed
 /nonexistent
 /NOTES.TXT
+/*.obj
 /*.out
 /popcom.com
 /profile.txt
