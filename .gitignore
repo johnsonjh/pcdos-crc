@@ -20,9 +20,7 @@
 /crc.exe
 /CRC.EXE
 /crckcc.c
-/crc.obj
 /crc_test
-/cscope.out
 /*.dsk
 /GPATH
 /GRTAGS
@@ -39,6 +37,7 @@
 /profile.txt
 /pvsreport
 /selftest
+/*.sym
 /tags
 /TAGS
 /test
