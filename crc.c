@@ -541,7 +541,7 @@ cb_sub (c, v)
       return 0;
 
     if (c -> d [i] >= digit_to_sub)
-      c -> d [i] -= (unsigned char)digit_to_sub;
+      c -> d [i] = (unsigned char)(c -> d [i] - (unsigned char)digit_to_sub);
     else {
       int j = i + 1;
 
@@ -1673,8 +1673,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
 #ifndef multics
 # ifndef __LINT__
+#  ifdef _MSC_VER
+  if (expected_chars != expected_chars) { }
+#  else
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) { }
+#  endif
 # else
 #  ifdef _AIX
   /*cppcheck-suppress duplicateExpression*/
@@ -2500,8 +2504,12 @@ check_is_directory (filename)
 #endif
 
 #ifndef __LINT__
+# ifdef _MSC_VER
+  if (filename != filename) { }
+# else
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (filename)) { }
+# endif
 #else
 # ifdef _AIX
   /*cppcheck-suppress duplicateExpression*/
@@ -2767,6 +2775,13 @@ usage (progname, cb)
 /******************************************************************************/
 
 int
+#ifdef _MSC_VER
+# ifndef _WIN32
+#  if _MSC_VER < 900
+cdecl
+#  endif
+# endif
+#endif
 #ifdef ANSI_COMPILER
 main (
   const int argc,
