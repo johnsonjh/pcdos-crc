@@ -8,6 +8,8 @@
 /*.$$$
 /a.out
 /*.bak
+/*.com
+/*.COM
 /compile_commands.events.json
 /compile_commands.json
 /core
@@ -15,13 +17,11 @@
 /crc
 /crc32
 /crc64
-/crc.com
-/CRC.COM
-/crc.exe
-/CRC.EXE
 /crckcc.c
 /crc_test
 /*.dsk
+/*.exe
+/*.EXE
 /GPATH
 /GRTAGS
 /GTAGS
@@ -33,7 +33,6 @@
 /*.o
 /*.obj
 /*.out
-/popcom.com
 /profile.txt
 /pvsreport
 /selftest

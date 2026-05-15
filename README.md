@@ -472,37 +472,43 @@ utilized, but might be supported in a future release.
 ### Building for ELKS
 
 * To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
-  ```sh
+  ```
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
   ```
 
 ### Building for MS-DOS
 
 * To build a binary for MS-DOS using IA16-GCC:
-  ```sh
+  ```
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Microsoft C 8.00c:
-  ```sh
+  ```
   cl /AT /O2 /Gr /Fecrc.com crc.c
   ```
 
 * To build a binary for MS-DOS using [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
-  ```sh
+  ```
   owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Watcom C:
-  ```sh
+  ```
   wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
   wlink system com file crc.obj name crc.com
   ```
 
 * To build a binary for MS-DOS using DJGPP:
-  ```sh
+  ```
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
   ```
+
+The
+[aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
+[UPX](https://upx.github.io/) utilities can be used to compress the generated
+MS-DOS executables, reducing their on‑disk size by approximately 60%, at the
+cost of a small increase in load time.
 
 ## Security
 
