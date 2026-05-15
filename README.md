@@ -490,7 +490,7 @@ utilized, but might be supported in a future release.
 
 * To build a binary for MS-DOS using [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
   ```sh
-  owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -Wall -Wextra -o crc.com crc.c
+  owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Watcom C:
