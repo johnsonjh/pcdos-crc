@@ -39,6 +39,16 @@
 
 /******************************************************************************/
 
+#ifndef CRC_NAME
+# ifdef __MSDOS__
+#  define CRC_NAME "CRC"
+# else
+#  define CRC_NAME "crc"
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef multics
 typedef unsigned int crc_t;
 #else
@@ -67,6 +77,19 @@ typedef unsigned long crc_t;
 #ifdef __COMPILER_KCC__
 # ifndef MAX_CB_DIGITS
 #  define MAX_CB_DIGITS 9 /* ~119 MiB */
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __BCC__
+# ifdef ANSI_COMPILER
+#  undef ANSI_COMPILER
+# endif
+# ifndef __MSDOS__
+#  ifndef FORCE_STRERROR
+#   define FORCE_STRERROR
+#  endif
 # endif
 #endif
 
@@ -249,7 +272,21 @@ typedef unsigned long crc_t;
 #include <stdio.h>
 
 #ifndef multics
+# ifdef __BCC__
+#  ifdef __MSDOS__
+#   ifdef BCC_DOS
+#    undef BCC_DOS
+#   endif
+#   define BCC_DOS __MSDOS__
+#   undef __MSDOS__
+#  endif
+# endif
 # include <stdlib.h>
+# ifdef BCC_DOS
+#  ifndef __MSDOS__
+#   define __MSDOS__ BCC_DOS
+#  endif
+# endif
 #else
 # include <types.h>
 # include <stat.h>
@@ -2813,7 +2850,8 @@ main (argc, argv)
   const int uib = unsigned_int_bits ();
   const unsigned int batch_limit = safe_batch_limit ();
   const char * const progname =
-    ((char *)0 != argv [0] && '\0' != * argv [0]) ? argv [0] : "crc";
+    ((char *)0 != argv [0] && '\0' != * argv [0])
+      ? ('\0' == argv [0] [1] ? CRC_NAME : argv [0]) : CRC_NAME;
 
   cb_zero (& lim_bits);
 
