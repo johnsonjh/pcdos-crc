@@ -432,9 +432,9 @@ Builds targeting the Z80 will execute about 25% faster than 8080 builds.
 
 The
 [PopCom!](https://github.com/johnsonjh/VEDIT/raw/refs/heads/master/dev/popcom.com)
-utility can compress the generated CP/M executable, reducing its on‑disk size
-by approximately 50% and slightly lowering its memory usage, at the cost of a
-small increase in load time.
+utility can be used to compress the generated CP/M executable, reducing its
+on‑disk size by approximately 50% and slightly lowering its memory usage, at
+the cost of a small increase in load time.
 
 **NB**: If you need to verify CRCs on CP/M that were created on other
 systems, you should always constrain processing to the actual number of
