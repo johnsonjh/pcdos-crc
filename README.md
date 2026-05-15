@@ -483,6 +483,27 @@ utilized, but might be supported in a future release.
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
+* To build a binary for MS-DOS using Microsoft C 8.00c:
+  ```sh
+  cl /AT /O2 /Gr /Fecrc.com crc.c
+  ```
+
+* To build a binary for MS-DOS using [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
+  ```sh
+  owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -Wall -Wextra -o crc.com crc.c
+  ```
+
+* To build a binary for MS-DOS using Watcom C:
+  ```sh
+  wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
+  wlink system com file crc.obj name crc.com
+  ```
+
+* To build a binary for MS-DOS using DJGPP:
+  ```sh
+  ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
+  ```
+
 ## Security
 
 * The canonical home of this software is
