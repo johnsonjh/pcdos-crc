@@ -2037,9 +2037,8 @@ done:
           fprintf (stderr, " was requested.\n")
         );
         hinted = 1;
-      } else {
+      } else
         * actually_padded = 1;
-      }
     }
 
     if (0 != hinted && 0 == pad && 0 == g_pad_auto)
