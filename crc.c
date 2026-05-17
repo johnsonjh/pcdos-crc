@@ -2193,8 +2193,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         long remaining = bytes_to_process;
 
         while (remaining > 0) {
-          unsigned int chunk = (remaining > (long)batch_limit) ?
-            batch_limit : (unsigned int)remaining;
+          unsigned int chunk = ((remaining > (long)batch_limit)
+            ? batch_limit : (unsigned int)remaining);
 
           if (0 == cb_add (processed_bits, chunk * 8)) {
             error_msg ("Bit counter overflow reading", filename, 0);
@@ -2289,8 +2289,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             long remaining = chunk;
 
             while (remaining > 0) {
-              unsigned int c_chunk = ((remaining > (long)batch_limit) ?
-                batch_limit : (unsigned int)remaining);
+              unsigned int c_chunk = ((remaining > (long)batch_limit)
+                ? batch_limit : (unsigned int)remaining);
 
               if (0 == cb_add (processed_bits, c_chunk * 8)) {
                 error_msg ("Bit counter overflow reading", filename, 0);
