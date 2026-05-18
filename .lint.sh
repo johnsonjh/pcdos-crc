@@ -269,7 +269,7 @@ command -v flawfinder > /dev/null 2>&1 && {
 :
 : Banned operations
 : :::::::::::::::::
-grep -n -E '( / | /= | % | %= )' crc.c && {
+grep -n -E '( / | /= | % | %= |#.*elif )' crc.c && {
   : ERROR: Banned operations found
   exit 1
 }
