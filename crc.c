@@ -154,6 +154,8 @@ typedef unsigned long crc_t;
 # define HAS_INCLUDE(inc) 0
 #endif
 
+/******************************************************************************/
+
 #ifndef __CPPCHECK__
 # ifndef multics
 #  if HAS_INCLUDE(<unistd.h>)
