@@ -510,13 +510,13 @@ utilized, but might be supported in a future release.
   bcc -Md -O -o crc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Turbo C 1.0/1.5 (1987/1988):
+* To build a binary for MS-DOS using Turbo C 1.0 (1987) or Turbo C 1.5 (1988):
   ```
   tcc -G -O -Z -f- -mt crc.c
   exe2bin crc.exe crc.com
   ```
 
-* To build a binary for MS-DOS using Turbo C++ 1.01 (1989):
+* To build a binary for MS-DOS using Turbo C++ 1.01 (1990):
   ```
   tcc -G -O -Z -f- -mt -lt crc.c
   ```
