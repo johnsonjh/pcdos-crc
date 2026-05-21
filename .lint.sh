@@ -209,7 +209,7 @@ command -v codespell > /dev/null 2>&1 && {
         | sed 's/["\\]/\\&/g' \
         | paste -sd',' -
     } | sed 's/^/"/; s/$/"/')
-    codespell --ignore-words-list "Ot" --skip "${CODESPELL_EXCLUDE:?}" .
+    codespell --ignore-words-list "Ot" --skip "${CODESPELL_EXCLUDE:-}" .
   }
 }
 
@@ -305,7 +305,7 @@ command -v "${OLINT:-}" > /dev/null 2>&1 && {
 : ::::::::::::
 command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
   CLANG_ANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
-   -Wno-missing-noreturn -Werror"
+   -Wno-missing-noreturn -Wno-disabled-macro-expansion -Werror"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       # shellcheck disable=SC2086
@@ -385,7 +385,7 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
 command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
   CLANG_NOANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
    -Wno-missing-noreturn -Wno-deprecated-non-prototype \
-   -Wno-strict-prototypes -Werror"
+   -Wno-strict-prototypes -Wno-disabled-macro-expansion -Werror"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       # shellcheck disable=SC2086
