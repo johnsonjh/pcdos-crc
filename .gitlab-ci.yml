@@ -102,9 +102,9 @@ pages:
     - export GALLIUM_DRIVER=llvmpipe
     - export SEATD_SOCK=/run/seatd.sock
     - cd /tmp/old_c/MSC800c
-    - seatd -g root &
+    - seatd -g root > /dev/null 2>&1 &
     - sleep 1
-    - cage -s &
+    - cage -s > /dev/null 2>&1 &
     - sleep 1
     - export WAYLAND_DISPLAY=$(ls $XDG_RUNTIME_DIR | grep -E '^wayland-[0-9]+$')
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
@@ -121,7 +121,7 @@ pages:
     - rm -f CRC.*
     - upx --8086 -9 crc.com 2>&1 | grep '\->'
     - cp -f crc.com $CI_PROJECT_DIR/public/MSC800c
-    - emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c
+    - emu2 $CI_PROJECT_DIR/public/MSC800c/crc.com --auto crc.com crc.c
     - rm -f crc.*
     - cd
     - |
