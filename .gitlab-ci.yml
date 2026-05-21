@@ -82,10 +82,9 @@ pages:
     - |
       # Start of Microsoft C 6.00A build ...
       echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A ...\033[0m" || true
-    - pwd -P; pwd
     - mkdir -p public/MSC600A
     - true -- NOTE -- 'warning C4135 - conversion between different integral types' messages are expected for MSC600A builds!
-    - ( cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && upx --8086 -9 crc.com 2>&1 | grep '\->' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto $CI_PROJECT_DIR/public/MSC600A/crc.com crc.c && rm -f crc.* )
+    - ( cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && upx --8086 -9 crc.com 2>&1 | grep '\->' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
     - |
       # End of Microsoft C 6.00A build ...
       echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
