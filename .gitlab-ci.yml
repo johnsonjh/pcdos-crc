@@ -41,7 +41,7 @@ pages:
     - apk add '!usr-merge-nag' 2> /dev/null || true
     - apk upgrade --prune || true
     - apk add make gcc libc-dev upx dev86
-    - ( cd /tmp && git clone https://github.com/dmsc/emu2.git && cd emu2 && make && make install && cd .. && rm -rf ./emu2 )
+    - ( cd /tmp && git clone https://github.com/dmsc/emu2.git && cd emu2 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2 )
     - ( cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p public
     - |
