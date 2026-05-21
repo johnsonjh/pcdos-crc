@@ -209,7 +209,7 @@ command -v codespell > /dev/null 2>&1 && {
         | sed 's/["\\]/\\&/g' \
         | paste -sd',' -
     } | sed 's/^/"/; s/$/"/')
-    codespell --skip "${CODESPELL_EXCLUDE:?}" .
+    codespell --ignore-words-list "Ot" --skip "${CODESPELL_EXCLUDE:?}" .
   }
 }
 

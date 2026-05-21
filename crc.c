@@ -1764,6 +1764,14 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
   cb_copy (& rem_bits, lim_bits);
 
+#ifdef _MSC_VER
+# ifdef __MSDOS__
+#  ifndef DOS_MSC_VER
+#   define DOS_MSC_VER
+#  endif
+# endif
+#endif
+
 #ifndef multics
 # ifndef __LINT__
 #  ifdef _MSC_VER
@@ -2614,7 +2622,16 @@ check_is_directory (filename)
 # ifdef S_ISDIR
   struct stat st;
 
-  if (0 == stat ((char *)(void *)filename, & st))
+  if (0 ==
+    stat (
+#  ifdef DOS_MSC_VER
+      (char *)(void *)filename,
+#  else
+      filename,
+#  endif
+      & st
+    )
+  )
     if (0 != S_ISDIR (st.st_mode)) {
 #  ifdef EISDIR
 #   ifndef __BORLANDC__
