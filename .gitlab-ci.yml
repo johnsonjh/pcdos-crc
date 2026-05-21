@@ -66,7 +66,7 @@ pages:
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 ...\033[0m" || true
     - mkdir -p public/dev86
-    - ( set -x; bcc -Md -O -v -o crc.com crc.c && upx --8086 -9 crc.com 2>&1 | grep '\->' && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
+    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -v -o crc.com crc.c && upx --8086 -9 crc.com 2>&1 | grep '\->' && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
     - |
       # End of dev86 build ...
       echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
