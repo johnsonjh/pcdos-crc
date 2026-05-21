@@ -75,7 +75,10 @@ It has been tested on various exotic and retro platforms including
 Watcom C, Turbo C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC),
 **Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
-and systems supported by
+**UNIX** (GCC, Clang, Oracle Studio C/C++, IBM [Open] XL C/C++,
+NVIDIA HPC SDK C/C++, Portland Group C/C++, DMD ImportC, Intel C++,
+[Chamois] CompCert C, МЦСТ LCC, PCC, PathScale, Open64, Chibicc, Kefir,
+*etc.*), and systems supported by
 [SoftIntegration **Ch**](https://www.softintegration.com/), but should be
 able to be built anywhere else with little to no porting effort required.
 
