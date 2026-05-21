@@ -277,7 +277,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 * For non-ANSI compilers or environments offering an ANSI-conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
   define `FORCE_STRERROR` but don't need to declare `strerror` yourself,
-  define `NO_DCL_STRERROR`/  If you have the pre-ANSI BSD/System V
+  define `NO_DCL_STRERROR`.  If you have the pre-ANSI BSD/System V
   `sys_errlist` / `sys_nerr` interface, you should define `USE_PSYSERROR`.
 
 * Defining `HAVE_SYS_STAT` indicates the availability of the POSIX `stat`
