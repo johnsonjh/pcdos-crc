@@ -470,10 +470,14 @@ command -v cppcheck > /dev/null 2>&1 && {
     || {
       CHECK_LEVEL="--check-level=exhaustive"
     }
+  mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
   cppcheck --enable=warning,style,performance,portability,unusedFunction \
     --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 -D__CPPCHECK__ \
-    -D__LINT__ --inline-suppr --inconclusive --error-exitcode=99 crc.c
+    -D__LINT__ --inline-suppr --inconclusive --error-exitcode=99 \
+    --cppcheck-build-dir="./.cppcheck-build-dir" \
+    -j "$(nproc 2> /dev/null || printf '%s\n' 1 || :)" crc.c
+  rm -rf ./.cppcheck-build-dir
 }
 
 ################################################################################

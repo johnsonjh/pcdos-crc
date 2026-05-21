@@ -14,6 +14,7 @@
 /compile_commands.json
 /core
 /core-*
+/.cppcheck-build-dir
 /crc
 /crc32
 /crc64
