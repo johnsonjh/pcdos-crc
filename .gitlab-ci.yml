@@ -40,7 +40,8 @@ pages:
     - apk update || true
     - apk add '!usr-merge-nag' 2> /dev/null || true
     - apk upgrade --prune || true
-    - apk add cage dev86 dos2unix dosbox-staging gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl pango seatd upx wayland-libs-egl xwayland
+    - apk add bear cage clang cppcheck dev86 dos2unix dosbox-staging editorconfig-checker flawfinder gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl pango py3-codespell reuse seatd shellcheck shfmt upx wayland-libs-egl xwayland
+    - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && git clone https://github.com/dmsc/emu2.git && cd emu2 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2 )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p public
