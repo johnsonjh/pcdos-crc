@@ -70,7 +70,7 @@ It has been tested on various exotic and retro platforms including
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
 **TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)),
 **MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86/bcc,
-Watcom, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
+Watcom C, Turbo C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC),
 **Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
 and systems supported by
@@ -252,8 +252,9 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 * For non-ANSI compilers or environments offering an ANSI-conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
-  have the pre-ANSI BSD/System V `sys_errlist` / `sys_nerr` interface, you
-  should define `USE_PSYSERROR`.
+  define `FORCE_STRERROR` but don't need to declare `strerror` yourself,
+  define `NO_DCL_STRERROR`/  If you have the pre-ANSI BSD/System V
+  `sys_errlist` / `sys_nerr` interface, you should define `USE_PSYSERROR`.
 
 * Defining `HAVE_SYS_STAT` indicates the availability of the POSIX `stat`
   function and the existence of the `sys/types.h` and `sys/stat.h` header
@@ -483,7 +484,7 @@ utilized, but might be supported in a future release.
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Microsoft C 8.00c:
+* To build a binary for MS-DOS using Microsoft C 8.00c (1993):
   ```
   cl /AT /O2 /Gr /Fecrc.com crc.c
   ```
@@ -499,9 +500,20 @@ utilized, but might be supported in a future release.
   wlink system com file crc.obj name crc.com
   ```
 
-* To build a binary for MS-DOS using dev86/bcc:
+* To build a binary for MS-DOS using dev86/bcc 0.16.21+:
   ```
   bcc -Md -O -o crc.com crc.c
+  ```
+
+* To build a binary for MS-DOS using Turbo C 1.0/1.5 (1987/1988):
+  ```
+  tcc -G -O -Z -f- -mt crc.c
+  exe2bin crc.exe crc.com
+  ```
+
+* To build a binary for MS-DOS using Turbo C++ 1.01 (1989):
+  ```
+  tcc -G -O -Z -f- -mt -lt crc.c
   ```
 
 * To build a binary for MS-DOS using DJGPP:

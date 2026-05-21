@@ -82,6 +82,24 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+/*
+ * NOTE: Borland Turbo C before 1.5 has a non-ANSI strerror, but every
+ * version of Turbo C provides the `sys_errlist`/`sys_nerr` interface.
+ */
+
+#ifndef __BORLANDC__
+# ifdef __TURBOC__
+#  ifdef ANSI_COMPILER
+#   undef ANSI_COMPILER
+#  endif
+#  ifndef USE_PSYSERROR
+#   define USE_PSYSERROR
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef __BCC__
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
@@ -304,7 +322,9 @@ typedef unsigned long crc_t;
 # include <string.h>
 #else
 # ifdef FORCE_STRERROR
+#  ifndef NO_DCL_STRERROR
 extern char * strerror ();
+#  endif
 # endif
 #endif
 
@@ -1061,7 +1081,7 @@ trim_str (s)
 
   p = s;
 
-  while (' ' == * p || '\t' == * p)
+  while (' ' == * p || '\t' == * p || '\r' == * p || '\n' == * p)
     p++;
 
   if ('\0' == * p) {
@@ -1073,7 +1093,7 @@ trim_str (s)
   last = p;
 
   while ('\0' != * q) {
-    if (' ' != * q && '\t' != * q)
+    if (' ' != * q && '\t' != * q && '\r' != * q && '\n' != * q)
       last = q;
 
     q++;
@@ -1081,8 +1101,14 @@ trim_str (s)
 
   d = buf;
 
-  while (p <= last && d < buf + (TRIM_BUFSIZE - 1))
-    * d++ = * p++;
+  while (p <= last && d < buf + (TRIM_BUFSIZE - 1)) {
+    if ('\r' == * p || '\n' == * p)
+      * d++ = ' ';
+    else
+      * d++ = * p;
+
+    p++;
+  }
 
   * d = '\0';
 
@@ -2580,7 +2606,15 @@ check_is_directory (filename)
   if (0 == stat (filename, & st))
     if (0 != S_ISDIR (st.st_mode)) {
 #  ifdef EISDIR
+#   ifndef __BORLANDC__
+#    ifdef __TURBOC__
+      error_msg ("Is a directory:", filename, 0);
+#    else
       error_msg ("Error opening", filename, EISDIR);
+#    endif
+#   else
+      error_msg ("Error opening", filename, EISDIR);
+#   endif
 #  else
       error_msg ("Is a directory:", filename, 0);
 #  endif
