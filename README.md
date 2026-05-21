@@ -229,7 +229,7 @@ In this mode:
 ## Binary builds
 
 * The **recommended build** for *real-mode* MS-DOS is
-  [available here](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
+  [available here](https://dps8m.gitlab.io/crc/MSC800c/crc.com),
   compiled with Microsoft C++ 8.00c for MS-DOS.
   * Additional testing builds compiled with
     [Microsoft C 6.00A](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
