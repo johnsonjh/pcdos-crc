@@ -39,6 +39,14 @@
 
 /******************************************************************************/
 
+#ifdef MSDOS
+# ifndef __MSDOS__
+#  define __MSDOS__ MSDOS
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifndef CRC_NAME
 # ifdef __MSDOS__
 #  define CRC_NAME "CRC"
@@ -2606,14 +2614,22 @@ check_is_directory (filename)
 # ifdef S_ISDIR
   struct stat st;
 
-  if (0 == stat (filename, & st))
+  if (0 == stat ((char *)(void *)filename, & st))
     if (0 != S_ISDIR (st.st_mode)) {
 #  ifdef EISDIR
 #   ifndef __BORLANDC__
 #    ifdef __TURBOC__
       error_msg ("Is a directory:", filename, 0);
 #    else
+#     ifdef _MSC_VER
+#      ifdef __MSDOS__
+      error_msg ("Is a directory:", filename, 0);
+#      else
       error_msg ("Error opening", filename, EISDIR);
+#      endif
+#     else
+      error_msg ("Error opening", filename, EISDIR);
+#     endif
 #    endif
 #   else
       error_msg ("Error opening", filename, EISDIR);
