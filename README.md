@@ -79,10 +79,10 @@ and systems supported by
 [SoftIntegration **Ch**](https://www.softintegration.com/), but should be
 able to be built anywhere else with little to no porting effort required.
 
-NOTE: The **Small-C** or **Micro-C** compilers/C-language subsets are **not**
-sufficient to build this software (for various reasons).  You need a *real* C
-compiler and preprocessor, which is something that at least resembles 1978
-K&R C and provides 1979 UNIX V7-style `stdio`.
+* NOTE: The **Small-C** or **Micro-C** compilers/C-language subsets are **not**
+  sufficient to build this software (for various reasons).  You need a *real* C
+  compiler and preprocessor, which is something that at least resembles 1978
+  K&R C and provides 1979 UNIX V7-style `stdio`.
 
 ## Usage
 
