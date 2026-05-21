@@ -71,14 +71,11 @@ It has been tested on various exotic and retro platforms including
 **Multics**
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
 **TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)),
-**MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86/bcc,
+**MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86,
 Watcom C, Turbo C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC),
 **Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
-**UNIX** (GCC, Clang, Oracle Studio C/C++, IBM [Open] XL C/C++,
-NVIDIA HPC SDK C/C++, Portland Group C/C++, DMD ImportC, Intel C++,
-[Chamois] CompCert C, МЦСТ LCC, PCC, PathScale, Open64, Chibicc, Kefir,
-*etc.*), and systems supported by
+**UNIX**, and systems supported by
 [SoftIntegration **Ch**](https://www.softintegration.com/), but should be
 able to be built anywhere else with little to no porting effort required.
 
@@ -244,7 +241,7 @@ In this mode:
     [Turbo C++ 1.01](https://dps8m.gitlab.io/crc/TCPP101/crc.com),
     [Turbo C 1.5](https://dps8m.gitlab.io/crc/TC15/crc.com),
     [Turbo C 1.0](https://dps8m.gitlab.io/crc/TC10/crc.com), and
-    [dev86/bcc](https://dps8m.gitlab.io/crc/dev86/crc.com) are also available.
+    [dev86](https://dps8m.gitlab.io/crc/dev86/crc.com) are also available.
 
 ## Building from source
 
@@ -538,7 +535,7 @@ utilized, but might be supported in a future release.
   wlink system com file crc.obj name crc.com
   ```
 
-* To build a binary for MS-DOS using dev86/bcc 0.16.21+:
+* To build a binary for MS-DOS using dev86 0.16.21+:
   ```
   bcc -Md -O -o crc.com crc.c
   ```
