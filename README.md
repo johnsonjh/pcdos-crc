@@ -484,9 +484,14 @@ utilized, but might be supported in a future release.
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Microsoft C 8.00c (1993):
+* To build a binary for MS-DOS using Microsoft C 6.00A (1990):
   ```
-  cl /AT /O2 /Gr /Fecrc.com crc.c
+  cl /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c
+  ```
+
+* To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993):
+  ```
+  cl /AT /O2 /Gr /Gs /Fecrc.com crc.c
   ```
 
 * To build a binary for MS-DOS using [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
