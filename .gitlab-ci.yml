@@ -92,33 +92,26 @@ pages:
       # Start of Microsoft C 8.00c build ...
       echo -e "section_start:`date +%s`:MSC800c_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c ...\033[0m" || true
     - mkdir -p public/MSC800c
-    - mkdir -p /tmp/xdg
-    - chmod 700 /tmp/xdg
-    - export XDG_RUNTIME_DIR=/tmp/xdg
+    - mkdir -p /tmp/xdg && chmod 700 /tmp/xdg && export XDG_RUNTIME_DIR=/tmp/xdg
     - mkdir -p /root/.config/dosbox/
     - printf '%s\n' "[sdl]" "output = texture" "texture_renderer = software" "[render]" "glshader = none" "[mixer]" "nosound = true" > /root/.config/dosbox/dosbox-staging.conf
-    - unset SDL_VIDEODRIVER
+    - cd /tmp/old_c/MSC800c
     - export WLR_BACKENDS=headless
     - export GALLIUM_DRIVER=llvmpipe
     - export SEATD_SOCK=/run/seatd.sock
-    - cd /tmp/old_c/MSC800c
-    - seatd -g root > /dev/null 2>&1 &
-    - sleep 1
-    - cage -s > /dev/null 2>&1 &
-    - sleep 1
-    - export WAYLAND_DISPLAY=$(ls $XDG_RUNTIME_DIR | grep -E '^wayland-[0-9]+$')
+    - ( seatd -g root > /dev/null 2>&1 & ) && sleep 1
+    - ( cage -s > /dev/null 2>&1 & ) && sleep 1
+    - export WAYLAND_DISPLAY="$(ls $XDG_RUNTIME_DIR | grep -E '^wayland-[0-9]+$')"
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
     - cp -f $CI_PROJECT_DIR/crc.c .
-    - cat vars.bat > build.bat
-    - echo 'cl /W4 /AT /O2 /Gr /Gs /Fecrc.com crc.c' >> build.bat
+    - cat vars.bat > build.bat && printf '%s\n' "cl /W4 /AT /O2 /Gr /Gs /Fecrc.com crc.c" >> build.bat
     - unix2dos build.bat 2> /dev/null
     - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "COMMAND.COM /C BUILD.BAT > OUT.TXT" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true
     - cat OUT.TXT
     - rm -f OUT.TXT > /dev/null 2>&1 || true
     - test -f CRC.COM
-    - mv -f CRC.COM crc.com
-    - rm -f CRC.*
+    - mv -f CRC.COM crc.com && rm -f CRC.*
     - upx --8086 -9 crc.com 2>&1 | grep '\->'
     - cp -f crc.com $CI_PROJECT_DIR/public/MSC800c
     - emu2 $CI_PROJECT_DIR/public/MSC800c/crc.com --auto crc.com crc.c
