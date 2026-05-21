@@ -51,7 +51,7 @@ pages:
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 ...\033[0m" || true
     - mkdir -p public/dev86
-    - bcc -Md -v -o crc.com crc.c && upx -q --8086 -9v crc.com && mv -vf crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c
+    - bcc -Md -v -o crc.com crc.c && upx -q --8086 -9 crc.com && mv -vf crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c
     - |
       # End of dev86 build ...
       echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
@@ -59,7 +59,7 @@ pages:
       # Start of Turbo C++ 1.01 build ...
       echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 ...\033[0m" || true
     - mkdir -p public/TCPP101
-    - env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -v /tmp/old_c/TCPP101/crc.com . && rm -vf /tmp/old_c/TCPP101/crc.* && upx -q --8086 -9v crc.com && mv -vf crc.com public/TCPP101 && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c
+    - env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -v /tmp/old_c/TCPP101/crc.com . && rm -vf /tmp/old_c/TCPP101/crc.* && upx -q --8086 -9 crc.com && mv -vf crc.com public/TCPP101 && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c
     - |
       # End of Turbo C++ 1.01 build ...
       echo -e "section_end:`date +%s`:TCPP101_section\r\e[0K" || true
@@ -67,7 +67,7 @@ pages:
       # Start of Turbo C 1.5 build ...
       echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 ...\033[0m" || true
     - mkdir -p public/TC15
-    - env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -v /tmp/old_c/TC15/crc.com . && rm -vf /tmp/old_c/TC15/crc.* && upx -q --8086 -9v crc.com && mv -vf crc.com public/TC15 && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c
+    - env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -v /tmp/old_c/TC15/crc.com . && rm -vf /tmp/old_c/TC15/crc.* && upx -q --8086 -9 crc.com && mv -vf crc.com public/TC15 && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c
     - |
       # End of Turbo C 1.5 build ...
       echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
@@ -75,7 +75,7 @@ pages:
       # Start of Turbo C 1.0 build ...
       echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 ...\033[0m" || true
     - mkdir -p public/TC10
-    - env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -v /tmp/old_c/TC10/crc.com . && rm -vf /tmp/old_c/TC10/crc.* && upx -q --8086 -9v crc.com && mv -vf crc.com public/TC10 && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c
+    - env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -v /tmp/old_c/TC10/crc.com . && rm -vf /tmp/old_c/TC10/crc.* && upx -q --8086 -9 crc.com && mv -vf crc.com public/TC10 && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c
     - |
       # End of Turbo C 1.0 build ...
       echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
@@ -83,7 +83,7 @@ pages:
       # Start of Microsoft C 6.00A build ...
       echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A ...\033[0m" || true
     - mkdir -p public/MSC600A
-    - ( cd /tmp/old_c/MSC600A && cp -vf $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && upx -q --8086 -9v crc.com && cp -vf crc.com $CI_PROJECT_DIR/public/MSC600A && rm -vf crc.* )
+    - ( cd /tmp/old_c/MSC600A && cp -vf $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && upx -q --8086 -9 crc.com && cp -vf crc.com $CI_PROJECT_DIR/public/MSC600A && rm -vf crc.* )
     - |
       # End of Microsoft C 6.00A build ...
       echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
