@@ -106,7 +106,7 @@ pages:
     - cp -f $CI_PROJECT_DIR/crc.c .
     - cat vars.bat > build.bat && printf '%s\n' "command.com /c cl /W4 /AT /O2 /Gr /Gs /Fecrc.com crc.c" >> build.bat
     - unix2dos build.bat 2> /dev/null
-    - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "command.com /c build.bat > out.txt 2>&1" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
+    - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true
     - cat OUT.TXT
     - rm -f OUT.TXT > /dev/null 2>&1 || true
