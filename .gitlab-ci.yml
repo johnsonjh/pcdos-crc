@@ -96,7 +96,7 @@ pages:
     - mkdir -p /root/.config/dosbox/
     - printf '%s\n' "[sdl]" "output = texture" "texture_renderer = software" "[render]" "glshader = none" "[mixer]" "nosound = true" > /root/.config/dosbox/dosbox-staging.conf
     - cd /tmp/old_c/MSC800c
-    - cp ../UTILS/REDIR.COM .
+    - cp -f ../UTILS/REDIR.COM .
     - export WLR_BACKENDS=headless
     - export GALLIUM_DRIVER=llvmpipe
     - export SEATD_SOCK=/run/seatd.sock
