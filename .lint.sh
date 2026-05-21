@@ -184,8 +184,8 @@ set -x
 :
 : Cleanup
 : :::::::
-rm -f a.out crc log.pvs compile_commands.json selftest
-rm -rf ./pvsreport
+rm -f a.out crc log.pvs compile_commands.json selftest || :
+rm -rf ./pvsreport || :
 make clean
 
 ################################################################################
@@ -470,6 +470,7 @@ command -v cppcheck > /dev/null 2>&1 && {
     || {
       CHECK_LEVEL="--check-level=exhaustive"
     }
+  rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
   cppcheck --enable=warning,style,performance,portability,unusedFunction \
@@ -477,7 +478,7 @@ command -v cppcheck > /dev/null 2>&1 && {
     -D__LINT__ --inline-suppr --inconclusive --error-exitcode=99 \
     --cppcheck-build-dir="./.cppcheck-build-dir" \
     -j "$(nproc 2> /dev/null || printf '%s\n' 1 || :)" crc.c
-  rm -rf ./.cppcheck-build-dir
+  rm -rf ./.cppcheck-build-dir || :
 }
 
 ################################################################################
