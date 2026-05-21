@@ -2486,37 +2486,42 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
     unsigned char mbuf [BUFSIZ];
 
     for (;;) {
-      if (0 != feof (fp) || 0 != ferror (fp))
+      const long n = (long)fread (mbuf, 1, sizeof (mbuf), fp);
+
+      if (0 >= n) {
+        if (0 == feof (fp) && 0 == ferror (fp)) {
+          error_msg ("Error reading", filename, errno);
+          (void)fclose (fp);
+          return -1;
+        }
+
         break;
+      }
 
       {
-        const long n = (long)fread (mbuf, 1, sizeof (mbuf), fp);
+        long i;
 
-        if (0 >= n) {
-          if (0 == feof (fp) && 0 == ferror (fp)) {
-            error_msg ("Error reading", filename, errno);
-            (void)fclose (fp);
-            return -1;
-          }
+        for (i = 0; n > i; i++) {
+          const crc_t b = (crc_t)mbuf [i];
 
-          break;
+          aggregate |= b;
         }
 
-        {
-          long i;
-
-          for (i = 0; n > i; i++) {
-            const crc_t b = (crc_t)mbuf [i];
-
-            aggregate |= b;
-          }
-
-          if (0 == cb_add (num_chars, (unsigned int)n)) {
-            error_msg ("Character counter overflow reading", filename, 0);
-            (void)fclose (fp);
-            return -1;
-          }
+        if (0 == cb_add (num_chars, (unsigned int)n)) {
+          error_msg ("Character counter overflow reading", filename, 0);
+          (void)fclose (fp);
+          return -1;
         }
+      }
+
+      if ((long)sizeof (mbuf) > n) {
+        if (0 != ferror (fp)) {
+          error_msg ("Error reading", filename, errno);
+          (void)fclose (fp);
+          return -1;
+        }
+
+        break;
       }
     }
   }
