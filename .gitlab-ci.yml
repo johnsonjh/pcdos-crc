@@ -49,6 +49,20 @@ pages:
       # End of Setup ...
       echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
     - |
+      # Start of lint ...
+      echo -e "section_start:`date +%s`:Lint_section[collapsed=true]\r\e[0K\033[0;36mmake lint ...\033[0m" || true
+    - make lint
+    - |
+      # End of lint ...
+      echo -e "section_end:`date +%s`:Lint_section\r\e[0K" || true
+    - |
+      # Start of test ...
+      echo -e "section_start:`date +%s`:Test_section[collapsed=true]\r\e[0K\033[0;36mmake test ...\033[0m" || true
+    - make test
+    - |
+      # End of test ...
+      echo -e "section_end:`date +%s`:Test_section\r\e[0K" || true
+    - |
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 ...\033[0m" || true
     - mkdir -p public/dev86
