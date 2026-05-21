@@ -471,10 +471,14 @@ cb_zero (c)
   counter_t * const c;
 #endif
 {
+#ifdef GCC_ANALYZER
+  __builtin_memset (c -> d, 0, sizeof (c -> d));
+#else
   int i;
 
   for (i = 0; MAX_CB_DIGITS > i; i++)
     c -> d [i] = 0;
+#endif
 }
 
 /******************************************************************************/
@@ -533,10 +537,14 @@ cb_copy (dst, src)
   const counter_t * const src;
 #endif
 {
+#ifdef GCC_ANALYZER
+  __builtin_memcpy (dst -> d, src -> d, sizeof (dst -> d));
+#else
   int i;
 
   for (i = 0; MAX_CB_DIGITS > i; i++)
     dst -> d [i] = src -> d [i];
+#endif
 }
 
 /******************************************************************************/

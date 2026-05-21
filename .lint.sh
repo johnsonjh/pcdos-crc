@@ -105,7 +105,8 @@ if out=$(
   find_command \
     bear ch "${CLANG_CMD:-clang}" codespell cppcheck cppi diff \
     editorconfig-checker flawfinder "${GCC_CMD:-gcc}" git markdown-toc \
-    plog-converter pvs-studio-analyzer reuse scan-build shellcheck shfmt 2>&1
+    plog-converter pvs-studio-analyzer reuse "${SCAN_BUILD_CMD:-scan-build}" \
+    shellcheck shfmt 2>&1
 ); then
   status=0
 else
@@ -325,18 +326,20 @@ command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
 : Clang and PVS-Studio Analyzers - ANSI
 : :::::::::::::::::::::::::::::::::::::
 command -v bear > /dev/null 2>&1 && {
-  command -v scan-build > /dev/null 2>&1 && {
+  command -v "${SCAN_BUILD_CMD:-scan-build}" > /dev/null 2>&1 && {
     command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
       for variant in "" "-DNOFREAD"; do
         if [ -n "${variant:-}" ]; then
           env CC="${CLANG_CMD:-clang}" \
             CFLAGS="${variant:-} ${CLANG_ANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
+            bear -- "${SCAN_BUILD_CMD:-scan-build}" \
+            --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         else
           env CC="${CLANG_CMD:-clang}" \
             CFLAGS="${CLANG_ANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
+            bear -- "${SCAN_BUILD_CMD:-scan-build}" \
+            --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         fi
         rm -f crc
@@ -367,10 +370,10 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -std=c89 "${variant:-}" -o crc crc.c
+        -DGCC_ANALYZER -std=c89 "${variant:-}" -o crc crc.c
     else
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -std=c89 -o crc crc.c
+        -DGCC_ANALYZER -std=c89 -o crc crc.c
     fi
     rm -f crc
   done
@@ -407,18 +410,20 @@ command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
 : Clang and PVS-Studio Analyzers - non-ANSI
 : :::::::::::::::::::::::::::::::::::::::::
 command -v bear > /dev/null 2>&1 && {
-  command -v scan-build > /dev/null 2>&1 && {
+  command -v "${SCAN_BUILD_CMD:-scan-build}" > /dev/null 2>&1 && {
     command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
       for variant in "" "-DNOFREAD"; do
         if [ -n "${variant:-}" ]; then
           env CC="${CLANG_CMD:-clang}" \
             CFLAGS="-DNOANSI ${variant:-} ${CLANG_NOANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
+            bear -- "${SCAN_BUILD_CMD:-scan-build}" \
+            --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         else
           env CC="${CLANG_CMD:-clang}" \
             CFLAGS="-DNOANSI ${CLANG_NOANSI_CFLAGS:?}" \
-            bear -- scan-build --use-cc="${CLANG_CMD:-clang}" --status-bugs \
+            bear -- "${SCAN_BUILD_CMD:-scan-build}" \
+            --use-cc="${CLANG_CMD:-clang}" --status-bugs \
             make crc
         fi
         rm -f crc
@@ -449,10 +454,12 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -DNOANSI "${variant:-}" -Wno-old-style-definition -o crc crc.c
+        -DGCC_ANALYZER -DNOANSI "${variant:-}" -Wno-old-style-definition \
+        -o crc crc.c
     else
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -DNOANSI -Wno-old-style-definition -o crc crc.c
+        -DGCC_ANALYZER -DNOANSI -Wno-old-style-definition \
+        -o crc crc.c
     fi
     rm -f crc
   done
