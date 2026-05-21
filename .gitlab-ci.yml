@@ -45,8 +45,8 @@ pages:
     - ( cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p public
     - |
-      # End of Pre-setup ...
-      echo -e "section_end:`date +%s`:Pre-setup_section\r\e[0K" || true
+      # End of Setup ...
+      echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
     - |
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 ...\033[0m" || true
