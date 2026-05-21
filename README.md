@@ -15,9 +15,11 @@
     + [Interaction of `--limit` and `--pad`](#interaction-of---limit-and---pad)
     + [8-bit mode (default)](#8-bit-mode-default)
     + [Fallback mode](#fallback-mode)
-- [Building](#building)
+- [Binary builds](#binary-builds)
+- [Building from source](#building-from-source)
   * [Porting tips](#porting-tips)
   * [Developer notes](#developer-notes)
+  * [GitLab CI/CD](#gitlab-cicd)
 - [Platform specifics](#platform-specifics)
   * [Building for Multics](#building-for-multics)
     + [Multics notes](#multics-notes)
@@ -219,7 +221,19 @@ In this mode:
   `--pad`, if the file ends before the limit is reached, a warning
   is displayed.
 
-## Building
+## Binary builds
+
+* The **recommended build** for *real-mode* MS-DOS is
+  [available here](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
+  compiled with Microsoft C++ 8.00c for MS-DOS.
+  * Additional testing builds compiled with
+    [Microsoft C 6.00A](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
+    [Turbo C++ 1.01](https://dps8m.gitlab.io/crc/TCPP101/crc.com),
+    [Turbo C 1.5](https://dps8m.gitlab.io/crc/TC15/crc.com),
+    [Turbo C 1.0](https://dps8m.gitlab.io/crc/TC10/crc.com), and
+    [dev86/bcc](https://dps8m.gitlab.io/crc/dev86/crc.com) are also available.
+
+## Building from source
 
 The `crc.c` source code should build easily anywhere with no changes needed:
 
@@ -295,6 +309,12 @@ The `Makefile` provides three convenience targets for developers:
 The linting script and test suite are designed to run on any POSIX‑conforming
 shell environment and are regularly tested on AIX, FreeBSD, Haiku, Linux,
 NetBSD, and OpenBSD.
+
+### GitLab CI/CD
+
+* You can examine the output of the
+  [latest GitLab CI/CD job](https://gitlab.com/dps8m/crc/-/pipelines/latest)
+  which includes build output from various legacy MS-DOS compilers.
 
 ## Platform specifics
 
