@@ -91,7 +91,7 @@ pages:
     - |
       # Start of Microsoft C 8.00c build ...
       echo -e "section_start:`date +%s`:MSC800c_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c ...\033[0m" || true
-    - mkdir -o public/MSC800c
+    - mkdir -p public/MSC800c
     - mkdir -p /tmp/xdg
     - chmod 700 /tmp/xdg
     - export XDG_RUNTIME_DIR=/tmp/xdg
