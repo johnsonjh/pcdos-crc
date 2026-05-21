@@ -86,6 +86,9 @@ able to be built anywhere else with little to no porting effort required.
   [Smaller C](https://github.com/alexfru/SmallerC) compiler **is** sufficient,
   at least for 32-bit targets.
 
+It is hoped that this *AI-slop-free* program will serve both as a practical
+utility and as a template for writing ***ultra‑portable*** **C** code.
+
 ## Usage
 
 ```
