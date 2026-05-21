@@ -2146,6 +2146,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
     crc_t crc = 0;
     counter_t rem_bits;
 
+    cb_zero (& rem_bits);
     cb_copy (& rem_bits, lim_bits);
 
     for (;;) {
@@ -2374,6 +2375,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         }
       } else {
         counter_t used_bits;
+
+        cb_zero (& used_bits);
 
         {
           int k;
