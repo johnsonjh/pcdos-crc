@@ -472,7 +472,7 @@ cb_zero (c)
 #endif
 {
 #ifdef GCC_ANALYZER
-  __builtin_memset (c -> d, 0, sizeof (c -> d));
+  (void)__builtin_memset (c -> d, 0, sizeof (c -> d));
 #else
   int i;
 
@@ -538,7 +538,7 @@ cb_copy (dst, src)
 #endif
 {
 #ifdef GCC_ANALYZER
-  __builtin_memcpy (dst -> d, src -> d, sizeof (dst -> d));
+  (void)__builtin_memcpy (dst -> d, src -> d, sizeof (dst -> d));
 #else
   int i;
 
