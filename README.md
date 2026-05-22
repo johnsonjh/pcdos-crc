@@ -1,6 +1,7 @@
 <!-- Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com -->
 <!-- SPDX-License-Identifier: MIT-0 -->
 <!-- scspell-id: dea16a3a-40d9-11f1-8a31-80ee73e9b8e7 -->
+
 # CRC
 
 <!-- toc -->
@@ -249,11 +250,13 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 * Build using `make` (the `CC`, `CFLAGS`, and `LDFLAGS` variables
   are respected):
+
   ```
   make
   ```
 
 * Build using `cc` (or `c89`, `gcc`, `clang`, etc.):
+
   ```
   cc -O3 -o crc crc.c
   ```
@@ -291,6 +294,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 * If you are trying to build in an environment providing a C preprocessor
   that does not deal with indentation, you can "flatten" the source code
   using POSIX `sed`:
+
   ```sh
   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
   ```
@@ -332,6 +336,7 @@ NetBSD, and OpenBSD.
 
 * To build a binary for [Multics](https://multics-wiki.swenson.org/) using
   [Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf):
+
   ```
   >sl3p>cc>e>cc -lg -of crc crc.c
   ```
@@ -386,6 +391,7 @@ can be recovered.
 1. To build a binary for TOPS-20 for PDP-10 systems using the KCC compiler,
    you need to transform the source code appropriately.  This is easy to do on
    any system with a POSIX-conforming `sed` implementation available:
+
    ```sh
    sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
        -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
@@ -400,10 +406,12 @@ can be recovered.
    endings first.  You can do this easily with the
    [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
    POSIX-conforming `awk` implementation:
+
    ```sh
    awk '{ sub(/\r?$/, "\r"); print }' crckcc.c | \
      { out=$(cat) || exit 1; : > crckcc.c && printf '%s\n' "$out" > crckcc.c; }
    ```
+
    **NB**: You should perform the above step **only** if necessary, as a
    "double-conversion" will result in a slower compilation, with the KCC
    compiler emitting several *thousand* warning messages (one for each line
@@ -411,6 +419,7 @@ can be recovered.
 
 3. Once you have the source code on the PDP-10 in the appropriate format, it
    can be compiled with the KCC compiler (usually installed as `CC`):
+
    ```
    CC -o CRC CRCKCC.C
    ```
@@ -428,6 +437,7 @@ on how it's stored) on the system.
 
 * To build a binary for CP/M-80 for **Z80** systems, use any recent version
   of [z88dk](https://z88dk.org/):
+
   ```
   zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
@@ -435,6 +445,7 @@ on how it's stored) on the system.
 * To build a binary for CP/M-80 for **8080** systems, use a version
   of [z88dk](https://z88dk.org/) from **2026-05-01** or later (earlier versions
   have a bug which causes the CRC to be miscalculated on 8080 processors):
+
   ```
   zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
   ```
@@ -444,12 +455,14 @@ Docker container to build without needing to locally compile and install
 the current `z88dk`.
 
 * To build for **Z80** CP/M-80:
+
   ```
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
     zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build for **8080** CP/M-80:
+
   ```
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
     zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
@@ -503,6 +516,7 @@ utilized, but might be supported in a future release.
 ### Building for ELKS
 
 * To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
+
   ```
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
   ```
@@ -510,48 +524,58 @@ utilized, but might be supported in a future release.
 ### Building for MS-DOS
 
 * To build a binary for MS-DOS using IA16-GCC:
+
   ```
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Microsoft C 6.00A (1990):
+
   ```
   cl /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993):
+
   ```
   cl /AT /O2 /Gr /Gs /Fecrc.com crc.c
   ```
 
-* To build a binary for MS-DOS using [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
+* To build a binary for MS-DOS using
+  [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
+
   ```
   owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Watcom C:
+
   ```
   wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
   wlink system com file crc.obj name crc.com
   ```
 
 * To build a binary for MS-DOS using dev86 0.16.21+:
+
   ```
   bcc -Md -O -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Turbo C 1.0 (1987) or Turbo C 1.5 (1988):
+
   ```
   tcc -G -O -Z -f- -mt crc.c
   exe2bin crc.exe crc.com
   ```
 
 * To build a binary for MS-DOS using Turbo C++ 1.01 (1990):
+
   ```
   tcc -G -O -Z -f- -mt -lt crc.c
   ```
 
 * To build a binary for MS-DOS using DJGPP:
+
   ```
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
   ```
@@ -588,5 +612,6 @@ eval: (setq-local display-fill-column-indicator-column 80)
 eval: (display-fill-column-indicator-mode 1)
 End:
 -->
+
 <!-- vim: set ft=markdown expandtab cc=80 : -->
 <!-- EOF -->
