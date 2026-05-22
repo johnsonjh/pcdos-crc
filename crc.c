@@ -2052,7 +2052,8 @@ done:
         * actually_padded = 1;
       } else {
         out_err_check_int (
-          fprintf (stderr, "WARNING: File ended with %d dangling bit%s ",
+          fprintf (stderr, "WARNING: %s with %d dangling bit%s ",
+            (0 != limit_reached ? "Limit reached" : "File ended"),
             bib, (1 == bib ? "" : "s")
           )
         );
@@ -3019,7 +3020,7 @@ main (argc, argv)
   const int uib = unsigned_int_bits ();
   const unsigned int batch_limit = safe_batch_limit ();
   const char * const progname =
-    (((char *)0 != argv [0] && '\0' != * argv [0])
+    (((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
       ? ('\0' == argv [0] [1] ? CRC_NAME : argv [0]) : CRC_NAME);
 
   cb_zero (& lim_bits);

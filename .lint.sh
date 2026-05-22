@@ -370,10 +370,13 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -DGCC_ANALYZER -std=c89 "${variant:-}" -o crc crc.c
+        -DGCC_ANALYZER -U_FORTIFY_SOURCE \
+        -D_FORTIFY_SOURCE="${FORTIFY_LEVEL:-3}" -std=c89 "${variant:-}" \
+        -o crc crc.c
     else
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -DGCC_ANALYZER -std=c89 -o crc crc.c
+        -DGCC_ANALYZER -U_FORTIFY_SOURCE \
+        -D_FORTIFY_SOURCE="${FORTIFY_LEVEL:-3}" -std=c89 -o crc crc.c
     fi
     rm -f crc
   done
@@ -454,12 +457,14 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -DGCC_ANALYZER -DNOANSI "${variant:-}" -Wno-old-style-definition \
-        -o crc crc.c
+        -DGCC_ANALYZER -DNOANSI -U_FORTIFY_SOURCE \
+        -D_FORTIFY_SOURCE="${FORTIFY_LEVEL:-3}" "${variant:-}" \
+        -Wno-old-style-definition -o crc crc.c
     else
       "${GCC_CMD:-gcc}" -O3 -fanalyzer -Wall -Wextra -Wpedantic -Werror \
-        -DGCC_ANALYZER -DNOANSI -Wno-old-style-definition \
-        -o crc crc.c
+        -DGCC_ANALYZER -DNOANSI -U_FORTIFY_SOURCE \
+        -D_FORTIFY_SOURCE="${FORTIFY_LEVEL:-3}" \
+        -Wno-old-style-definition -o crc crc.c
     fi
     rm -f crc
   done

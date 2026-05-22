@@ -240,7 +240,7 @@ EXIT: 0
 TEST #22: Fallback: bits=7, limit=7 (1 char)
 ARGS: ./.test_data.bin --bits=7 --limit=7
 
-WARNING: File ended with 7 dangling bits (not a full 8-bit CRC input octet).
+WARNING: Limit reached with 7 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_data.bin		CRC=00000000
 
@@ -446,7 +446,7 @@ EXIT: 0
 TEST #42: Auto: 7-bit, limit=14 (2 chars)
 ARGS: ./.test_seven.txt --bits=auto --limit=14
 
-WARNING: File ended with 6 dangling bits (not a full 8-bit CRC input octet).
+WARNING: Limit reached with 6 dangling bits (not a full 8-bit CRC input octet).
          Use --pad to zero-fill remaining bits.
 ./.test_seven.txt		CRC=7C0D138E	# 14 bits (2 7-bit characters)
 
