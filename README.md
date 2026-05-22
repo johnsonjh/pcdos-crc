@@ -264,15 +264,15 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
   `#define ANSI_COMPILER` directive.
 
-* If your environment does not have the `errno.h` header file, you may need
-  to define `NOERRNO` or modify the source code to comment out the
-  `#define USE_ERRNO` directive.
-
 * If your environment has a missing or broken `fread` function, you may need
   to define `NOFREAD` or modify the source code to comment out the
   `#define USE_FREAD` directive.  This will cause the program to use much
   slower (and in some environments, less reliable) character-by-character
   file reading routines.
+
+* If your environment does not have the `errno.h` header file, you may need
+  to define `NOERRNO` or modify the source code to comment out the
+  `#define USE_ERRNO` directive.
 
 * For non-ANSI compilers or environments offering an ANSI-conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
