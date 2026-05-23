@@ -266,7 +266,8 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 * If you are using a non-ANSI C compiler, you may need to define `NOANSI`
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
   `#define ANSI_COMPILER` directive.  If you don't have `stdlib.h` you should
-  also define `NOSTDLIB`.
+  also define `NOSTDLIB`.  If your non-ANSI compiler *does* support the
+  `const` keyword, then you should additionally define `USE_CONST`.
 
 * If your environment has a missing or broken `fread` function, you may need
   to define `NOFREAD` or modify the source code to comment out the

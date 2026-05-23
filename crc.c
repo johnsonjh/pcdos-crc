@@ -384,10 +384,12 @@ extern char * strerror ();
 
 #ifndef ANSI_COMPILER
 # ifndef __CPPCHECK__
-#  ifdef const
-#   undef const
+#  ifndef USE_CONST
+#   ifdef const
+#    undef const
+#   endif
+#   define const /* //-V1059 */
 #  endif
-#  define const /* //-V1059 */
 # endif
 #endif
 
