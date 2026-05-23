@@ -309,7 +309,9 @@ typedef unsigned long crc_t;
 #   undef __MSDOS__
 #  endif
 # endif
-# include <stdlib.h>
+# ifndef NOSTDLIB
+#  include <stdlib.h>
+# endif
 # ifdef BCC_DOS
 #  ifndef __MSDOS__
 #   define __MSDOS__ BCC_DOS
