@@ -2484,6 +2484,9 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
   fp = fopen (filename, "rb");
 
   if (NULL == fp)
+    fp = fopen (filename, "r");
+
+  if (NULL == fp)
     return -1; /* Errors handled via process_file */
 
 #ifdef USE_FREAD
@@ -2775,6 +2778,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   }
 
   fp = fopen (filename, "rb");
+
+  if (NULL == fp)
+    fp = fopen (filename, "r");
 
   if (NULL == fp) {
     error_msg ("Error opening", filename, errno);
