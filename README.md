@@ -39,8 +39,7 @@
 
 This program computes the same 32‑bit CRC values as those produced by the
 IBM PC‑DOS
-[`CRC.EXE`](https://github.com/johnsonjh/pcdos-crc/raw/refs/heads/reference/CRC.EXE)
-utility.
+[`CRC.EXE`](https://github.com/johnsonjh/pcdos-crc/raw/refs/heads/reference/CRC.EXE) utility.
 
 It was carefully constructed to be portable and correct on every platform
 with a C compiler, such as:
@@ -68,17 +67,17 @@ The only current requirements are:
   `printf`, `fopen`, `fclose`, `fgetc`, `ferror`, `feof`, `clearerr`, and
   optionally `setbuf` and `fread`).
 
-It has been tested on various exotic and retro platforms including
-**Multics**
+It has been tested on various exotic and retro platforms including **Multics**
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
-**TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)),
-**MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86,
-Watcom C, Turbo C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
-**Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC),
-**Atari ST** (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)),
-**UNIX**, and systems supported by
-[SoftIntegration **Ch**](https://www.softintegration.com/), but should be
-able to be built anywhere else with little to no porting effort required.
+**TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)), **CP/M-86**
+([Aztec C](https://github.com/tsupplis/cpm86-crossdev)), **MS-DOS**
+([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C, Turbo C,
+Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)), **Windows**
+(MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC), **Atari ST** (TOS/MINT using
+[CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, and systems
+supported by [SoftIntegration **Ch**](https://www.softintegration.com/), but
+should be able to be built anywhere else with little to no porting
+effort required.
 
 * NOTE: The **Small-C** and **Micro-C** compilers/C-language subsets are
   **not** sufficient to build this software (for various reasons).  You need a
@@ -167,8 +166,8 @@ DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
 
 This program calculates a CRC based on a continuous bitstream.  To ensure the
 same CRC value is obtained for the same data across different platforms, you
-must understand how the bitstream is constructed from the host's storage
-characters.
+must understand how the bitstream is constructed from the host's
+storage characters.
 
 The `--bits=N` option specifies how many bits to extract from each "storage
 character" (which is the native size of the "byte" or character type of the
@@ -285,6 +284,9 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   define `NO_DCL_STRERROR`.  If you have the pre-ANSI BSD/System V
   `sys_errlist` / `sys_nerr` interface, you should define `USE_PSYSERROR`.
 
+  * For purported ANSI compilers or environments **lacking** the C89/ANSI
+    defined `strerror` function or `string.h`, you should define `NOSTRING`.
+
 * Defining `HAVE_SYS_STAT` indicates the availability of the POSIX `stat`
   function and the existence of the `sys/types.h` and `sys/stat.h` header
   files, if not automatically detected.
@@ -299,6 +301,16 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
   ```sh
   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
+  ```
+
+* If you have a C preprocessor that **won't** allow you to define away `const`
+  even when the compiler **doesn't** support it, like some older versions of
+  Aztec C, you should remove `const` from the source code using a global
+  search and replace operation and (somewhat unintuitively) define `USE_CONST`
+  when compiling.  The transformation is easily performed using POSIX `sed`:
+
+  ```sh
+  sed 's|const||g' crc.c > noconst.c
   ```
 
 Most users won't need to do any of these things.
@@ -374,8 +386,8 @@ As an additional hint, if the processing of a file ends with "dangling" bits
 The Multics filesystem includes the concept of multi-segment files (MSFs),
 which are indicated by a directory tagged with a non-zero bit count equal to
 the number of component segments of the MSF.  This CRC program does not
-provide special treatment for MSFs; each component segment should be processed
-independently.
+provide special treatment for MSFs; each component segment should be
+processed independently.
 
 To ensure proper functionality on Multics, the program uses a very specific
 read strategy to bypass several known bugs in the Multics C `stdio` library.
@@ -476,8 +488,7 @@ CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
 
 Builds targeting the Z80 will execute about 25% faster than 8080 builds.
 
-The
-[PopCom!](https://github.com/johnsonjh/VEDIT/raw/refs/heads/master/dev/popcom.com)
+The [PopCom!](https://github.com/johnsonjh/VEDIT/raw/refs/heads/master/dev/popcom.com)
 utility can be used to compress the generated CP/M executable, reducing its
 on‑disk size by approximately 50% and slightly lowering its memory usage, at
 the cost of a small increase in load time.
@@ -514,6 +525,41 @@ record, with a count of zero indicating 128.  Because of this ambiguity and
 because accessing the LRBC metadata requires the use of non-portable
 programming constructs (direct BDOS function calls) the LRBC is not currently
 utilized, but might be supported in a future release.
+
+### Building for CP/M-86
+
+To build the program for CP/M-86 we recommend using the most recent versions
+of the [Aztec C cross-compiler](https://github.com/tsupplis/cpm86-crossdev)
+from [tsupplis](https://github.com/tsupplis).
+
+* To build a binary for CP/M-86 using cross-Aztec C 3.4:
+
+  ```23280/10.7
+  sed 's|const||g' crc.c > crc_nc.c
+  aztec34_cc "+FA" -DNOANSI -DNOSTDLIB -DUSE_CONST crc_nc.c
+  aztec34_sqz crc_nc.o
+  aztec34_link -o crc.cmd crc_nc.o -lc86
+  pcdev_cmdinfo crc.cmd
+
+  ```
+
+* To build a binary for CP/M-86 using cross-Aztec C 4.2:
+
+  ```23264 / 10.057
+  aztec42_cc "+FA" -DNOSTRING crc.c
+  aztec42_sqz crc.o
+  aztec42_link -o crc.cmd crc.o -lc86
+  pcdev_cmdinfo crc.cmd
+  ```
+
+#### CP/M-86 notes
+
+CP/M-86 builds do **not** support internal wildcard expansion at this time.
+
+Builds using Aztec C 4.2 will execute about 10% faster than Aztec C 3.4 builds.
+
+All of the [CP/M-80 notes](#cpm-80-notes), with the exception of the PopCom!
+executable compressor, also apply to CP/M-86.
 
 ### Building for ELKS
 
@@ -582,8 +628,7 @@ utilized, but might be supported in a future release.
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
   ```
 
-The
-[aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
+The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
 [UPX](https://upx.github.io/) utilities can be used to compress the generated
 MS-DOS executables, reducing their on‑disk size by approximately 60%, at the
 cost of a small increase in load time.
