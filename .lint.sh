@@ -290,6 +290,17 @@ grep '[[:alnum:]]const[[:alnum:]]' crc.c && {
 
 :
 :
+: Dangling words
+: ::::::::::::::
+grep -xi '[^[:space:]]\+' README.md | grep -Ev '(`|<|>|\[|\]|:)' && {
+  : ERROR: Dangling words found
+  exit 1
+}
+
+################################################################################
+
+:
+:
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
 command -v "${OLINT:-}" > /dev/null 2>&1 && {
