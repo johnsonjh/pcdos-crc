@@ -329,7 +329,7 @@ typedef unsigned long crc_t;
 #endif
 
 #ifdef ANSI_COMPILER
-# ifndef NO_STRING
+# ifndef NOSTRING
 #  include <string.h>
 # endif
 #else
@@ -1167,7 +1167,7 @@ error_msg (m, n, e)
       fprintf (stderr, " (Error %d", e)
     );
 #ifdef ANSI_COMPILER
-# ifndef NO_STRING
+# ifndef NOSTRING
     out_err_check_int (
       fprintf (stderr, ": %s", trim_str (strerror (e)))
     );
