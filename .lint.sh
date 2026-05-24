@@ -279,6 +279,17 @@ grep -n -E '( / | /= | % | %= |#.*elif )' crc.c && {
 
 :
 :
+: Banned strings
+: ::::::::::::::
+grep '[[:alnum:]]const[[:alnum:]]' crc.c && {
+  : ERROR: Banned strings found
+  exit 1
+}
+
+################################################################################
+
+:
+:
 : Oracle Lint - ANSI and non-ANSI
 : :::::::::::::::::::::::::::::::
 command -v "${OLINT:-}" > /dev/null 2>&1 && {
