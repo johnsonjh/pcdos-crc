@@ -3065,6 +3065,15 @@ main (argc, argv)
     return EXIT_FAILURE;
   }
 
+  if (32 > ub) {
+    out_err_check_int (
+      fprintf (stderr,
+        "FATAL: Non-conforming %d-bit crc_t type (must be >= 32).\n", ub
+      )
+    );
+    return EXIT_FAILURE;
+  }
+
   for (j = 0; 32 > j; j++)
     mask32 = (mask32 << 1) | 1;
 
