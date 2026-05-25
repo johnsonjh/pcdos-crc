@@ -609,6 +609,12 @@ cb_sub (c, v)
 {
   int i = 0;
   unsigned int val = v;
+  unsigned char d [MAX_CB_DIGITS];
+
+  for (i = 0; MAX_CB_DIGITS > i; i++)
+    d [i] = c -> d [i];
+
+  i = 0;
 
   while (0 != val) {
     unsigned int digit_to_sub;
@@ -629,25 +635,28 @@ cb_sub (c, v)
     if (MAX_CB_DIGITS <= i)
       return 0;
 
-    if (c -> d [i] >= digit_to_sub)
-      c -> d [i] = (unsigned char)(c -> d [i] - (unsigned char)digit_to_sub);
+    if (d [i] >= digit_to_sub)
+      d [i] = (unsigned char)(d [i] - (unsigned char)digit_to_sub);
     else {
       int j = i + 1;
 
-      while (MAX_CB_DIGITS > j && 0 == c -> d [j]) {
-        c -> d [j] = 9;
+      while (MAX_CB_DIGITS > j && 0 == d [j]) {
+        d [j] = 9;
         j++;
       }
 
       if (MAX_CB_DIGITS <= j)
         return 0;
 
-      c -> d [j]--;
-      c -> d [i] = (unsigned char)(10 + c -> d [i] - digit_to_sub);
+      d [j]--;
+      d [i] = (unsigned char)(10 + d [i] - digit_to_sub);
     }
 
     i++;
   }
+
+  for (i = 0; MAX_CB_DIGITS > i; i++)
+    c -> d [i] = d [i];
 
   return 1;
 }
@@ -2381,8 +2390,6 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         }
 
         if (0 == cb_is_zero (& rem_bits)) {
-          * actually_padded = 1;
-
           if (0 == g_pad_auto) {
             out_err_check_int (
               fprintf (stderr, "WARNING: --limit not a multiple of 8; ")
@@ -2396,14 +2403,17 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
                 (cb_is_one (& rem_bits) ? "" : "s")
               )
             );
-            out_err_check_int (
-              fprintf (stderr, "         ")
-            );
-            out_err_check_int (
-              fprintf (stderr,
-                "Result calculated only up to the last full character.\n"
-              )
-            );
+
+            if (0 == cb_is_zero (processed_chars)) {
+              out_err_check_int (
+                fprintf (stderr, "         ")
+              );
+              out_err_check_int (
+                fprintf (stderr,
+                  "Result calculated only up to the last full character.\n"
+                )
+              );
+            }
           }
         }
       } else {
