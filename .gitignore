@@ -30,6 +30,7 @@
 /log.pvs
 /.log.sed
 /nonexistent
+/NOTES.md
 /NOTES.TXT
 /*.o
 /*.obj
