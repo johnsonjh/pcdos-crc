@@ -579,6 +579,7 @@ cb_add (c, v)
       unsigned int q = 0;
       unsigned int r = carry;
 
+      /* loop is division-free; fast only for small v */
       while (10 <= r) {
         r -= 10;
         q++;
@@ -623,6 +624,7 @@ cb_sub (c, v)
       unsigned int q = 0;
       unsigned int r = val;
 
+      /* loop is division-free; fast only for small v */
       while (10 <= r) {
         r -= 10;
         q++;
