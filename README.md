@@ -28,6 +28,8 @@
     + [TOPS-20 notes](#tops-20-notes)
   * [Building for CP/M-80](#building-for-cpm-80)
     + [CP/M-80 notes](#cpm-80-notes)
+  * [Building for CP/M-86](#building-for-cpm-86)
+    + [CP/M-86 notes](#cpm-86-notes)
   * [Building for ELKS](#building-for-elks)
   * [Building for MS-DOS](#building-for-ms-dos)
 - [Security](#security)
