@@ -137,7 +137,7 @@ typedef unsigned long crc_t;
 #   define NOFREAD
 #  endif
 #  ifndef MAX_CB_DIGITS
-#   define MAX_CB_DIGITS 8 /* ~12 MiB */
+#   define MAX_CB_DIGITS 9 /* ~119 MiB (CP/M-Plus 3.0 allows 32 MiB files) */
 #  endif
 # endif
 #endif
@@ -2621,7 +2621,7 @@ cpm_file_size (fn, isx, chars)
   if (0L >= records)
     return -1L;
 
-  last_ext = (records - 1L) >> 7; /* 128 records per extent */
+  last_ext = (records - 1L) >> 7; /* 16 KiB extents, 128 records each */
 
   cpm_setfcb (fcb, fn);
   fcb [12] = (unsigned char)(last_ext & 0x1f);
