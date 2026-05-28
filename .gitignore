@@ -19,6 +19,7 @@
 /crc32
 /crc64
 /crckcc.c
+/crc_nc.c
 /crc_test
 /*.dsk
 /*.exe
