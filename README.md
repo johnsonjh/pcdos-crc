@@ -97,6 +97,8 @@ utility and as a template for writing ***ultra‑portable*** **C** code.
 Usage: CRC [option(s)...] <file> [file(s)...]
 Options:
   --limit=N        Stops processing after N bits
+  --lrbc           Limits to the CP/M Last Record Byte Count
+  --lrbc=isx       Use the ISX LRBC convention (unused bytes)
   --bits=N         Reads as N bits per storage character
   --bits=auto      Automatically determines significant bits
   --pad            Pads trailing bits with zeros
@@ -105,6 +107,10 @@ Options:
   --verbose, -v    Verbose mode (shows processing details)
   --help, -h       Shows this help and usage text
 ```
+
+* The `--lrbc` options are available **only** on CP/M builds (CP/M-80 and
+  CP/M-86); see the [CP/M-80 notes](#cpm-80-notes).  On CP/M 3.0 or later,
+  `--auto` also enables `--lrbc`.
 
 * If multiple `--bits`, `--pad`, or `--limit` options are provided, only the
   last value is effective.
@@ -523,10 +529,24 @@ LRBC).  Unfortunately, the LRBC is stored as a number between 0 and 255, with
 no official documented interpretation.  The DRI ISX software uses this field
 to indicate the number of **unused** octets in the last record, while DRI
 DOS-PLUS uses the field to indicate the number of **used** octets in the last
-record, with a count of zero indicating 128.  Because of this ambiguity and
-because accessing the LRBC metadata requires the use of non-portable
-programming constructs (direct BDOS function calls) the LRBC is not currently
-utilized, but might be supported in a future release.
+record, with a count of zero indicating 128 (a full final record) under
+either interpretation.
+
+When running on CP/M 3.0 or later, the `--lrbc` option uses this metadata to
+constrain processing to the file's exact length automatically, so no manual
+`--limit` is needed.  Continuing the example above, `CRC --lrbc DATA.DAT`
+processes exactly 174,344 bits and matches the MS-DOS or UNIX result.  Because
+the DOS-PLUS interpretation is the more common one, `--lrbc` assumes it by
+default; pass `--lrbc=isx` instead to select the DRI ISX (unused octets)
+interpretation.  When the LRBC indicates a full final record or when running
+under CP/M 2.x, which has no LRBC all records are processed as before.
+
+For convenience, `--auto` also enables `--lrbc` (DOS-PLUS interpretation) on
+CP/M 3.0 and later.  When `--lrbc` is requested explicitly on a host that
+predates CP/M 3.0, a warning is printed and all records are processed.  If
+both `--lrbc` and `--limit` are given, the smaller (most restrictive) of the
+two limits applies.  The LRBC is read using direct BDOS function calls, so
+the feature is compiled in only for CP/M targets.
 
 ### Building for CP/M-86
 
@@ -536,19 +556,18 @@ from [tsupplis](https://github.com/tsupplis).
 
 * To build a binary for CP/M-86 using cross-Aztec C 3.4:
 
-  ```23280/10.7
+  ```sh
   sed 's|const||g' crc.c > crc_nc.c
-  aztec34_cc "+FA" -DNOANSI -DNOSTDLIB -DUSE_CONST crc_nc.c
+  aztec34_cc "+FA" -DNOANSI -DNOSTDLIB -DUSE_CONST -D__AZTEC_C_34T__ crc_nc.c
   aztec34_sqz crc_nc.o
   aztec34_link -o crc.cmd crc_nc.o -lc86
   pcdev_cmdinfo crc.cmd
-
   ```
 
 * To build a binary for CP/M-86 using cross-Aztec C 4.2:
 
-  ```23264 / 10.057
-  aztec42_cc "+FA" -DNOSTRING crc.c
+  ```
+  aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
   aztec42_sqz crc.o
   aztec42_link -o crc.cmd crc.o -lc86
   pcdev_cmdinfo crc.cmd

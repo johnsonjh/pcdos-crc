@@ -8,6 +8,8 @@
 /*.$$$
 /a.out
 /*.bak
+/*.cmd
+/*.CMD
 /*.com
 /*.COM
 /compile_commands.events.json

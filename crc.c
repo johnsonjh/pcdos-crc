@@ -150,6 +150,37 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+/*
+ * CP/M Last Record Byte Count (LRBC) support.
+ *
+ * The --lrbc and --lrbc=isx options and the direct BDOS calls they rely on
+ * are compiled only for CP/M targets: CP/M-80 via z88dk, and CP/M-86 via
+ * Aztec C (the build passes -D__AZTEC_C_42T__ for 4.2 or -D__AZTEC_C_34T__
+ * for 3.4).  Define CRC_CPM on the command line to force it on elsewhere.
+ */
+
+#ifndef CRC_CPM
+# ifdef __Z88DK
+#  ifdef __CPM__
+#   define CRC_CPM
+#  endif
+# endif
+#endif
+
+#ifndef CRC_CPM
+# ifdef __AZTEC_C_42T__
+#  define CRC_CPM
+# endif
+#endif
+
+#ifndef CRC_CPM
+# ifdef __AZTEC_C_34T__
+#  define CRC_CPM
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef NOANSI
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
@@ -429,6 +460,14 @@ static int g_verbose = 0;
 static int g_bits_auto = 0;
 static int g_pad_auto = 0;
 static long g_out_err = 0;
+
+/******************************************************************************/
+
+#ifdef CRC_CPM
+static int g_cpm_lrbc = 0;
+static int g_cpm_lrbc_explicit = 0;
+static int g_lrbc_warned = 0;
+#endif
 
 /******************************************************************************/
 
@@ -2475,24 +2514,182 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
 /******************************************************************************/
 
+#ifdef CRC_CPM
+
+/*
+ * Direct BDOS access for the LRBC query.  Z88DK has bdos() and the directory
+ * helpers in <cpm.h> and uses an FCB address passed as an int.  Aztec C has
+ * the bdos() function in the CP/M runtime and takes the FCB pointer directly.
+ */
+
+# ifdef __Z88DK
+#  include <cpm.h>
+#  define BDOS_FCB(p) ((int)(p))
+# else
+extern int bdos ();
+#  define BDOS_FCB(p) (p)
+# endif
+
+/******************************************************************************/
+
+/*
+ * Build a CP/M File Control Block from a filename.  The 8.3 name is upper-
+ * cased and space-padded; an optional "d:" drive prefix is skipped so CP/M
+ * resolves the file on the default drive.
+ */
+
+static void
+# ifdef ANSI_COMPILER
+cpm_setfcb (
+  unsigned char * const fcb,
+  const char * const fn)
+# else
+cpm_setfcb (fcb, fn)
+  unsigned char * const fcb;
+  const char * const fn;
+# endif
+{
+  const char * p = fn;
+  int i;
+
+  for (i = 0; 36 > i; i++)
+    fcb [i] = 0;
+
+  for (i = 1; 11 >= i; i++)
+    fcb [i] = ' ';
+
+  if ('\0' != p [0] && ':' == p [1])
+    p += 2;
+
+  i = 1;
+
+  while ('\0' != * p && '.' != * p && 8 >= i) {
+    int c = (int)(unsigned char)* p++;
+
+    if ('a' <= c && 'z' >= c)
+      c -= 32;
+
+    fcb [i++] = (unsigned char)c;
+  }
+
+  while ('\0' != * p && '.' != * p)
+    p++;
+
+  if ('.' == * p)
+    p++;
+
+  i = 9;
+
+  while ('\0' != * p && 11 >= i) {
+    int c = (int)(unsigned char)* p++;
+
+    if ('a' <= c && 'z' >= c)
+      c -= 32;
+
+    fcb [i++] = (unsigned char)c;
+  }
+}
+
+/******************************************************************************/
+
+static long
+# ifdef ANSI_COMPILER
+cpm_file_size (
+  const char * const fn,
+  const int isx,
+  counter_t * const chars)
+# else
+cpm_file_size (fn, isx, chars)
+  const char * const fn;
+  const int isx;
+  counter_t * const chars;
+# endif
+{
+  unsigned char fcb [36];
+  long records, total, base, exact, unused, last_ext;
+  int lrbc;
+
+  if (0x30 > (bdos (12, 0) & 0x00ff))
+    return -2L;
+
+  cpm_setfcb (fcb, fn);
+  (void)bdos (35, BDOS_FCB (fcb));
+  records = ((long)fcb [33])
+          | ((long)fcb [34] << 8)
+          | ((long)fcb [35] << 16);
+
+  if (0L >= records)
+    return -1L;
+
+  last_ext = (records - 1L) >> 7; /* 128 records per extent */
+
+  cpm_setfcb (fcb, fn);
+  fcb [12] = (unsigned char)(last_ext & 0x1f);
+  fcb [14] = (unsigned char)((last_ext >> 5) & 0x3f);
+
+  if (0xff == (bdos (15, BDOS_FCB (fcb)) & 0x00ff))
+    return -1L;
+
+  lrbc = fcb [13] & 0xff;
+  (void)bdos (16, BDOS_FCB (fcb));
+
+  total = records * 128L;
+  base = total - 128L;
+
+  if (0 >= lrbc)
+    exact = total;
+  else if (0 != isx)
+    exact = total - (long)lrbc;
+  else
+    exact = base + (long)lrbc;
+
+  if (exact <= base || exact > total)
+    exact = total;
+
+  cb_zero (chars);
+  (void)cb_add (chars, (unsigned int)((records >> 16) & 0xffL));
+  (void)cb_mul (chars, (unsigned int)256);
+  (void)cb_add (chars, (unsigned int)((records >> 8) & 0xffL));
+  (void)cb_mul (chars, (unsigned int)256);
+  (void)cb_add (chars, (unsigned int)(records & 0xffL));
+
+  if (0 == cb_mul (chars, (unsigned int)128))
+    return -1L; /* file too large to count in the BCD counter */
+
+  unused = total - exact;
+
+  if (0L < unused)
+    if (0 == cb_sub (chars, (unsigned int)unused))
+      return -1L;
+
+  return exact;
+}
+
+#endif /* CRC_CPM */
+
+/******************************************************************************/
+
 static int
 #ifdef ANSI_COMPILER
 find_max_bits (
   const char * const filename,
   const int cb,
   int * const is_all_zeros,
-  counter_t * const num_chars)
+  counter_t * const num_chars,
+  const long max_chars)
 #else
-find_max_bits (filename, cb, is_all_zeros, num_chars)
+find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
   const char * const filename;
   const int cb;
   int * const is_all_zeros;
   counter_t * const num_chars;
+  const long max_chars;
 #endif
 {
   FILE * fp;
   crc_t aggregate = 0;
   int bits = 0;
+  long got = 0;
 
   * is_all_zeros = 1;
   cb_zero (num_chars);
@@ -2511,6 +2708,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
 
     for (;;) {
       const long n = (long)fread (mbuf, 1, sizeof (mbuf), fp);
+      long use = n;
 
       if (0 >= n) {
         if (0 == feof (fp) && 0 == ferror (fp)) {
@@ -2522,21 +2720,29 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
         break;
       }
 
+      if (0 < max_chars && use > max_chars - got)
+        use = max_chars - got;
+
       {
         long i;
 
-        for (i = 0; n > i; i++) {
+        for (i = 0; use > i; i++) {
           const crc_t b = (crc_t)mbuf [i];
 
           aggregate |= b;
         }
 
-        if (0 == cb_add (num_chars, (unsigned int)n)) {
+        if (0 == cb_add (num_chars, (unsigned int)use)) {
           error_msg ("Character counter overflow reading", filename, 0);
           (void)fclose (fp);
           return -1;
         }
       }
+
+      got += use;
+
+      if (0 < max_chars && got >= max_chars)
+        break;
 
       if ((long)sizeof (mbuf) > n) {
         if (0 != ferror (fp)) {
@@ -2601,19 +2807,28 @@ find_max_bits (filename, cb, is_all_zeros, num_chars)
 
       {
         long i;
+        long use = nread;
 
-        for (i = 0; nread > i; i++) {
+        if (0 < max_chars && use > max_chars - got)
+          use = max_chars - got;
+
+        for (i = 0; use > i; i++) {
           const crc_t b = (crc_t)mbuf [i];
 
           aggregate |= b;
         }
 
-        if (0 == cb_add (num_chars, (unsigned int)nread)) {
+        if (0 == cb_add (num_chars, (unsigned int)use)) {
           error_msg ("Character counter overflow reading", filename, 0);
           (void)fclose (fp);
           return -1;
         }
+
+        got += use;
       }
+
+      if (0 < max_chars && got >= max_chars)
+        break;
     }
   }
 #endif
@@ -2758,19 +2973,59 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   counter_t processed_bits;
   counter_t processed_chars;
   counter_t expected_chars;
+  counter_t eff_lim;
+  long lrbc_cap = 0L;
+#ifdef CRC_CPM
+  counter_t lrbc_chars;
+  int lrbc_active = 0;
+#endif
 
   cb_zero (& processed_bits);
   cb_zero (& processed_chars);
   cb_zero (& expected_chars);
+  cb_copy (& eff_lim, lim_bits);
+#ifdef CRC_CPM
+  cb_zero (& lrbc_chars);
+#endif
   g_fileerr = 0;
 
   /*cppcheck-suppress knownConditionTrueFalse*/
   if (0 != check_is_directory (filename))
     return;
 
+#ifdef CRC_CPM
+  if (0 != g_cpm_lrbc) {
+    const long exact = cpm_file_size (filename,
+                                      (2 == g_cpm_lrbc), & lrbc_chars);
+
+    if (0L <= exact) {
+      lrbc_cap = exact;
+      lrbc_active = 1;
+    } else if (0 != g_cpm_lrbc_explicit) {
+      if (-2L == exact) {
+        if (0 == g_lrbc_warned) {
+          out_err_check_int (
+            fprintf (stderr,
+              "WARNING: --lrbc requires CP/M 3.0 or later; ")
+          );
+          out_err_check_int (
+            fprintf (stderr, "processing all records.\n")
+          );
+          g_lrbc_warned = 1;
+        }
+      } else
+        out_err_check_int (
+          fprintf (stderr,
+            "WARNING: Could not read LRBC for %s; processing all records.\n",
+            filename)
+        );
+    }
+  }
+#endif
+
   {
     const int max_bits = find_max_bits (filename, cb,
-      & is_all_zeros, & expected_chars);
+      & is_all_zeros, & expected_chars, lrbc_cap);
 
     if (0 > max_bits) {
       if (0 != g_fileerr)
@@ -2793,6 +3048,18 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
     }
   }
 
+#ifdef CRC_CPM
+  if (0 != lrbc_active) {
+    counter_t lrbc_bits;
+
+    cb_copy (& lrbc_bits, & lrbc_chars);
+
+    if (0 != cb_mul (& lrbc_bits, (unsigned int)local_use_cb))
+      if (0 != cb_is_zero (& eff_lim) || 0 > cb_cmp (& lrbc_bits, & eff_lim))
+        cb_copy (& eff_lim, & lrbc_bits);
+  }
+#endif
+
   fp = fopen (filename, "rb");
 
   if (NULL == fp)
@@ -2805,7 +3072,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
   {
     const crc_t crcval = compute_crc (fp,
-      filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, lim_bits,
+      filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, & eff_lim,
       & processed_bits, & processed_chars, & actually_padded, batch_limit,
       & expected_chars);
 
@@ -2829,7 +3096,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
     );
   }
 
-  if (0 != g_bits_auto && 0 != cb_is_zero (lim_bits) &&
+  if (0 != g_bits_auto && 0 != cb_is_zero (& eff_lim) &&
       0 == bit_check_failed && 0 == cb_is_zero (& expected_chars)) {
     counter_t expected_bits;
 
@@ -2958,6 +3225,18 @@ usage (progname, cb)
   out_err_check_int (
     fprintf (stderr, "  --limit=N        Stops processing after N bits\n")
   );
+#ifdef CRC_CPM
+  out_err_check_int (
+    fprintf (stderr,
+      "  --lrbc           Limits to the CP/M Last Record Byte Count\n"
+    )
+  );
+  out_err_check_int (
+    fprintf (stderr,
+      "  --lrbc=isx       Use the ISX LRBC convention (unused bytes)\n"
+    )
+  );
+#endif
   out_err_check_int (
     fprintf (stderr,
       "  --bits=N         Reads as N bits per storage character\n"
@@ -2989,6 +3268,13 @@ usage (progname, cb)
   out_err_check_int (
     fprintf (stderr, "  --help, -h       Shows this help and usage text\n")
   );
+
+#ifdef CRC_CPM
+  out_err_check_int (
+    fprintf (stderr,
+      "\nOn CP/M 3.0 or later, '--auto' also enables '--lrbc'.\n")
+  );
+#endif
 
   if (8 != cb)
     out_err_check_int (
@@ -3032,6 +3318,11 @@ main (argc, argv)
   int stop = 0;
   int pad = 0;
   int process_bits = 0;
+#ifdef CRC_CPM
+  int opt_auto = 0;
+  int opt_lrbc = 0;
+  int opt_lrbc_isx = 0;
+#endif
 #ifdef __Z88DK
 # ifdef __CPM__
   int processed = 0;
@@ -3182,6 +3473,9 @@ bits_error:
       g_verbose = 1;
       g_bits_auto = 1;
       g_pad_auto = 1;
+#ifdef CRC_CPM
+      opt_auto = 1;
+#endif
       continue;
     }
 
@@ -3208,6 +3502,25 @@ bits_error:
 
       continue;
     }
+
+#ifdef CRC_CPM
+    if (0 == stop && 0 == xstrcasecmp (argv [j], "--lrbc")) {
+      opt_lrbc = 1;
+      continue;
+    }
+
+    if (0 == stop && 0 == xstrncasecmp (argv [j], "--lrbc=", 7)) {
+      if (0 == xstrcasecmp (argv [j] + 7, "isx")) {
+        opt_lrbc_isx = 1;
+        continue;
+      }
+
+      out_err_check_int (
+        fprintf (stderr, "FATAL: --lrbc takes no value, or '=isx'.\n")
+      );
+      return EXIT_FAILURE;
+    }
+#endif
 
     if (0 == stop && '-' == argv [j] [0]) {
       out_err_check_int (
@@ -3263,6 +3576,19 @@ bits_error:
   }
 
   inmask = make_mask (use_cb);
+
+#ifdef CRC_CPM
+  if (0 != opt_lrbc_isx) {
+    g_cpm_lrbc = 2;
+    g_cpm_lrbc_explicit = 1;
+  } else if (0 != opt_lrbc) {
+    g_cpm_lrbc = 1;
+    g_cpm_lrbc_explicit = 1;
+  } else if (0 != opt_auto) {
+    g_cpm_lrbc = 1;
+    g_cpm_lrbc_explicit = 0;
+  }
+#endif
 
   stop = 0;
 
