@@ -153,7 +153,7 @@ if [ "${CHECK_OLINT:-0}" -eq 1 ]; then
   fi
 
   if [ -z "${OLINT+x}" ]; then
-    printf '%s\n' "WARNING: Oracle Developer Studio Lint was not found!" \
+    printf '%s\n' "WARNING: Oracle Developer Studio Lint 12.6 was not found!" \
       | wrap "${width:?}"
     NEED_PAUSE=1
   fi
@@ -261,7 +261,8 @@ command -v shfmt > /dev/null 2>&1 && {
 : Flawfinder
 : ::::::::::
 command -v flawfinder > /dev/null 2>&1 && {
-  flawfinder --quiet --omittime --error-level=3 --context --minlevel=3 crc.c
+  flawfinder --quiet --dataonly --omittime --error-level=3 --context \
+    --minlevel=3 crc.c
 }
 
 ################################################################################
