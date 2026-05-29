@@ -848,6 +848,7 @@ cb_parse (c, s)
     return 0;
 
   cb_zero (c);
+
   p = s;
 
   while ('\0' != * p) {
@@ -856,6 +857,7 @@ cb_parse (c, s)
     for (i = 0; 10 > i; i++)
       if (hexdigits [i] == * p) {
         digit = i;
+
         break;
       }
 
@@ -937,6 +939,7 @@ xstrncasecmp (s1, s2, n)
 
     if (c1 != c2) {
       ret = ((c1 < c2) ? -1 : 1);
+
       goto done;
     }
 
@@ -973,6 +976,7 @@ xstrcasecmp (s1, s2)
 
     if (c1 != c2) {
       ret = ((c1 < c2) ? -1 : 1);
+
       goto done;
     }
 
@@ -1148,6 +1152,7 @@ trim_str (s)
 
   if (0 == s) {
     buf [0] = '\0';
+
     return buf;
   }
 
@@ -1158,6 +1163,7 @@ trim_str (s)
 
   if ('\0' == * p) {
     buf [0] = '\0';
+
     return buf;
   }
 
@@ -1863,6 +1869,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       if (0 == cb_is_zero (lim_bits) &&
           0 != cb_is_zero (& rem_bits)) {
         limit_reached = 1;
+
         break;
       }
 
@@ -1874,6 +1881,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
         if (0 == cb_add (& uc_cb, (unsigned int)use_cb)) {
           error_msg ("Counter logic error reading", filename, 0);
+
           goto done;
         }
 
@@ -1887,7 +1895,9 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
             out_err_check_int (
               fprintf (stderr, " use --pad if needed.\n")
             );
+
             cb_zero (& rem_bits);
+
             goto done;
           }
       }
@@ -1920,11 +1930,13 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
                   rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
                   rbuf [nread++] = (unsigned char)(w & 0x1FF);
                   (void)clearerr (fp);
+
                   continue;
                 }
               }
             }
 # endif
+
             break;
           }
 
@@ -1934,6 +1946,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
         if (0 != ferror (fp)) {
           error_msg ("Error reading", filename, errno);
+
           goto done;
         }
 
@@ -1946,6 +1959,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
               (void)cb_add (& cur_chars, acc_chars);
 
               if (0 == cb_cmp (& cur_chars, expected_chars)) {
+
                 goto done;
               }
             }
@@ -1971,6 +1985,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         counter_t uc_cb;
 
         cb_zero (& uc_cb);
+
         (void)cb_add (& uc_cb, (unsigned int)use_cb);
 
         if (0 > cb_cmp (& rem_bits, & uc_cb)) {
@@ -1982,6 +1997,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
           bits_added = rb_val;
           tmp &= make_mask ((int)bits_added);
+
           cb_zero (& rem_bits);
         } else {
           bits_added = (unsigned int)use_cb;
@@ -1989,6 +2005,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 
           if (0 == cb_sub (& rem_bits, bits_added)) {
             error_msg ("Counter logic error reading", filename, 0);
+
             goto done;
           }
         }
@@ -2002,11 +2019,13 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       if (acc_bits >= batch_limit) {
         if (0 == cb_add (processed_bits, acc_bits)) {
           error_msg ("Bit counter overflow reading", filename, 0);
+
           goto done;
         }
 
         if (0 == cb_add (processed_chars, acc_chars)) {
           error_msg ("Character counter overflow reading", filename, 0);
+
           goto done;
         }
 
@@ -2022,6 +2041,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       if (0 == cb_is_zero (lim_bits) &&
           0 != cb_is_zero (& rem_bits)) {
         limit_reached = 1;
+
         break;
       }
     }
@@ -2060,6 +2080,7 @@ done:
         counter_t uc_cb;
 
         cb_zero (& uc_cb);
+
         (void)cb_add (& uc_cb, (unsigned int)use_cb);
 
         if (0 > cb_cmp (& rem_bits, & uc_cb)) {
@@ -2070,12 +2091,14 @@ done:
             rb_val = rb_val * 10 + (unsigned int)rem_bits.d [k];
 
           bits_to_add = rb_val;
+
           cb_zero (& rem_bits);
         } else {
           bits_to_add = (unsigned int)use_cb;
 
           if (0 == cb_sub (& rem_bits, bits_to_add)) {
             error_msg ("Counter logic error reading", filename, 0);
+
             return (crc_t)0;
           }
         }
@@ -2084,11 +2107,13 @@ done:
 
         if (0 == cb_add (processed_bits, bits_to_add)) {
           error_msg ("Bit counter overflow reading", filename, 0);
+
           return (crc_t)0;
         }
 
         if (0 == cb_add (processed_chars, (unsigned int)1)) {
           error_msg ("Character counter overflow reading", filename, 0);
+
           return (crc_t)0;
         }
 
@@ -2230,6 +2255,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
     counter_t rem_bits;
 
     cb_zero (& rem_bits);
+
     cb_copy (& rem_bits, lim_bits);
 
     for (;;) {
@@ -2262,11 +2288,13 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
                 rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
                 rbuf [nread++] = (unsigned char)(w & 0x1FF);
                 (void)clearerr (fp);
+
                 continue;
               }
             }
           }
 # endif
+
           break;
         }
 
@@ -2276,6 +2304,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
       if (0 != ferror (fp)) {
         error_msg ("Error reading", filename, errno);
+
         return (crc_t)0;
       }
 
@@ -2283,6 +2312,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         if (0 == feof (fp)) {
           if (0 != expected_chars &&
               0 == cb_cmp (processed_chars, expected_chars)) {
+
             break;
           }
 
@@ -2299,6 +2329,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         counter_t eight;
 
         cb_zero (& eight);
+
         (void)cb_add (& eight, (unsigned int)8);
 
         while (0 <= cb_cmp (& rem_bits, & eight) && nread > count) {
@@ -2318,11 +2349,13 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
           if (0 == cb_add (processed_bits, chunk * (unsigned int)8)) {
             error_msg ("Bit counter overflow reading", filename, 0);
+
             return (crc_t)0;
           }
 
           if (0 == cb_add (processed_chars, chunk)) {
             error_msg ("Character counter overflow reading", filename, 0);
+
             return (crc_t)0;
           }
 
@@ -2350,16 +2383,19 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
           if (0 == cb_add (processed_bits, (unsigned int)rb_val)) {
             error_msg ("Bit counter overflow reading", filename, 0);
+
             return (crc_t)0;
           }
 
           if (0 == cb_add (processed_chars, (unsigned int)1)) {
             error_msg ("Character counter overflow reading", filename, 0);
+
             return (crc_t)0;
           }
 
           crc = crc_update_byte (crc, tbl, mask32, final_byte);
           * actually_padded = 1;
+
           cb_zero (& rem_bits);
         } else {
           out_err_check_int (
@@ -2391,6 +2427,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         counter_t eight;
 
         cb_zero (& eight);
+
         (void)cb_add (& eight, (unsigned int)8);
 
         for (k = 0; (long)sizeof (zbuf) > k; k++)
@@ -2414,11 +2451,13 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
               if (0 == cb_add (processed_bits, c_chunk * (unsigned int)8)) {
                 error_msg ("Bit counter overflow reading", filename, 0);
+
                 return (crc_t)0;
               }
 
               if (0 == cb_add (processed_chars, c_chunk)) {
                 error_msg ("Character counter overflow reading", filename, 0);
+
                 return (crc_t)0;
               }
 
@@ -2647,6 +2686,7 @@ cpm_file_size (fn, isx, chars)
     exact = total;
 
   cb_zero (chars);
+
   (void)cb_add (chars, (unsigned int)((records >> 16) & 0xffL));
   (void)cb_mul (chars, (unsigned int)256);
   (void)cb_add (chars, (unsigned int)((records >> 8) & 0xffL));
@@ -2692,6 +2732,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
   long got = 0;
 
   * is_all_zeros = 1;
+
   cb_zero (num_chars);
 
   fp = fopen (filename, "rb");
@@ -2714,6 +2755,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
         if (0 == feof (fp) && 0 == ferror (fp)) {
           error_msg ("Error reading", filename, errno);
           (void)fclose (fp);
+
           return -1;
         }
 
@@ -2735,6 +2777,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
         if (0 == cb_add (num_chars, (unsigned int)use)) {
           error_msg ("Character counter overflow reading", filename, 0);
           (void)fclose (fp);
+
           return -1;
         }
       }
@@ -2748,6 +2791,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
         if (0 != ferror (fp)) {
           error_msg ("Error reading", filename, errno);
           (void)fclose (fp);
+
           return -1;
         }
 
@@ -2781,11 +2825,13 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
               mbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
               mbuf [nread++] = (unsigned char)(w & 0x1FF);
               (void)clearerr (fp);
+
               continue;
             }
           }
 # endif
           hit_eof = 1;
+
           break;
         }
 
@@ -2799,6 +2845,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
         if (0 == feof (fp) && 0 == ferror (fp)) {
           error_msg ("Error reading", filename, errno);
           (void)fclose (fp);
+
           return -1;
         }
 
@@ -2821,6 +2868,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
         if (0 == cb_add (num_chars, (unsigned int)use)) {
           error_msg ("Character counter overflow reading", filename, 0);
           (void)fclose (fp);
+
           return -1;
         }
 
@@ -2906,6 +2954,7 @@ check_is_directory (filename)
 #  else
       error_msg ("Is a directory:", filename, 0);
 #  endif
+
       return 1;
     }
 # endif
@@ -2983,10 +3032,13 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   cb_zero (& processed_bits);
   cb_zero (& processed_chars);
   cb_zero (& expected_chars);
+
   cb_copy (& eff_lim, lim_bits);
+
 #ifdef CRC_CPM
   cb_zero (& lrbc_chars);
 #endif
+
   g_fileerr = 0;
 
   /*cppcheck-suppress knownConditionTrueFalse*/
@@ -3067,6 +3119,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
   if (NULL == fp) {
     error_msg ("Error opening", filename, errno);
+
     return;
   }
 
@@ -3104,6 +3157,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
     if (0 == cb_mul (& expected_bits, (unsigned int)local_use_cb)) {
       error_msg ("Bit count overflow validating", filename, 0);
+
       return;
     } else if (0 != cb_cmp (& processed_bits, & expected_bits)) {
       const int cmp = cb_cmp (& processed_bits, & expected_bits);
@@ -3147,6 +3201,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
 
       g_anyerr = 1;
       g_fileerr = 1;
+
       return;
     }
   }
@@ -3355,6 +3410,7 @@ main (argc, argv)
         "FATAL: Non-conforming %d-bit unsigned int (must be >= 16).\n", uib
       )
     );
+
     return EXIT_FAILURE;
   }
 
@@ -3364,6 +3420,7 @@ main (argc, argv)
         "FATAL: Non-conforming %d-bit crc_t type (must be >= 32).\n", ub
       )
     );
+
     return EXIT_FAILURE;
   }
 
@@ -3379,6 +3436,7 @@ main (argc, argv)
         "FATAL: Broken compiler: logical right-shift is not logical.\n"
       )
     );
+
     return EXIT_FAILURE;
   }
 
@@ -3394,23 +3452,27 @@ main (argc, argv)
         "FATAL: Unsupported %d-bit character size (must be 8-32).\n", cb
       )
     );
+
     return EXIT_FAILURE;
   }
 
   if (2 > argc) {
     usage (progname, cb);
+
     return EXIT_FAILURE;
   }
 
   for (j = 1; argc > j; j++) {
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--")) {
       stop = 1;
+
       continue;
     }
 
     if (0 == stop && (0 == xstrcasecmp (argv [j], "-h") ||
                       0 == xstrcasecmp (argv [j], "--help"))) {
       usage (progname, cb);
+
       return 0;
     }
 
@@ -3418,6 +3480,7 @@ main (argc, argv)
       if (0 == xstrcasecmp (argv [j] + 7, "auto")) {
         g_bits_auto = 1;
         process_bits = 0;
+
         continue;
       }
 
@@ -3444,6 +3507,7 @@ main (argc, argv)
 
         process_bits = (int)bits;
         g_bits_auto = 0;
+
         continue;
 
 bits_error:
@@ -3453,6 +3517,7 @@ bits_error:
         out_err_check_int (
           fprintf (stderr, "between 1 and %d (or 'auto').\n", ub - 8)
         );
+
         return EXIT_FAILURE;
       }
     }
@@ -3460,12 +3525,14 @@ bits_error:
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--pad")) {
       pad = 1;
       g_pad_auto = 0;
+
       continue;
     }
 
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--pad=auto")) {
       g_pad_auto = 1;
       pad = 0;
+
       continue;
     }
 
@@ -3476,12 +3543,14 @@ bits_error:
 #ifdef CRC_CPM
       opt_auto = 1;
 #endif
+
       continue;
     }
 
     if (0 == stop && (0 == xstrcasecmp (argv [j], "-v") ||
                       0 == xstrcasecmp (argv [j], "--verbose"))) {
       g_verbose = 1;
+
       continue;
     }
 
@@ -3490,6 +3559,7 @@ bits_error:
         out_err_check_int (
           fprintf (stderr, "FATAL: --limit must be a positive integer.\n")
         );
+
         return EXIT_FAILURE;
       }
 
@@ -3497,6 +3567,7 @@ bits_error:
         out_err_check_int (
           fprintf (stderr, "FATAL: --limit must be greater than zero.\n")
         );
+
         return EXIT_FAILURE;
       }
 
@@ -3506,18 +3577,21 @@ bits_error:
 #ifdef CRC_CPM
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--lrbc")) {
       opt_lrbc = 1;
+
       continue;
     }
 
     if (0 == stop && 0 == xstrncasecmp (argv [j], "--lrbc=", 7)) {
       if (0 == xstrcasecmp (argv [j] + 7, "isx")) {
         opt_lrbc_isx = 1;
+
         continue;
       }
 
       out_err_check_int (
         fprintf (stderr, "FATAL: --lrbc takes no value, or '=isx'.\n")
       );
+
       return EXIT_FAILURE;
     }
 #endif
@@ -3527,6 +3601,7 @@ bits_error:
         fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j])
       );
       usage (progname, cb);
+
       return EXIT_FAILURE;
     }
 
@@ -3538,6 +3613,7 @@ bits_error:
       fprintf (stderr, "FATAL: No filename provided.\n")
     );
     usage (progname, cb);
+
     return EXIT_FAILURE;
   }
 
@@ -3572,6 +3648,7 @@ bits_error:
           use_cb, ub
       )
     );
+
     return EXIT_FAILURE;
   }
 
@@ -3595,6 +3672,7 @@ bits_error:
   for (j = 1; argc > j; j++) {
     if (0 == stop && 0 == xstrcasecmp (argv [j], "--")) {
       stop = 1;
+
       continue;
     }
 
@@ -3662,6 +3740,7 @@ bits_error:
       g_out_err, (1 == g_out_err ? "" : "s")
     );
     (void)fprintf (stderr, "displayed results may not be reliable!\n");
+
     return EXIT_FAILURE;
   }
 
