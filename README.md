@@ -496,14 +496,15 @@ CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
 
 Builds targeting the Z80 will execute about 25% faster than 8080 builds.
 
-The [PopCom!](https://github.com/johnsonjh/VEDIT/raw/refs/heads/master/dev/popcom.com)
-utility can be used to compress the generated CP/M executable, reducing its
-on‑disk size by approximately 50% and slightly lowering its memory usage, at
-the cost of a small increase in load time.
+The [LZPACK](https://github.com/johnsonjh/lzpack) utility can be used to
+transparently compress the generated CP/M executable, reducing its on‑disk
+size by approximately 50% and slightly lowering its memory usage, at the cost
+of a small increase in load time.
 
 **NB**: If you need to verify CRCs on CP/M that were created on other
 systems, you should always constrain processing to the actual number of
-significant bits.
+significant bits.  This can be done automatically **only** on CP/M 3.0
+and later!
 
 On CP/M-80 systems, files **do not have exact sizes** but are stored on disk in
 fixed-size records of 1024 bits (*i.e.,* 128 8-bit octets) each.  Files
@@ -546,7 +547,7 @@ CP/M 3.0 and later.  When `--lrbc` is requested explicitly on a host that
 predates CP/M 3.0, a warning is printed and all records are processed.  If
 both `--lrbc` and `--limit` are given, the smaller (most restrictive) of the
 two limits applies.  The LRBC is read using direct BDOS function calls, so
-the feature is compiled in only for CP/M targets.
+this feature is only enabled when compiling for CP/M targets.
 
 ### Building for CP/M-86
 
@@ -579,7 +580,7 @@ CP/M-86 builds do **not** support internal wildcard expansion at this time.
 
 Builds using Aztec C 4.2 will execute about 10% faster than Aztec C 3.4 builds.
 
-All of the [CP/M-80 notes](#cpm-80-notes), with the exception of the PopCom!
+All of the [CP/M-80 notes](#cpm-80-notes), with the exception of the LZPACK
 executable compressor, also apply to CP/M-86.
 
 ### Building for ELKS
