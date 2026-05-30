@@ -328,8 +328,9 @@ command -v "${OLINT:-}" > /dev/null 2>&1 && {
 : Clang - ANSI
 : ::::::::::::
 command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
-  CLANG_ANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
-   -Wno-missing-noreturn -Wno-disabled-macro-expansion -Werror"
+  CLANG_ANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage -Wno-padded \
+   -Wno-missing-noreturn -Wno-disabled-macro-expansion -Werror \
+   -Wno-used-but-marked-unused -ferror-limit=0 -U_FORTIFY_SOURCE"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       # shellcheck disable=SC2086
@@ -412,9 +413,10 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
 : Clang - non-ANSI
 : ::::::::::::::::
 command -v "${CLANG_CMD:-clang}" > /dev/null 2>&1 && {
-  CLANG_NOANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage \
-   -Wno-missing-noreturn -Wno-deprecated-non-prototype \
-   -Wno-strict-prototypes -Wno-disabled-macro-expansion -Werror"
+  CLANG_NOANSI_CFLAGS="-O3 -Weverything -Wno-unsafe-buffer-usage -Wno-padded \
+   -Wno-missing-noreturn -Wno-deprecated-non-prototype -ferror-limit=0 \
+   -Wno-strict-prototypes -Wno-disabled-macro-expansion -Werror \
+   -Wno-used-but-marked-unused -U_FORTIFY_SOURCE"
   for variant in "" "-DNOFREAD"; do
     if [ -n "${variant:-}" ]; then
       # shellcheck disable=SC2086
