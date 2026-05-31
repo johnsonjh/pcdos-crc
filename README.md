@@ -551,7 +551,7 @@ this feature is only enabled when compiling for CP/M targets.
 
 ### Building for CP/M-86
 
-To build the program for CP/M-86 we recommend using the most recent versions
+To build the program for CP/M-86 we are using the most recent versions
 of the [Aztec C cross-compiler](https://github.com/tsupplis/cpm86-crossdev)
 from [tsupplis](https://github.com/tsupplis).
 
