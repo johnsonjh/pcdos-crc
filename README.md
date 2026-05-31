@@ -555,6 +555,15 @@ To build the program for CP/M-86 we recommend using the most recent versions
 of the [Aztec C cross-compiler](https://github.com/tsupplis/cpm86-crossdev)
 from [tsupplis](https://github.com/tsupplis).
 
+* To build a binary for CP/M-86 using cross-Aztec C 4.2 (recommended):
+
+  ```
+  aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
+  aztec42_sqz crc.o
+  aztec42_link -o crc.cmd crc.o -lc86
+  pcdev_cmdinfo crc.cmd
+  ```
+
 * To build a binary for CP/M-86 using cross-Aztec C 3.4:
 
   ```sh
@@ -562,15 +571,6 @@ from [tsupplis](https://github.com/tsupplis).
   aztec34_cc "+FA" -DNOANSI -DNOSTDLIB -DUSE_CONST -D__AZTEC_C_34T__ crc_nc.c
   aztec34_sqz crc_nc.o
   aztec34_link -o crc.cmd crc_nc.o -lc86
-  pcdev_cmdinfo crc.cmd
-  ```
-
-* To build a binary for CP/M-86 using cross-Aztec C 4.2:
-
-  ```
-  aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
-  aztec42_sqz crc.o
-  aztec42_link -o crc.cmd crc.o -lc86
   pcdev_cmdinfo crc.cmd
   ```
 
