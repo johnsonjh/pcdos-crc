@@ -499,22 +499,89 @@ command -v "${GCC_CMD:-gcc}" > /dev/null 2>&1 && {
 
 :
 :
-: Cppcheck
-: ::::::::
+: Cppcheck unix64
+: :::::::::::::::
 command -v cppcheck > /dev/null 2>&1 && {
   cppcheck --check-level=exhaustive 2>&1 \
     | grep -q 'unrecognized command line option' \
     || {
       CHECK_LEVEL="--check-level=exhaustive"
     }
+  CPPCHECK_FLAGS="--enable=warning,style,performance"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?},portability,unusedFunction"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --force ${CHECK_LEVEL:-}"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --std=c89"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inline-suppr"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inconclusive"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --quiet"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --error-exitcode=99"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__CPPCHECK__"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__LINT__"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -j 1"
   rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
-  cppcheck --enable=warning,style,performance,portability,unusedFunction \
-    --force ${CHECK_LEVEL:-} --std=c89 --platform=unix64 -D__CPPCHECK__ \
-    -D__LINT__ --inline-suppr --inconclusive --error-exitcode=99 \
-    --cppcheck-build-dir="./.cppcheck-build-dir" \
-    -j "$(nproc 2> /dev/null || printf '%s\n' 1 || :)" crc.c
+  cppcheck --platform=unix64 --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+  rm -rf ./.cppcheck-build-dir || :
+}
+
+################################################################################
+
+:
+:
+: Cppcheck unix32
+: :::::::::::::::
+command -v cppcheck > /dev/null 2>&1 && {
+  cppcheck --check-level=exhaustive 2>&1 \
+    | grep -q 'unrecognized command line option' \
+    || {
+      CHECK_LEVEL="--check-level=exhaustive"
+    }
+  CPPCHECK_FLAGS="--enable=warning,style,performance"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?},portability,unusedFunction"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --force ${CHECK_LEVEL:-}"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --std=c89"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inline-suppr"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inconclusive"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --quiet"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --error-exitcode=99"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__CPPCHECK__"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__LINT__"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -j 1"
+  rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
+  mkdir -p ./.cppcheck-build-dir
+  # shellcheck disable=2086
+  cppcheck --platform=unix32 --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+  rm -rf ./.cppcheck-build-dir || :
+}
+
+################################################################################
+
+:
+:
+: Cppcheck avr8
+: :::::::::::::
+command -v cppcheck > /dev/null 2>&1 && {
+  cppcheck --check-level=exhaustive 2>&1 \
+    | grep -q 'unrecognized command line option' \
+    || {
+      CHECK_LEVEL="--check-level=exhaustive"
+    }
+  CPPCHECK_FLAGS="--enable=warning,style,performance"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?},portability,unusedFunction"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --force ${CHECK_LEVEL:-}"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --std=c89"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inline-suppr"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inconclusive"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --quiet"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --error-exitcode=99"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__CPPCHECK__"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__LINT__"
+  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -j 1"
+  rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
+  mkdir -p ./.cppcheck-build-dir
+  # shellcheck disable=2086
+  cppcheck --platform=avr8 --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
   rm -rf ./.cppcheck-build-dir || :
 }
 
