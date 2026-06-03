@@ -460,6 +460,7 @@ static int g_verbose = 0;
 static int g_bits_auto = 0;
 static int g_pad_auto = 0;
 static long g_out_err = 0;
+static unsigned char g_buf [BUFSIZ];
 
 /******************************************************************************/
 
@@ -1820,7 +1821,6 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   const counter_t * const expected_chars;
 #endif
 {
-  unsigned char rbuf [BUFSIZ];
   unsigned char oct;
   int ch;
   crc_t tmp;
@@ -1908,9 +1908,9 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 #endif
 
 #ifdef USE_FREAD
-        nread = (long)fread (rbuf, 1, sizeof (rbuf), fp);
+        nread = (long)fread (g_buf, 1, sizeof (g_buf), fp);
 #else
-        while ((long)sizeof (rbuf) > nread) {
+        while ((long)sizeof (g_buf) > nread) {
 # ifdef multics
           const int c = mgetc (fp);
 # else
@@ -1924,11 +1924,11 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
               const int w = getw (fp);
 
               if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
-                if (nread <= (long)(sizeof (rbuf) - 4)) {
-                  rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
-                  rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
-                  rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
-                  rbuf [nread++] = (unsigned char)(w & 0x1FF);
+                if (nread <= (long)(sizeof (g_buf) - 4)) {
+                  g_buf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+                  g_buf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+                  g_buf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+                  g_buf [nread++] = (unsigned char)(w & 0x1FF);
                   (void)clearerr (fp);
 
                   continue;
@@ -1940,7 +1940,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
             break;
           }
 
-          rbuf [nread++] = (unsigned char)c;
+          g_buf [nread++] = (unsigned char)c;
         }
 #endif
 
@@ -1973,7 +1973,7 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
         pos = 0;
       }
 
-      ch = rbuf [pos];
+      ch = g_buf [pos];
       pos++;
 
       acc_chars++;
@@ -2250,7 +2250,6 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   }
 
   if (8 == use_cb && 8 == cb) {
-    unsigned char rbuf [BUFSIZ];
     crc_t crc = 0;
     counter_t rem_bits;
 
@@ -2266,9 +2265,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 #endif
 
 #ifdef USE_FREAD
-      nread = (long)fread (rbuf, 1, sizeof (rbuf), fp);
+      nread = (long)fread (g_buf, 1, sizeof (g_buf), fp);
 #else
-      while ((long)sizeof (rbuf) > nread) {
+      while ((long)sizeof (g_buf) > nread) {
 # ifdef multics
         const int c = mgetc (fp);
 # else
@@ -2282,11 +2281,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             const int w = getw (fp);
 
             if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
-              if (nread <= (long)(sizeof (rbuf) - 4)) {
-                rbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
-                rbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
-                rbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
-                rbuf [nread++] = (unsigned char)(w & 0x1FF);
+              if (nread <= (long)(sizeof (g_buf) - 4)) {
+                g_buf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+                g_buf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+                g_buf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+                g_buf [nread++] = (unsigned char)(w & 0x1FF);
                 (void)clearerr (fp);
 
                 continue;
@@ -2298,7 +2297,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           break;
         }
 
-        rbuf [nread++] = (unsigned char)c;
+        g_buf [nread++] = (unsigned char)c;
       }
 #endif
 
@@ -2362,7 +2361,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           remaining -= (long)chunk;
         }
 
-        crc = crc_update_buffer (crc, tbl, mask32, rbuf, bytes_to_process);
+        crc = crc_update_buffer (crc, tbl, mask32, g_buf, bytes_to_process);
       }
 
       if (0 == cb_is_zero (lim_bits) &&
@@ -2371,7 +2370,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         if (0 != pad || 0 != g_pad_auto) {
           unsigned char mask;
           int k;
-          unsigned char final_byte = rbuf [bytes_to_process];
+          unsigned char final_byte = g_buf [bytes_to_process];
           unsigned long rb_val = 0;
 
           for (k = MAX_CB_DIGITS - 1; 0 <= k; k--)
@@ -2745,10 +2744,8 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
 
 #ifdef USE_FREAD
   {
-    unsigned char mbuf [BUFSIZ];
-
     for (;;) {
-      const long n = (long)fread (mbuf, 1, sizeof (mbuf), fp);
+      const long n = (long)fread (g_buf, 1, sizeof (g_buf), fp);
       long use = n;
 
       if (0 >= n) {
@@ -2769,7 +2766,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
         long i;
 
         for (i = 0; use > i; i++) {
-          const crc_t b = (crc_t)mbuf [i];
+          const crc_t b = (crc_t)g_buf [i];
 
           aggregate |= b;
         }
@@ -2787,7 +2784,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
       if (0 < max_chars && got >= max_chars)
         break;
 
-      if ((long)sizeof (mbuf) > n) {
+      if ((long)sizeof (g_buf) > n) {
         if (0 != ferror (fp)) {
           error_msg ("Error reading", filename, errno);
           (void)fclose (fp);
@@ -2801,13 +2798,12 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
   }
 #else
   {
-    unsigned char mbuf [BUFSIZ];
     int hit_eof = 0;
 
     while (0 == hit_eof) {
       long nread = 0;
 
-      while ((long)sizeof (mbuf) > nread) {
+      while ((long)sizeof (g_buf) > nread) {
 # ifdef multics
         const int c = mgetc (fp);
 # else
@@ -2819,11 +2815,11 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
           const int w = getw (fp);
 
           if (w != -1 || (0 == feof (fp) && 0 == ferror (fp))) {
-            if (nread <= (long)(sizeof (mbuf) - 4)) {
-              mbuf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
-              mbuf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
-              mbuf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
-              mbuf [nread++] = (unsigned char)(w & 0x1FF);
+            if (nread <= (long)(sizeof (g_buf) - 4)) {
+              g_buf [nread++] = (unsigned char)((w >> 27) & 0x1FF);
+              g_buf [nread++] = (unsigned char)((w >> 18) & 0x1FF);
+              g_buf [nread++] = (unsigned char)((w >> 9) & 0x1FF);
+              g_buf [nread++] = (unsigned char)(w & 0x1FF);
               (void)clearerr (fp);
 
               continue;
@@ -2835,7 +2831,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
           break;
         }
 
-        mbuf [nread++] = (unsigned char)c;
+        g_buf [nread++] = (unsigned char)c;
       }
 
       if (0 != ferror (fp))
@@ -2860,7 +2856,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
           use = max_chars - got;
 
         for (i = 0; use > i; i++) {
-          const crc_t b = (crc_t)mbuf [i];
+          const crc_t b = (crc_t)g_buf [i];
 
           aggregate |= b;
         }
