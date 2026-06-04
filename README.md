@@ -596,7 +596,7 @@ executable compressor, also apply to CP/M-86.
 * To build a binary for MS-DOS using IA16-GCC:
 
   ```
-  ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=tiny -o crc.com crc.c
+  ia16-elf-gcc -march=i8086 -std=c89 -O2 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Microsoft C 6.00A (1990):
