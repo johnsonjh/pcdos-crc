@@ -608,7 +608,7 @@ executable compressor, also apply to CP/M-86.
 * To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993):
 
   ```
-  cl /AT /O2 /Gr /Gs /Fecrc.com crc.c
+  cl /AT /O2 /G0 /Gr /Gs /Fecrc.com crc.c
   ```
 
 * To build a binary for MS-DOS using
