@@ -258,13 +258,13 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 * Build using `make` (the `CC`, `CFLAGS`, and `LDFLAGS` variables
   are respected):
 
-  ```
+  ```sh
   make
   ```
 
 * Build using `cc` (or `c89`, `gcc`, `clang`, etc.):
 
-  ```
+  ```sh
   cc -O3 -o crc crc.c
   ```
 
@@ -460,7 +460,7 @@ on how it's stored) on the system.
 * To build a binary for CP/M-80 for **Z80** systems, use any recent version
   of [z88dk](https://z88dk.org/):
 
-  ```
+  ```sh
   zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
@@ -468,7 +468,7 @@ on how it's stored) on the system.
   of [z88dk](https://z88dk.org/) from **2026-05-01** or later (earlier versions
   have a bug which causes the CRC to be miscalculated on 8080 processors):
 
-  ```
+  ```sh
   zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
@@ -478,14 +478,14 @@ the current `z88dk`.
 
 * To build for **Z80** CP/M-80:
 
-  ```
+  ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
     zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build for **8080** CP/M-80:
 
-  ```
+  ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
     zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
   ```
@@ -557,7 +557,7 @@ from [tsupplis](https://github.com/tsupplis).
 
 * To build a binary for CP/M-86 using cross-Aztec C 4.2 (recommended):
 
-  ```
+  ```sh
   aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
   aztec42_sqz crc.o
   aztec42_link -o crc.cmd crc.o -lc86
@@ -587,7 +587,7 @@ executable compressor, also apply to CP/M-86.
 
 * To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
 
-  ```
+  ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
   ```
 
@@ -595,7 +595,7 @@ executable compressor, also apply to CP/M-86.
 
 * To build a binary for MS-DOS using IA16-GCC:
 
-  ```
+  ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O2 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
@@ -614,20 +614,20 @@ executable compressor, also apply to CP/M-86.
 * To build a binary for MS-DOS using
   [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
 
-  ```
+  ```sh
   owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Watcom C:
 
-  ```
+  ```sh
   wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
   wlink system com file crc.obj name crc.com
   ```
 
 * To build a binary for MS-DOS using dev86 0.16.21+:
 
-  ```
+  ```sh
   bcc -Md -O -o crc.com crc.c
   ```
 
@@ -640,13 +640,13 @@ executable compressor, also apply to CP/M-86.
 
 * To build a binary for MS-DOS using Turbo C++ 1.01 (1990):
 
-  ```
+  ```sh
   tcc -G -O -Z -f- -mt -lt crc.c
   ```
 
 * To build a binary for MS-DOS using DJGPP:
 
-  ```
+  ```sh
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
   ```
 
