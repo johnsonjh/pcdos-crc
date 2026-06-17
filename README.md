@@ -442,7 +442,7 @@ can be recovered.
 3. Once you have the source code on the PDP-10 in the appropriate format, it
    can be compiled with the KCC compiler (usually installed as `CC`):
 
-   ```
+   ```sh
    CC -o CRC CRCKCC.C
    ```
 
@@ -601,13 +601,13 @@ executable compressor, also apply to CP/M-86.
 
 * To build a binary for MS-DOS using Microsoft C 6.00A (1990):
 
-  ```
+  ```sh
   cl /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c
   ```
 
 * To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993):
 
-  ```
+  ```sh
   cl /AT /O2 /G0 /Gr /Gs /Fecrc.com crc.c
   ```
 
@@ -633,7 +633,7 @@ executable compressor, also apply to CP/M-86.
 
 * To build a binary for MS-DOS using Turbo C 1.0 (1987) or Turbo C 1.5 (1988):
 
-  ```
+  ```sh
   tcc -G -O -Z -f- -mt crc.c
   exe2bin crc.exe crc.com
   ```
