@@ -66,7 +66,7 @@ pages:
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 build ...\033[0m" || true
     - mkdir -p public/dev86
-    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -v -o crc.com crc.c && upx --8086 -9 crc.com 2>&1 | grep '\->' && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
+    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -v -o crc.com crc.c && upx --8086 --best crc.com 2>&1 | grep '\->' && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
     - |
       # End of dev86 build ...
       echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
@@ -74,7 +74,7 @@ pages:
       # Start of Turbo C++ 1.01 build ...
       echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 build ...\033[0m" || true
     - mkdir -p public/TCPP101
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && upx --8086 -9 crc.com 2>&1 | grep '\->' && mv -f crc.com public/TCPP101 && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && upx --8086 --best crc.com 2>&1 | grep '\->' && mv -f crc.com public/TCPP101 && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
     - |
       # End of Turbo C++ 1.01 build ...
       echo -e "section_end:`date +%s`:TCPP101_section\r\e[0K" || true
@@ -82,7 +82,7 @@ pages:
       # Start of Turbo C 1.5 build ...
       echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
     - mkdir -p public/TC15
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && upx --8086 -9 crc.com 2>&1 | grep '\->' && mv -f crc.com public/TC15 && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && upx --8086 --best crc.com 2>&1 | grep '\->' && mv -f crc.com public/TC15 && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
     - |
       # End of Turbo C 1.5 build ...
       echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
@@ -90,7 +90,7 @@ pages:
       # Start of Turbo C 1.0 build ...
       echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
     - mkdir -p public/TC10
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && upx --8086 -9 crc.com 2>&1 | grep '\->' && mv -f crc.com public/TC10 && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && upx --8086 --best crc.com 2>&1 | grep '\->' && mv -f crc.com public/TC10 && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
     - |
       # End of Turbo C 1.0 build ...
       echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
@@ -99,7 +99,7 @@ pages:
       echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A build ...\033[0m" || true
     - mkdir -p public/MSC600A
     - true -- NOTE -- 'warning C4135 - conversion between different integral types' messages are expected for MSC600A builds!
-    - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && upx --8086 -9 crc.com 2>&1 | grep '\->' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
+    - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && upx --8086 --best crc.com 2>&1 | grep '\->' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
     - |
       # End of Microsoft C 6.00A build ...
       echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
@@ -128,7 +128,7 @@ pages:
     - rm -f OUT.TXT > /dev/null 2>&1 || true
     - test -f CRC.COM
     - mv -f CRC.COM crc.com && rm -f CRC.*
-    - upx --8086 -9 crc.com 2>&1 | grep '\->'
+    - upx --8086 --best crc.com 2>&1 | grep '\->'
     - cp -f crc.com $CI_PROJECT_DIR/public/MSC800c
     - emu2 $CI_PROJECT_DIR/public/MSC800c/crc.com --auto crc.com crc.c
     - rm -f crc.*
