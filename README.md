@@ -490,6 +490,10 @@ the current `z88dk`.
     zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
+For **Z80** builds using SDCC, adding the `--max-allocs-per-node250000`
+compiler option will improve performance by \~6%, but increases compilation
+time from several seconds to many minutes.
+
 #### CP/M-80 notes
 
 CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
