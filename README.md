@@ -461,7 +461,7 @@ on how it's stored) on the system.
   of [z88dk](https://z88dk.org/):
 
   ```sh
-  zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
+  zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build a binary for CP/M-80 for **8080** systems, use a version
@@ -469,7 +469,7 @@ on how it's stored) on the system.
   have a bug which causes the CRC to be miscalculated on 8080 processors):
 
   ```sh
-  zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
+  zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
@@ -480,21 +480,22 @@ the current `z88dk`.
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-    zcc +cpm -O3 -vn crc.c -clib=ixiy -o crc.com
+    zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build for **8080** CP/M-80:
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-    zcc +cpm -O3 -vn crc.c -clib=8080 -o crc.com
+    zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
 #### CP/M-80 notes
 
 CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
 
-Builds targeting the Z80 will execute about 25% faster than 8080 builds.
+Builds targeting the Z80 using SDCC will execute about twice as fast as the
+8080 builds.
 
 The [LZPACK](https://github.com/johnsonjh/lzpack) utility can be used to
 transparently compress the generated CP/M executable, reducing its on‑disk

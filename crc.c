@@ -124,8 +124,10 @@ typedef unsigned long crc_t;
 #ifdef __Z88DK
 # ifdef __CPM__
 #  include <unistd.h>
-#  ifdef ANSI_COMPILER
-#   undef ANSI_COMPILER
+#  ifndef __SDCC
+#   ifdef ANSI_COMPILER
+#    undef ANSI_COMPILER
+#   endif
 #  endif
 #  ifdef USE_PSYSERROR
 #   undef USE_PSYSERROR
@@ -1849,8 +1851,12 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
 #  ifdef _MSC_VER
   if (expected_chars != expected_chars) { }
 #  else
+#   ifndef __SDCC
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) { }
+#   else
+  (void)expected_chars;
+#   endif
 #  endif
 # else
 #  ifdef _AIX
@@ -2960,8 +2966,12 @@ check_is_directory (filename)
 # ifdef _MSC_VER
   if (filename != filename) { }
 # else
+#  ifndef __SDCC
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (filename)) { }
+#  else
+  (void)filename;
+#  endif
 # endif
 #else
 # ifdef _AIX
@@ -3685,7 +3695,7 @@ bits_error:
 
       if (0 == (x = dir_move_first ()))
         while (0 == x) {
-          if (wcmatch (filename, dir_get_entry_name ()))
+          if (wcmatch ((char *)filename, (char *)dir_get_entry_name ()))
             if (0 == dir_get_entry_type ()) {
               match_found = 1;
               process_file (dir_get_entry_name (),
