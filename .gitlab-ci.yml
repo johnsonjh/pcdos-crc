@@ -120,7 +120,7 @@ pages:
     - export WAYLAND_DISPLAY="$(ls $XDG_RUNTIME_DIR | grep -E '^wayland-[0-9]+$')"
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
     - cp -f $CI_PROJECT_DIR/crc.c .
-    - cat vars.bat > build.bat && printf '%s\n' "cl /W4 /AT /O2 /G0 /Gr /Gs /Fecrc.com crc.c" >> build.bat
+    - cat vars.bat > build.bat && printf '%s\n' "cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oc /Oe /Gr /Gs /Ob2 /Oy /Oz /G0 /Fecrc.com crc.c" >> build.bat
     - unix2dos build.bat 2> /dev/null
     - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true
