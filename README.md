@@ -67,8 +67,8 @@ The only current requirements are:
 * a character type with a width of at least 8 but no more than 32 bits, and
 * a minimal `stdio` implementation only needing to support 7 functions:
   * ⑴ `fprintf` or `printf`, ⑵ `fopen`, ⑶ `fclose`, ⑷ `fgetc`, ⑸ `ferror`,
-    ⑹ `feof`, ⑺ `clearerr`, and,
-  * optionally `setbuf` and `fread`.
+    ⑹ `feof`, ⑺ `clearerr`,
+  * and optionally: `setbuf` and `fread`.
 
 It has been tested on various exotic and retro platforms including **Multics**
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
