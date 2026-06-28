@@ -71,14 +71,14 @@ The only current requirements are:
 
 It has been tested on various exotic and retro platforms including **Multics**
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
-**TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/)), **CP/M-86**
-([Aztec C](https://github.com/tsupplis/cpm86-crossdev)), **MS-DOS**
-([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C, Turbo C,
-Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)), **Windows**
-(MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC), **Atari ST** (TOS/MINT using
-[CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, and systems
-supported by [SoftIntegration **Ch**](https://www.softintegration.com/), but
-should be able to be built anywhere else with little to no porting
+**TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/) with `sccz80` and
+`zsdcc`), **CP/M-86** ([Aztec C](https://github.com/tsupplis/cpm86-crossdev)),
+**MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
+Turbo C, Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
+**Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC), **Atari ST**
+(TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, and
+systems supported by [SoftIntegration **Ch**](https://www.softintegration.com/),
+but should be able to be built anywhere else with little to no porting
 effort required.
 
 * NOTE: The **Small-C** and **Micro-C** compilers/C-language subsets are
@@ -88,8 +88,9 @@ effort required.
   [Smaller C](https://github.com/alexfru/SmallerC) compiler **is** sufficient,
   at least for 32-bit targets.
 
-It is hoped that this *AI-slop-free* program will serve both as a practical
-utility and as a template for writing ***ultra‑portable*** **C** code.
+It is hoped that this **AI**-***slop***-**free** program will serve both as a
+practical utility and as a template for writing ***ultra‑portable***
+**C** code.
 
 ## Usage
 
@@ -345,6 +346,9 @@ The `Makefile` provides three convenience targets for developers:
 The linting script and test suite are designed to run on any POSIX‑conforming
 shell environment and are regularly tested on AIX, FreeBSD, Haiku, Linux,
 NetBSD, and OpenBSD.
+
+* Usage of AI (artificial intelligence) tools by contributors is currently
+  **NOT permitted**.
 
 ### GitLab CI/CD
 
