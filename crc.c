@@ -3333,7 +3333,11 @@ usage (progname, cb)
 #ifdef CRC_CPM
   out_err_check_int (
     fprintf (stderr,
-      "\nOn CP/M 3.0 or later, '--auto' also enables '--lrbc'.\n")
+      "\nNOTE: On CP/M 3 or later (CP/M-Plus)")
+  );
+  out_err_check_int (
+    fprintf (stderr,
+      ", '--auto' also enables '--lrbc'.\n")
   );
 #endif
 
