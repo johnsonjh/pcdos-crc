@@ -58,7 +58,7 @@ with a C compiler, such as:
   Unisys), and
 * systems using non‑ASCII character sets (*e.g.*, IBM mainframes, Unisys MCP),
   or even
-* systems using non-EBCDIC character sets.
+* systems using non‑EBCDIC character sets.
 
 The only current requirements are:
 
@@ -71,25 +71,25 @@ The only current requirements are:
 
 It has been tested on various exotic and retro platforms including **Multics**
 ([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
-**TOPS-20** (KCC), **CP/M-80** ([z88dk](https://z88dk.org/) with `sccz80` and
-`zsdcc`), **CP/M-86** ([Aztec C](https://github.com/tsupplis/cpm86-crossdev)),
-**MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
+**TOPS‑20** (KCC), **CP/M‑80** ([z88dk](https://z88dk.org/) with `sccz80` and
+`zsdcc`), **CP/M‑86** ([Aztec C](https://github.com/tsupplis/cpm86-crossdev)),
+**MS‑DOS** ([IA16‑GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
 Turbo C, Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
-[lcc-win](https://lcc-win32.services.net/)), **ELKS** (IA16-GCC), **Atari ST**
+[lcc‑win](https://lcc-win32.services.net/)), **ELKS** (IA16‑GCC), **Atari ST**
 (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, and
 systems supported by [SoftIntegration **Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
 
-* NOTE: The **Small-C** and **Micro-C** compilers/C-language subsets are
+* NOTE: The **Small‑C** and **Micro‑C** compilers/C‑language subsets are
   **not** sufficient to build this software (for various reasons).  You need a
   *real* C compiler and preprocessor, which is something that at least
-  resembles 1978 K&R C and provides 1979 UNIX V7-style `stdio`.  The unrelated
+  resembles 1978 K&R C and provides 1979 UNIX V7‑style `stdio`.  The unrelated
   [Smaller C](https://github.com/alexfru/SmallerC) compiler **is** sufficient,
-  at least for 32-bit targets.
+  at least for 32‑bit targets.
 
-It is hoped that this **AI**-***slop***-**free** program will serve both as a
+It is hoped that this **AI**‑***slop***‑**free** program will serve both as a
 practical utility and as a template for writing ***ultra‑portable***
 **C** code.
 
@@ -119,7 +119,7 @@ Options:
 
 * If the specified `--bits` value is larger than the native character size a
   warning is displayed at startup to indicate that each character read from
-  the file will be zero-filled to the requested size.
+  the file will be zero‑filled to the requested size.
 
 ### Automatic bit-width detection
 
@@ -128,15 +128,15 @@ When using `--bits=auto`, the program performs two passes on each file:
 1.  The first pass will scan the file to determine the number of significant
     bits actually used in the storage characters.
 
-2.  The second pass actually calculates the CRC (using the detected bit-width).
+2.  The second pass actually calculates the CRC (using the detected bit‑width).
 
-If a file contains **only** 7-bit ASCII data, `--bits=auto` will automatically
+If a file contains **only** 7‑bit ASCII data, `--bits=auto` will automatically
 process it using 7 bits per character, ensuring a consistent CRC regardless
 of whether the file is stored on system with a wider native character size,
-like a mainframe running Multics (which stores text 7-bit ASCII characters
-in 9-bit nonets).
+like a mainframe running Multics (which stores text 7‑bit ASCII characters
+in 9‑bit nonets).
 
-If the detected bit-width differs from the host's native character size, the
+If the detected bit‑width differs from the host's native character size, the
 verbose output option is automatically enabled for that file.
 
 If a file is empty, the program will default to using the native character
@@ -147,18 +147,18 @@ This option is especially useful when combined with the `--pad=auto` option,
 
 ### Automatic padding
 
-When using `--pad=auto`, the program automatically applies zero-padding to the
+When using `--pad=auto`, the program automatically applies zero‑padding to the
 bitstream in the following scenarios:
 
-1.  **Dangling bits**: If the file ends mid-character (*e.g.*, a file with 11
+1.  **Dangling bits**: If the file ends mid‑character (*e.g.*, a file with 11
     bits when reading 8 bits per character), the final partial character is
-    zero-padded.
+    zero‑padded.
 
-2.  **Truncated limits**: If an input `--limit` is reached mid-character,
+2.  **Truncated limits**: If an input `--limit` is reached mid‑character,
     the program pads the remaining bits of that character.
 
 3.  **Synthesis**: If the specified `--limit` exceeds the file size, the
-    program zero-fills the stream to the limit.
+    program zero‑fills the stream to the limit.
 
 If automatic padding is applied the program automatically enables the verbose
 output option for that file and adds a `padded` note to the details.
@@ -169,7 +169,7 @@ When using the `--verbose` (or `-v`) option, the program appends detailed
 processing information to the output (after a `#` character):
 
 ```
-DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
+DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8‑bit characters)
 ```
 
 ### Cross-platform consistency and bitstreams
@@ -185,20 +185,20 @@ C compiler on that system).
 
 #### Bit-for-bit transfers
 
-If a file is transferred bit-for-bit between systems with different native
+If a file is transferred bit‑for‑bit between systems with different native
 character sizes, the CRC will match if you use the native character size of
 the *current* host.
 
-For example, consider a file that contains 72-bits of data stored sequentially:
+For example, consider a file that contains 72‑bits of data stored sequentially:
 
-* On an **8-bit** system (like modern machines), the file has **9 characters**.
+* On an **8‑bit** system (like modern machines), the file has **9 characters**.
 
-* On a **9-bit** system (like a Honeywell mainframe running Multics), the same
+* On a **9‑bit** system (like a Honeywell mainframe running Multics), the same
   72 bits occupy **8 characters**.
 
-Using `--bits=9` on a system that uses 8-bit characters to process such a
-file stored locally results in pulling 9 bits from each native 8-bit character
-(thus injecting a zeroed 9th bit into every 8-bit byte read) resulting in an
+Using `--bits=9` on a system that uses 8‑bit characters to process such a
+file stored locally results in pulling 9 bits from each native 8‑bit character
+(thus injecting a zeroed 9th bit into every 8‑bit byte read) resulting in an
 81-bit stream (and a different CRC).
 
 #### Interaction of `--limit` and `--pad`
@@ -207,24 +207,24 @@ The behavior of these options depends on the CRC processing mode:
 
 #### 8-bit mode (default)
 
-When processing 8-bit characters on a system with an 8-bit native character
+When processing 8‑bit characters on a system with an 8‑bit native character
 size, the `--pad` option affects behavior in two ways:
 
 1. **Synthesizing data**: If the specified `--limit` exceeds the file size,
-   the program will synthesize zero-filled **full** 8-bit characters to reach
+   the program will synthesize zero-filled **full** 8‑bit characters to reach
    the limit.  If the `--limit` is not a multiple of 8, any trailing bits
    that cannot form a complete octet are **discarded**.
 
 2. **Partial character processing**: If the `--limit` is reached **within**
-   the file and falls mid-octet, the `--pad` option allows the program to
-   process that final partial octet by zero-padding the remaining bits.
+   the file and falls mid‑octet, the `--pad` option allows the program to
+   process that final partial octet by zero‑padding the remaining bits.
    Without `--pad`, the program warns and truncates to the last full octet.
 
 #### Fallback mode
 
-When using a non-8-bit character size via `--bits` **or when running on a
-system with a non-8-bit native character size**, the program operates in a
-bit-by-bit "fallback" mode.
+When using a non‑8‑bit character size via `--bits` **or when running on a
+system with a non‑8‑bit native character size**, the program operates in a
+bit‑by‑bit "fallback" mode.
 
 In this mode:
 
@@ -232,8 +232,8 @@ In this mode:
   the requested character processing size (`--bits`) unless the `--pad`
   option is used.
 
-* The `--pad` option is used to zero-fill any remaining bits of
-  the *final character read from the file* if the input ends mid-character,
+* The `--pad` option is used to zero‑fill any remaining bits of
+  the *final character read from the file* if the input ends mid‑character,
   or to allow processing final partial characters to satisfy a `--limit`.
 
 * In this mode, the program **will** synthesize zero data to reach a
@@ -243,9 +243,9 @@ In this mode:
 
 ## Binary builds
 
-* The **recommended build** for *real-mode* MS-DOS is
+* The **recommended build** for *real‑mode* MS‑DOS is
   [available here](https://dps8m.gitlab.io/crc/MSC800c/crc.com),
-  compiled with Microsoft C++ 8.00c for MS-DOS.
+  compiled with Microsoft C++ 8.00c for MS‑DOS.
   * Additional testing builds compiled with
     [Microsoft C 6.00A](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
     [Turbo C++ 1.01](https://dps8m.gitlab.io/crc/TCPP101/crc.com),
@@ -272,26 +272,26 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 ### Porting tips
 
-* If you are using a non-ANSI C compiler, you may need to define `NOANSI`
+* If you are using a *non‑ANSI* C compiler, you may need to define `NOANSI`
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
   `#define ANSI_COMPILER` directive.  If you don't have `stdlib.h` you should
-  also define `NOSTDLIB`.  If your non-ANSI compiler *does* support the
+  also define `NOSTDLIB`.  If your non‑ANSI compiler *does* support the
   `const` keyword, then you should additionally define `USE_CONST`.
 
 * If your environment has a missing or broken `fread` function, you may need
   to define `NOFREAD` or modify the source code to comment out the
   `#define USE_FREAD` directive.  This will cause the program to use much
-  slower (and in some environments, less reliable) character-by-character
+  slower (and in some environments, less reliable) character‑by‑character
   file reading routines.
 
 * If your environment does not have the `errno.h` header file, you may need
   to define `NOERRNO` or modify the source code to comment out the
   `#define USE_ERRNO` directive.
 
-* For non-ANSI compilers or environments offering an ANSI-conforming
+* For non‑ANSI compilers or environments offering an ANSI‑conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
   define `FORCE_STRERROR` but don't need to declare `strerror` yourself,
-  define `NO_DCL_STRERROR`.  If you have the pre-ANSI BSD/System V
+  define `NO_DCL_STRERROR`.  If you have the pre‑ANSI BSD/System V
   `sys_errlist` / `sys_nerr` interface, you should define `USE_PSYSERROR`.
 
   * For purported ANSI compilers or environments **lacking** the C89/ANSI
@@ -355,7 +355,7 @@ NetBSD, and OpenBSD.
 
 * You can examine the output of the
   [latest GitLab CI/CD job](https://gitlab.com/dps8m/crc/-/pipelines/latest)
-  which includes build output from various legacy MS-DOS compilers.
+  which includes build output from various legacy MS‑DOS compilers.
 
 ## Platform specifics
 
@@ -371,33 +371,33 @@ NetBSD, and OpenBSD.
 #### Multics notes
 
 Multics can be considered to run on an exotic platform, the Honeywell
-6000-series of 36-bit "large systems" mainframes.  This system uses 9 bits
+6000‑series of 36‑bit "large systems" mainframes.  This system uses 9 bits
 per character, where most systems use 8 bits per character.
 
-When run on Multics or any other environment not using an 8-bit character
+When run on Multics or any other environment not using an 8‑bit character
 size, some instructional text will be appended to the `--help` output:
 
 ```
-NOTE: This system has a character size of 9-bits.
-Use '--bits=8' to process 8-bit input data on this system.
+NOTE: This system has a character size of 9‑bits.
+Use '--bits=8' to process 8‑bit input data on this system.
 ```
 
 As explained above the `--bits` option specifies how many bits to extract from
 each native storage character.  On Multics, the native character size is 9
-bits.  If a file was transferred "bit-for-bit" from an 8-bit system, you
+bits.  If a file was transferred "bit‑for‑bit" from an 8‑bit system, you
 should use `--bits=9` on Multics (which is the default on Multics if `--bits`
 is not specified) to pull all 9 bits from each storage nonet.  Conversely,
-if you are processing 8-bit data that was stored "one byte per nonet" (leaving
+if you are processing 8‑bit data that was stored "one byte per nonet" (leaving
 the 9th bit unused), you must use `--bits=8` to skip that unused bit.
 
 Note that changing the number of bits processed per character will shift the
-bit-alignment of subsequent characters and result in a different CRC value.
+bit‑alignment of subsequent characters and result in a different CRC value.
 
 As an additional hint, if the processing of a file ends with "dangling" bits
 (not a full character) then a warning message is displayed.
 
-The Multics filesystem includes the concept of multi-segment files (MSFs),
-which are indicated by a directory tagged with a non-zero bit count equal to
+The Multics filesystem includes the concept of multi‑segment files (MSFs),
+which are indicated by a directory tagged with a non‑zero bit count equal to
 the number of component segments of the MSF.  This CRC program does not
 provide special treatment for MSFs; each component segment should be
 processed independently.
@@ -415,9 +415,9 @@ can be recovered.
 
 ### Building for TOPS-20
 
-1. To build a binary for TOPS-20 for PDP-10 systems using the KCC compiler,
+1. To build a binary for TOPS‑20 for PDP‑10 systems using the KCC compiler,
    you need to transform the source code appropriately.  This is easy to do on
-   any system with a POSIX-conforming `sed` implementation available:
+   any system with a POSIX‑conforming `sed` implementation available:
 
    ```sh
    sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
@@ -426,13 +426,13 @@ can be recovered.
    ```
 
 2. You should ensure that the transformed source code file (`crckcc.c`) is
-   transferred to the PDP-10 system as text (7-bit ASCII with `<CR><LF>` line
+   transferred to the PDP‑10 system as text (7‑bit ASCII with `<CR><LF>` line
    endings).  The appropriate conversion should happen automatically if you use
-   **Kermit** or **ASCII-mode** FTP for the file transfer.  If you plan to
+   **Kermit** or **ASCII‑mode** FTP for the file transfer.  If you plan to
    transfer the file via other means, you *might* need to convert the line
    endings first.  You can do this easily with the
    [`unix2dos`](https://dos2unix.sourceforge.io/) utility or any
-   POSIX-conforming `awk` implementation:
+   POSIX‑conforming `awk` implementation:
 
    ```sh
    awk '{ sub(/\r?$/, "\r"); print }' crckcc.c | \
@@ -440,11 +440,11 @@ can be recovered.
    ```
 
    **NB**: You should perform the above step **only** if necessary, as a
-   "double-conversion" will result in a slower compilation, with the KCC
-   compiler emitting several *thousand* warning messages (one for each line
+   "double‑conversion" will result in a slower compilation, with the KCC
+   compiler emitting many *thousands* warning messages (one for each line
    of source compiled).
 
-3. Once you have the source code on the PDP-10 in the appropriate format, it
+3. Once you have the source code on the PDP‑10 in the appropriate format, it
    can be compiled with the KCC compiler (usually installed as `CC`):
 
    ```sh
@@ -453,24 +453,24 @@ can be recovered.
 
 #### TOPS-20 notes
 
-The PDP-10 mainframe is a big-endian 36-bit word-addressed system.  Although
-TOPS-20 has various ways of encoding data, CRC uses the standard C I/O library
-provided by KCC, which treats characters as 9-bit nonets.  You'll need to
+The PDP‑10 mainframe is a big‑endian 36‑bit word‑addressed system.  Although
+TOPS‑20 has various ways of encoding data, CRC uses the standard C I/O library
+provided by KCC, which treats characters as 9‑bit nonets.  You'll need to
 specify an appropriate `--bits` (or use `--bits=auto`) and `--pad` (or use
 `--pad=auto`) to get matching calculations for most foreign data (depending
 on how it's stored) on the system.
 
 ### Building for CP/M-80
 
-* To build a binary for CP/M-80 for **Z80** systems, use any recent version
+* To build a binary for CP/M‑80 for **Z80** systems, use any recent version
   of [z88dk](https://z88dk.org/):
 
   ```sh
   zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
-* To build a binary for CP/M-80 for **8080** systems, use a version
-  of [z88dk](https://z88dk.org/) from **2026-05-01** or later (earlier versions
+* To build a binary for CP/M‑80 for **8080** systems, use a version
+  of [z88dk](https://z88dk.org/) from **2026‑05‑01** or later (earlier versions
   have a bug which causes the CRC to be miscalculated on 8080 processors):
 
   ```sh
@@ -481,14 +481,14 @@ If you are using a Linux system with Docker you can use the `z88dk/z88dk`
 Docker container to build without needing to locally compile and install
 the current `z88dk`.
 
-* To build for **Z80** CP/M-80:
+* To build for **Z80** CP/M‑80:
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
     zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
-* To build for **8080** CP/M-80:
+* To build for **8080** CP/M‑80:
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
@@ -501,12 +501,12 @@ time from several seconds to many minutes.
 
 #### CP/M-80 notes
 
-CP/M-80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
+CP/M‑80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
 
 Builds targeting the Z80 using SDCC will execute about twice as fast as the
 8080 builds.
 
-The [LZPACK](https://github.com/johnsonjh/lzpack) utility can be used to
+The [**LZPACK**](https://github.com/johnsonjh/lzpack) utility can be used to
 transparently compress the generated CP/M executable, reducing its on‑disk
 size by approximately 50% and slightly lowering its memory usage, at the cost
 of a small increase in load time.
@@ -516,8 +516,8 @@ systems, you should always constrain processing to the actual number of
 significant bits.  This can be done automatically **only** on CP/M 3.0
 and later!
 
-On CP/M-80 systems, files **do not have exact sizes** but are stored on disk in
-fixed-size records of 1024 bits (*i.e.,* 128 8-bit octets) each.  Files
+On CP/M‑80 systems, files **do not have exact sizes** but are stored on disk in
+fixed‑size records of 1024 bits (*i.e.,* 128 8‑bit octets) each.  Files
 transferred from other systems that are not a multiple of the CP/M record size
 will be padded with **undefined** data to fill a complete record, and there is
 **no** universal EOF marker that can be used to find the true end of file.
@@ -527,27 +527,27 @@ disk associated with the file.  If you transferred the file from another type
 of system that does support exact lengths (which is likely), you can specify
 the number of bits to process using the `--limit` flag.
 
-For example, assume `DATA.DAT` is file of 174,344 bits (21,793 8-bit octets)
-which produces a CRC of `0D03ABFA` on an MS-DOS or UNIX system.  On a CP/M-80
+For example, assume `DATA.DAT` is file of 174,344 bits (21,793 8‑bit octets)
+which produces a CRC of `0D03ABFA` on an MS‑DOS or UNIX system.  On a CP/M‑80
 system this file will utilize 171 records of storage.  Since 21,793 octets is
 **not** a multiple of 128, the CRC calculation will not match unless
 constrained to process only 174,344 bits (*i.e.*,
 `CRC --limit=174344 DATA.DAT`).  With no limit applied, all 175,104 bits
 (171 records × 128 octets × 8 bits) of data on disk would be processed.
 
-CP/M-80 3.0 added a new filesystem metadata field: Last Record Byte Count (or
+CP/M‑80 3.0 added a new filesystem metadata field: Last Record Byte Count (or
 LRBC).  Unfortunately, the LRBC is stored as a number between 0 and 255, with
 no official documented interpretation.  The DRI ISX software uses this field
 to indicate the number of **unused** octets in the last record, while DRI
-DOS-PLUS uses the field to indicate the number of **used** octets in the last
+DOS‑PLUS uses the field to indicate the number of **used** octets in the last
 record, with a count of zero indicating 128 (a full final record) under
 either interpretation.
 
 When running on CP/M 3.0 or later, the `--lrbc` option uses this metadata to
 constrain processing to the file's exact length automatically, so no manual
 `--limit` is needed.  Continuing the example above, `CRC --lrbc DATA.DAT`
-processes exactly 174,344 bits and matches the MS-DOS or UNIX result.  Because
-the DOS-PLUS interpretation is the more common one, `--lrbc` assumes it by
+processes exactly 174,344 bits and matches the MS‑DOS or UNIX result.  Because
+the DOS‑PLUS interpretation is the more common one, `--lrbc` assumes it by
 default; pass `--lrbc=isx` instead to select the DRI ISX (unused octets)
 interpretation.  When the LRBC indicates a full final record or when running
 under CP/M 2.x, which has no LRBC all records are processed as before.
@@ -561,11 +561,11 @@ this feature is only enabled when compiling for CP/M targets.
 
 ### Building for CP/M-86
 
-To build the program for CP/M-86 we are using the most recent versions
-of the [Aztec C cross-compiler](https://github.com/tsupplis/cpm86-crossdev)
+To build the program for CP/M‑86 we are using the most recent versions
+of the [Aztec C cross‑compiler](https://github.com/tsupplis/cpm86-crossdev)
 from [tsupplis](https://github.com/tsupplis).
 
-* To build a binary for CP/M-86 using cross-Aztec C 4.2 (recommended):
+* To build a binary for CP/M‑86 using cross‑Aztec C 4.2 (recommended):
 
   ```sh
   aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
@@ -574,7 +574,7 @@ from [tsupplis](https://github.com/tsupplis).
   pcdev_cmdinfo crc.cmd
   ```
 
-* To build a binary for CP/M-86 using cross-Aztec C 3.4:
+* To build a binary for CP/M‑86 using cross‑Aztec C 3.4:
 
   ```sh
   sed 's|const||g' crc.c > crc_nc.c
@@ -586,16 +586,18 @@ from [tsupplis](https://github.com/tsupplis).
 
 #### CP/M-86 notes
 
-CP/M-86 builds do **not** support internal wildcard expansion at this time.
+CP/M‑86 builds do **not** support internal wildcard expansion at this time.
 
 Builds using Aztec C 4.2 will execute about 10% faster than Aztec C 3.4 builds.
 
-All of the [CP/M-80 notes](#cpm-80-notes), with the exception of the LZPACK
-executable compressor, also apply to CP/M-86.
+All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of the **LZPACK**
+executable compressor, also apply to CP/M‑86.  Instead of **LZPACK**, the
+[UPX](https://upx.github.io/) executable compressor, version **5.2.0** (or
+later) can be used to pack CP/M‑86 binaries.
 
 ### Building for ELKS
 
-* To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16-GCC:
+* To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16‑GCC:
 
   ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
@@ -603,58 +605,58 @@ executable compressor, also apply to CP/M-86.
 
 ### Building for MS-DOS
 
-* To build a binary for MS-DOS using IA16-GCC:
+* To build a binary for MS‑DOS using IA16‑GCC:
 
   ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O2 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Microsoft C 6.00A (1990):
+* To build a binary for MS‑DOS using Microsoft C 6.00A (1990):
 
   ```sh
   cl /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993):
+* To build a binary for MS‑DOS using Microsoft C/C++ 8.00c (1993):
 
   ```sh
   cl /AT /O /Ot /Ol /Og /Oi /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c
   ```
 
-* To build a binary for MS-DOS using
+* To build a binary for MS‑DOS using
   [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
 
   ```sh
   owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Watcom C:
+* To build a binary for MS‑DOS using Watcom C:
 
   ```sh
   wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
   wlink system com file crc.obj name crc.com
   ```
 
-* To build a binary for MS-DOS using dev86 0.16.21+:
+* To build a binary for MS‑DOS using dev86 0.16.21+:
 
   ```sh
   bcc -Md -O -o crc.com crc.c
   ```
 
-* To build a binary for MS-DOS using Turbo C 1.0 (1987) or Turbo C 1.5 (1988):
+* To build a binary for MS‑DOS using Turbo C 1.0 (1987) or Turbo C 1.5 (1988):
 
   ```sh
   tcc -G -O -Z -f- -mt crc.c
   exe2bin crc.exe crc.com
   ```
 
-* To build a binary for MS-DOS using Turbo C++ 1.01 (1990):
+* To build a binary for MS‑DOS using Turbo C++ 1.01 (1990):
 
   ```sh
   tcc -G -O -Z -f- -mt -lt crc.c
   ```
 
-* To build a binary for MS-DOS using DJGPP:
+* To build a binary for MS‑DOS using DJGPP:
 
   ```sh
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
@@ -662,7 +664,7 @@ executable compressor, also apply to CP/M-86.
 
 The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
 [UPX](https://upx.github.io/) utilities can be used to compress the generated
-MS-DOS executables, reducing their on‑disk size by approximately 60%, at the
+MS‑DOS executables, reducing their on‑disk size by approximately 60%, at the
 cost of a small increase in load time.
 
 ## Security
@@ -680,7 +682,7 @@ cost of a small increase in load time.
 ## License
 
 This software is distributed under the terms of the permissive
-[MIT No Attribution (MIT-0)](LICENSE) license.
+[MIT No Attribution (MIT‑0) License](LICENSE).
 
 <!--
 Local Variables:
