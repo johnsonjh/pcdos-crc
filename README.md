@@ -328,8 +328,7 @@ Most users won't need to do any of these things.
 ### Developer notes
 
 **NB**: Usage of AI (artificial intelligence) tools by contributors is
-currently **NOT permitted**.  There will be **zero crankerslop** in
-this project.
+**NOT permitted**.  There will be **zero crankerslop** in this project.
 
 The `Makefile` provides three convenience targets for developers:
 
