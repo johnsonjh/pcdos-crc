@@ -75,7 +75,8 @@ It has been tested on various exotic and retro platforms including **Multics**
 `zsdcc`), **CP/M-86** ([Aztec C](https://github.com/tsupplis/cpm86-crossdev)),
 **MS-DOS** ([IA16-GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
 Turbo C, Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
-**Windows** (MSVC, OrangeC, GCC, Clang), **ELKS** (IA16-GCC), **Atari ST**
+**Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
+[lcc-win](https://lcc-win32.services.net/)), **ELKS** (IA16-GCC), **Atari ST**
 (TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, and
 systems supported by [SoftIntegration **Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
