@@ -461,7 +461,7 @@ extern char * strerror ();
 /******************************************************************************/
 
 #ifdef DOS_MSC_VER
-# if _MSC_VER < 800
+# if _MSC_VER > 600
 #  pragma warning(disable: 4135)
 #  pragma warning(disable: 4702)
 #  pragma warning(disable: 4703)
