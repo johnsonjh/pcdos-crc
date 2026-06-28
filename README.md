@@ -46,13 +46,13 @@ IBM PC‑DOS
 It was carefully constructed to be portable and correct on every platform
 with a C compiler, such as:
 
-* ancient pre‑ANSI / "C86" / K&R C compilers,
+* ancient pre‑ANSI / “C86” / K&R C compilers,
 * environments providing deficient `stdio` implementations,
 * environments with broken (or completely missing) division or modulo
   math operations,
 * systems where `NULL` is not equal to zero (*e.g.*
   Honeywell 600/6000‑series),
-* systems using one's‑complement integer representation (*e.g.*, Unisys
+* systems using oneʼs‑complement integer representation (*e.g.*, Unisys
   ClearPath Dorado / OS 2200),
 * systems with character sizes other than 8 bits (*e.g.*, DEC PDP‑10, H6000,
   Unisys), and
@@ -89,8 +89,8 @@ effort required.
   [Smaller C](https://github.com/alexfru/SmallerC) compiler **is** sufficient,
   at least for 32‑bit targets.
 
-It is hoped that this **AI**‑***slop***‑**free** program will serve both as a
-practical utility and as a template for writing ***ultra‑portable***
+It is hoped that this ‘**AI**‑***slop***‑**free**’ program will serve both as
+a practical utility and as a template for writing ***ultra‑portable***
 **C** code.
 
 ## Usage
@@ -136,7 +136,7 @@ of whether the file is stored on system with a wider native character size,
 like a mainframe running Multics (which stores text 7‑bit ASCII characters
 in 9‑bit nonets).
 
-If the detected bit‑width differs from the host's native character size, the
+If the detected bit‑width differs from the hostʼs native character size, the
 verbose output option is automatically enabled for that file.
 
 If a file is empty, the program will default to using the native character
@@ -176,11 +176,11 @@ DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8‑bit characters)
 
 This program calculates a CRC based on a continuous bitstream.  To ensure the
 same CRC value is obtained for the same data across different platforms, you
-must understand how the bitstream is constructed from the host's
+must understand how the bitstream is constructed from the hostʼs
 storage characters.
 
-The `--bits=N` option specifies how many bits to extract from each "storage
-character" (which is the native size of the "byte" or character type of the
+The `--bits=N` option specifies how many bits to extract from each “storage
+character” (which is the native size of the “byte” or character type of the
 C compiler on that system).
 
 #### Bit-for-bit transfers
@@ -224,7 +224,7 @@ size, the `--pad` option affects behavior in two ways:
 
 When using a non‑8‑bit character size via `--bits` **or when running on a
 system with a non‑8‑bit native character size**, the program operates in a
-bit‑by‑bit "fallback" mode.
+bit‑by‑bit “fallback” mode.
 
 In this mode:
 
@@ -274,7 +274,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 * If you are using a *non‑ANSI* C compiler, you may need to define `NOANSI`
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
-  `#define ANSI_COMPILER` directive.  If you don't have `stdlib.h` you should
+  `#define ANSI_COMPILER` directive.  If you donʼt have `stdlib.h` you should
   also define `NOSTDLIB`.  If your non‑ANSI compiler *does* support the
   `const` keyword, then you should additionally define `USE_CONST`.
 
@@ -290,7 +290,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 * For non‑ANSI compilers or environments offering an ANSI‑conforming
   `strerror` function, you should define `FORCE_STRERROR` to use it.  If you
-  define `FORCE_STRERROR` but don't need to declare `strerror` yourself,
+  define `FORCE_STRERROR` but donʼt need to declare `strerror` yourself,
   define `NO_DCL_STRERROR`.  If you have the pre‑ANSI BSD/System V
   `sys_errlist` / `sys_nerr` interface, you should define `USE_PSYSERROR`.
 
@@ -306,15 +306,15 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   the polynomial (`0x51F9D3DE`).
 
 * If you are trying to build in an environment providing a C preprocessor
-  that does not deal with indentation, you can "flatten" the source code
+  that does not deal with indentation, you can “flatten” the source code
   using POSIX `sed`:
 
   ```sh
   sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c > flat.c
   ```
 
-* If you have a C preprocessor that **won't** allow you to define away `const`
-  even when the compiler **doesn't** support it, like some older versions of
+* If you have a C preprocessor that **wonʼt** allow you to define away `const`
+  even when the compiler **doesnʼt** support it, like some older versions of
   Aztec C, you should remove `const` from the source code using a global
   search and replace operation and (somewhat unintuitively) define `USE_CONST`
   when compiling.  The transformation is easily performed using POSIX `sed`:
@@ -323,7 +323,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   sed 's|const||g' crc.c > noconst.c
   ```
 
-Most users won't need to do any of these things.
+Most users wonʼt need to do any of these things.
 
 ### Developer notes
 
@@ -371,7 +371,7 @@ NetBSD, and OpenBSD.
 #### Multics notes
 
 Multics can be considered to run on an exotic platform, the Honeywell
-6000‑series of 36‑bit "large systems" mainframes.  This system uses 9 bits
+6000‑series of 36‑bit “large systems” mainframes.  This system uses 9 bits
 per character, where most systems use 8 bits per character.
 
 When run on Multics or any other environment not using an 8‑bit character
@@ -384,16 +384,16 @@ Use '--bits=8' to process 8‑bit input data on this system.
 
 As explained above the `--bits` option specifies how many bits to extract from
 each native storage character.  On Multics, the native character size is 9
-bits.  If a file was transferred "bit‑for‑bit" from an 8‑bit system, you
+bits.  If a file was transferred “bit‑for‑bit” from an 8‑bit system, you
 should use `--bits=9` on Multics (which is the default on Multics if `--bits`
 is not specified) to pull all 9 bits from each storage nonet.  Conversely,
-if you are processing 8‑bit data that was stored "one byte per nonet" (leaving
+if you are processing 8‑bit data that was stored “one byte per nonet” (leaving
 the 9th bit unused), you must use `--bits=8` to skip that unused bit.
 
 Note that changing the number of bits processed per character will shift the
 bit‑alignment of subsequent characters and result in a different CRC value.
 
-As an additional hint, if the processing of a file ends with "dangling" bits
+As an additional hint, if the processing of a file ends with “dangling” bits
 (not a full character) then a warning message is displayed.
 
 The Multics filesystem includes the concept of multi‑segment files (MSFs),
@@ -406,8 +406,8 @@ To ensure proper functionality on Multics, the program uses a very specific
 read strategy to bypass several known bugs in the Multics C `stdio` library.
 The primary workaround addresses sign‑extension bugs when detecting `EOF`
 by batching reads of full 36‑bit words (whenever possible) as this is immune
-to sign‑extension issues.  For non‑word‑aligned data, we fall back on a "slow
-but safe" algorithm to process any remaining characters.  Additionally, when
+to sign‑extension issues.  For non‑word‑aligned data, we fall back on a “slow
+but safe” algorithm to process any remaining characters.  Additionally, when
 using `--bits=auto`, the bit count as determined during the initial pass is
 compared with the actual number of bits processed during the CRC calculation,
 ensuring that system library bugs that result in short reads are detected and
@@ -440,7 +440,7 @@ can be recovered.
    ```
 
    **NB**: You should perform the above step **only** if necessary, as a
-   "double‑conversion" will result in a slower compilation, with the KCC
+   “double‑conversion” will result in a slower compilation, with the KCC
    compiler emitting many *thousands* warning messages (one for each line
    of source compiled).
 
@@ -455,10 +455,10 @@ can be recovered.
 
 The PDP‑10 mainframe is a big‑endian 36‑bit word‑addressed system.  Although
 TOPS‑20 has various ways of encoding data, CRC uses the standard C I/O library
-provided by KCC, which treats characters as 9‑bit nonets.  You'll need to
+provided by KCC, which treats characters as 9‑bit nonets.  Youʼll need to
 specify an appropriate `--bits` (or use `--bits=auto`) and `--pad` (or use
 `--pad=auto`) to get matching calculations for most foreign data (depending
-on how it's stored) on the system.
+on how its stored) on the system.
 
 ### Building for CP/M-80
 
@@ -544,7 +544,7 @@ record, with a count of zero indicating 128 (a full final record) under
 either interpretation.
 
 When running on CP/M 3.0 or later, the `--lrbc` option uses this metadata to
-constrain processing to the file's exact length automatically, so no manual
+constrain processing to the fileʼs exact length automatically, so no manual
 `--limit` is needed.  Continuing the example above, `CRC --lrbc DATA.DAT`
 processes exactly 174,344 bits and matches the MS‑DOS or UNIX result.  Because
 the DOS‑PLUS interpretation is the more common one, `--lrbc` assumes it by
@@ -682,7 +682,7 @@ cost of a small increase in load time.
 ## License
 
 This software is distributed under the terms of the permissive
-[MIT No Attribution (MIT‑0) License](LICENSE).
+[MIT No Attribution (MIT‑0) License](LICENSE). ❦
 
 <!--
 Local Variables:
