@@ -327,6 +327,10 @@ Most users won't need to do any of these things.
 
 ### Developer notes
 
+**NB**: Usage of AI (artificial intelligence) tools by contributors is
+currently **NOT permitted**.  There will be **zero crankerslop** in
+this project.
+
 The `Makefile` provides three convenience targets for developers:
 
 1. `make tags` generates source code tags using
@@ -347,9 +351,6 @@ The `Makefile` provides three convenience targets for developers:
 The linting script and test suite are designed to run on any POSIX‑conforming
 shell environment and are regularly tested on AIX, FreeBSD, Haiku, Linux,
 NetBSD, and OpenBSD.
-
-* Usage of AI (artificial intelligence) tools by contributors is currently
-  **NOT permitted**.
 
 ### GitLab CI/CD
 
