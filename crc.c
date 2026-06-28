@@ -450,6 +450,25 @@ extern char * strerror ();
 
 /******************************************************************************/
 
+#ifdef _MSC_VER
+# ifdef __MSDOS__
+#  ifndef DOS_MSC_VER
+#   define DOS_MSC_VER
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef DOS_MSC_VER
+# pragma warning(disable: 4135)
+# pragma warning(disable: 4702)
+# pragma warning(disable: 4703)
+# pragma warning(disable: 4711)
+#endif
+
+/******************************************************************************/
+
 typedef struct {
   unsigned char d [MAX_CB_DIGITS];
 } counter_t;
@@ -1837,14 +1856,6 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   int limit_reached = 0;
 
   cb_copy (& rem_bits, lim_bits);
-
-#ifdef _MSC_VER
-# ifdef __MSDOS__
-#  ifndef DOS_MSC_VER
-#   define DOS_MSC_VER
-#  endif
-# endif
-#endif
 
 #ifndef multics
 # ifndef __LINT__
