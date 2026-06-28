@@ -573,7 +573,7 @@ from [tsupplis](https://github.com/tsupplis).
 
   ```sh
   sed 's|const||g' crc.c > crc_nc.c
-  aztec34_cc "+FA" -DNOANSI -DNOSTDLIB -DUSE_CONST -D__AZTEC_C_34T__ crc_nc.c
+  aztec34_cc "+FA" -E90 -DNOANSI -DNOSTDLIB -DUSE_CONST -D__AZTEC_C_34T__ crc_nc.c
   aztec34_sqz crc_nc.o
   aztec34_link -o crc.cmd crc_nc.o -lc86
   pcdev_cmdinfo crc.cmd
