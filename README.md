@@ -442,7 +442,7 @@ can be recovered.
 
    **NB**: You should perform the above step **only** if necessary, as a
    “double‑conversion” will result in a slower compilation, with the KCC
-   compiler emitting many *thousands* warning messages (one for each line
+   compiler emitting many *thousands* of warning messages (one for each line
    of source compiled).
 
 3. Once you have the source code on the PDP‑10 in the appropriate format, it
