@@ -682,7 +682,7 @@ cost of a small increase in load time.
 ## License
 
 This software is distributed under the terms of the permissive
-[MIT No Attribution (MIT‑0) License](LICENSE). ❦
+[MIT No Attribution (MIT‑0) License](LICENSE).
 
 <!--
 Local Variables:
