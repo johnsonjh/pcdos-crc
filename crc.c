@@ -1,5 +1,5 @@
 /*
- * IBM PC-DOS CRC.EXE-compatible CRC calculator
+ * IBM PC-DOS CRC.EXE-compatible CRC calculator - crc.c
  * Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
  * SPDX-License-Identifier: MIT-0
  * scspell-id: 41561dd2-3fff-11f1-8e90-80ee73e9b8e7
@@ -156,9 +156,10 @@ typedef unsigned long crc_t;
  * CP/M Last Record Byte Count (LRBC) support.
  *
  * The --lrbc and --lrbc=isx options and the direct BDOS calls they rely on
- * are compiled only for CP/M targets: CP/M-80 via z88dk, and CP/M-86 via
- * Aztec C (the build passes -D__AZTEC_C_42T__ for 4.2 or -D__AZTEC_C_34T__
- * for 3.4).  Define CRC_CPM on the command line to force it on elsewhere.
+ * are compiled only for CP/M targets: CP/M-80 via z88dk, and CP/M-68K and
+ * CP/M-86 via Aztec C (the build passes -D__AZTEC_C_42T__ for C86 4.2,
+ * -D__AZTEC_C_34T__ for C86 3.4, and -D__AZTEC_C_36T__ -D__CPM68K__ for
+ * C68K 3.6).  Define CRC_CPM on the command line to force it on elsewhere.
  */
 
 #ifndef CRC_CPM
@@ -178,6 +179,14 @@ typedef unsigned long crc_t;
 #ifndef CRC_CPM
 # ifdef __AZTEC_C_34T__
 #  define CRC_CPM
+# endif
+#endif
+
+#ifndef CRC_CPM
+# ifdef __AZTEC_C_36T__
+#  ifdef __CPM68K__
+#   define CRC_CPM
+#  endif
 # endif
 #endif
 
@@ -462,10 +471,7 @@ extern char * strerror ();
 
 #ifdef DOS_MSC_VER
 # if _MSC_VER > 600
-#  pragma warning(disable: 4135)
-#  pragma warning(disable: 4702)
-#  pragma warning(disable: 4703)
-#  pragma warning(disable: 4711)
+#  include "suppress.h"
 # endif
 #endif
 
@@ -2599,7 +2605,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 #  include <cpm.h>
 #  define BDOS_FCB(p) ((int)(p))
 # else
-extern int bdos ();
+#  ifndef __AZTEC_C_36T__
+#   ifndef __CPM68K__
+extern int bdos (); /* We provide our own for Aztec C68K/Rom for CP/M-68K */
+#   endif
+#  endif
 #  define BDOS_FCB(p) (p)
 # endif
 
@@ -2665,6 +2675,42 @@ cpm_setfcb (fcb, fn)
 
 /******************************************************************************/
 
+/*
+ * Aztec C68K inline assembly.  Written for Aztec C68K 3.6b/Rom which does
+ * not include its own bdos() or any other specific CP/M-68K library code.
+ */
+
+# ifdef __AZTEC_C_36T__
+#  ifdef __CPM68K__
+static int
+#   ifdef ANSI_COMPILER
+bdos68k (
+  int func,
+  void *parm)
+#   else
+bdos68k (func, parm)
+  int func;
+  void *parm;
+#   endif
+{
+#   asm
+  MOVE.W 4(SP),D0        ; func
+  MOVE.L 6(SP),D1        ; parm (pointer/int)
+  TRAP   #2              ; BDOS
+#   endasm
+}
+#   ifdef bdos68k
+#    undef bdos68k
+#   endif
+#   ifdef bdos
+#    undef bdos
+#   endif
+#   define bdos(func, parm) (bdos68k(func, parm))
+#  endif
+# endif
+
+/******************************************************************************/
+
 static long
 # ifdef ANSI_COMPILER
 cpm_file_size (
@@ -2682,14 +2728,41 @@ cpm_file_size (fn, isx, chars)
   long records, total, base, exact, unused, last_ext;
   int lrbc;
 
+/*
+ * CP/M-68K versions in the wild may or may not support the LRBC via S1.
+ * Support seems to be the exception and not the rule!  *If* support exists,
+ * BDOS on CP/M-68K systems still reports a version <3.0.  This should be safe
+ * for all the known CP/M-68K variants examined, as S1 is always zero when the
+ * LRBC is not supported.  If this turns out to be an incorrect assumption,
+ * then simply bypassing the BDOS version check below will need to re-examined.
+ */
+
+# ifndef __CPM68K__
   if (0x30 > (bdos (12, 0) & 0x00ff))
     return -2L;
+# else
+#  ifndef BDOS_BIG_ENDIAN
+#   define BDOS_BIG_ENDIAN
+#  endif
+# endif
+
+/*
+ * There may be other CP/M-like systems for 8080/Z80 out there that may or may
+ * not support the CP/M-Plus-style LRBC metadata that I haven't investigated!
+ */
 
   cpm_setfcb (fcb, fn);
   (void)bdos (35, BDOS_FCB (fcb));
-  records = ((long)fcb [33])
+  records =
+# ifndef BDOS_BIG_ENDIAN
+            ((long)fcb [33])
           | ((long)fcb [34] << 8)
           | ((long)fcb [35] << 16);
+# else
+            ((long)fcb [33] << 16)
+          | ((long)fcb [34] << 8)
+          | ((long)fcb [35]);
+# endif
 
   if (0L >= records)
     return -1L;
