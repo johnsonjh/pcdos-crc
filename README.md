@@ -31,6 +31,8 @@
   * [Building for CP/M-86](#building-for-cpm-86)
     + [CP/M-86 notes](#cpm-86-notes)
   * [Building for ELKS](#building-for-elks)
+  * [Building for AmigaOS](#building-for-amigaos)
+  * [Building for Atari ST](#building-for-atari-st)
   * [Building for MS-DOS](#building-for-ms-dos)
 - [Security](#security)
 - [License](#license)
@@ -362,7 +364,7 @@ NetBSD, and OpenBSD.
 ## Platform specifics
 
 The following sections document platform specific differences, as well as
-throughly validated and supported compilation recipies for various compilers
+thoroughly validated and supported compilation recipes for various compilers
 and platforms.
 
 It is **highly recommended** to use these **exact** compiler flags and tested
