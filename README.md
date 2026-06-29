@@ -78,7 +78,8 @@ It has been tested on various exotic and retro platforms including **Multics**
 Turbo C, Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
 [lcc‑win](https://lcc-win32.services.net/)), **ELKS** (IA16‑GCC), **Atari ST**
-(TOS/MINT using [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, and
+(Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, **AmigaOS**
+(Vbcc, Aztec C, [Amiga-GCC](https://franke.ms/amiga/amiga-gcc.wiki)), and
 systems supported by [SoftIntegration **Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
@@ -87,8 +88,8 @@ effort required.
   **not** sufficient to build this software (for various reasons).  You need a
   *real* C compiler and preprocessor, which is something that at least
   resembles 1978 K&R C and provides 1979 UNIX V7‑style `stdio`.  The unrelated
-  [Smaller C](https://github.com/alexfru/SmallerC) compiler **is** sufficient,
-  at least for 32‑bit targets.
+  [**Smaller&nbsp;C**](https://github.com/alexfru/SmallerC) compiler **is**
+  sufficient (but only for 32‑bit targets).
 
 It is hoped that this ‘**AI**‑***slop***‑**free**’ program will serve both as
 a practical utility and as a template for writing ***ultra‑portable***
@@ -360,6 +361,15 @@ NetBSD, and OpenBSD.
 
 ## Platform specifics
 
+The following sections document platform specific differences, as well as
+throughly validated and supported compilation recipies for various compilers
+and platforms.
+
+It is **highly recommended** to use these **exact** compiler flags and tested
+compiler versions.  In many cases (*especially* with older compilers), using
+different flags or more aggressive optimizations triggers nasty compiler bugs
+that result in subtle miscompilations that are very tricky to detect.
+
 ### Building for Multics
 
 * To build a binary for [Multics](https://multics-wiki.swenson.org/) using
@@ -602,6 +612,43 @@ later) can be used to pack CP/M‑86 binaries.
 
   ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
+  ```
+
+### Building for AmigaOS
+
+* To build a binary for AmigaOS using Aztec C68K/Amiga 5.2a:
+
+  ```sh
+  cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -qv -mc -md -o crc.o crc.c
+  ln -t crc -T -O crc.o -lc
+  ```
+
+* To build a binary for AmigaOS using Vbcc:
+
+  ```sh
+  vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -o crc crc.c
+  ```
+
+* To build a binary for AmigaOS using
+  [Amiga-GCC](https://franke.ms/amiga/amiga-gcc.wiki):
+
+  ```sh
+  m68k-amigaos-gcc -m68000 -mcrt=nix13 -O3 -std=gnu90 crc.c -o crc
+  ```
+
+### Building for Atari ST
+
+* To build a binary for Atari ST (TOS/MINT) using Vbcc:
+
+  ```sh
+  vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -o crc.ttp crc.c
+  ```
+
+* To build a binary for Atari ST (TOS/MINT) using
+  [CrossMINT](https://tho-otto.de/crossmint.php):
+
+  ```sh
+  m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -o crc.ttp crc.c
   ```
 
 ### Building for MS-DOS

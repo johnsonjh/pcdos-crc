@@ -6,6 +6,7 @@
 /#*#
 /*~
 /*.$$$
+/*.68K
 /a.out
 /*.bak
 /*.cmd
@@ -32,6 +33,8 @@
 /*.log
 /log.pvs
 /.log.sed
+/*.map
+/*.MAP
 /nonexistent
 /NOTES.md
 /NOTES.TXT
@@ -55,3 +58,4 @@
 /.test_zero.bin
 /*.tmp
 /*.TMP
+/*.ttp

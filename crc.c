@@ -506,6 +506,14 @@ out_err_check_int (ret)
 {
   if (0 > ret)
     g_out_err++;
+
+#ifdef __VBCC__
+  if (0 != fflush (stdout))
+    g_out_err++;
+
+  if (0 != fflush (stderr))
+    g_out_err++;
+#endif
 }
 
 /******************************************************************************/
@@ -521,6 +529,14 @@ out_err_check_fputc (ret)
 {
   if (EOF == ret)
     g_out_err++;
+
+#ifdef __VBCC__
+  if (0 != fflush (stdout))
+    g_out_err++;
+
+  if (0 != fflush (stderr))
+    g_out_err++;
+#endif
 }
 
 /******************************************************************************/
@@ -2712,7 +2728,7 @@ cpm_file_size (fn, isx, chars)
   (void)cb_add (chars, (unsigned int)(records & 0xffL));
 
   if (0 == cb_mul (chars, (unsigned int)128))
-    return -1L; /* file too large to count in the BCD counter */
+    return -1L;
 
   unused = total - exact;
 
@@ -2723,7 +2739,7 @@ cpm_file_size (fn, isx, chars)
   return exact;
 }
 
-#endif /* CRC_CPM */
+#endif
 
 /******************************************************************************/
 
