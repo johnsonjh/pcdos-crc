@@ -2693,11 +2693,7 @@ bdos68k (func, param)
   void *param;
 #   endif
 {
-#   asm
-  MOVE.W 4(SP),D0        ; func
-  MOVE.L 6(SP),D1        ; param (pointer/int)
-  TRAP   #2              ; BDOS
-#   endasm
+#   include "bdos68k.c"
 }
 #   ifdef bdos68k
 #    undef bdos68k
