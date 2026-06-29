@@ -249,7 +249,7 @@ In this mode:
 
 * The **recommended build** for *real‑mode* MS‑DOS is
   [available here](https://dps8m.gitlab.io/crc/MSC800c/crc.com),
-  compiled with Microsoft C++ 8.00c for MS‑DOS.
+  compiled with **Microsoft C++ 8.00c** for MS‑DOS.
   * Additional testing builds compiled with
     [Microsoft C 6.00A](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
     [Turbo C++ 1.01](https://dps8m.gitlab.io/crc/TCPP101/crc.com),
@@ -331,8 +331,9 @@ Most users wonʼt need to do any of these things.
 
 ### Developer notes
 
-**NB**: Usage of AI (artificial intelligence) tools by contributors is
-**NOT permitted**.  There will be **zero crankerslop** in this project.
+**NB**: Submission of AI (artificial intelligence) generated code by
+contributors is **NOT permitted**.  There will be ***zero*** **crankerslop**
+in this project!
 
 The `Makefile` provides three convenience targets for developers:
 
