@@ -2686,16 +2686,16 @@ static int
 #   ifdef ANSI_COMPILER
 bdos68k (
   int func,
-  void *parm)
+  void *param)
 #   else
-bdos68k (func, parm)
+bdos68k (func, param)
   int func;
-  void *parm;
+  void *param;
 #   endif
 {
 #   asm
   MOVE.W 4(SP),D0        ; func
-  MOVE.L 6(SP),D1        ; parm (pointer/int)
+  MOVE.L 6(SP),D1        ; param (pointer/int)
   TRAP   #2              ; BDOS
 #   endasm
 }
@@ -2705,7 +2705,7 @@ bdos68k (func, parm)
 #   ifdef bdos
 #    undef bdos
 #   endif
-#   define bdos(func, parm) (bdos68k(func, parm))
+#   define bdos(func, param) (bdos68k(func, param))
 #  endif
 # endif
 
