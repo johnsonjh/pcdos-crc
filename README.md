@@ -276,7 +276,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 ### Porting tips
 
-* If you are using a *non‑ANSI* C compiler, you may need to define `NOANSI`
+* If you are using a non‑ANSI C compiler, you may need to define `NOANSI`
   (*i.e.*, `-DNOANSI`) or modify the source code to comment out the
   `#define ANSI_COMPILER` directive.  If you donʼt have `stdlib.h` you should
   also define `NOSTDLIB`.  If your non‑ANSI compiler *does* support the
@@ -428,7 +428,7 @@ can be recovered.
 
 ### Building for TOPS-20
 
-1. To build a binary for TOPS‑20 for PDP‑10 systems using the KCC compiler,
+1. To build a binary for TOPS‑20 for PDP‑10 systems using the **KCC** compiler,
    you need to transform the source code appropriately.  This is easy to do on
    any system with a POSIX‑conforming `sed` implementation available:
 
@@ -476,15 +476,16 @@ on how its stored) on the system.
 ### Building for CP/M-80
 
 * To build a binary for CP/M‑80 for **Z80** systems, use any recent version
-  of [z88dk](https://z88dk.org/):
+  of [**z88dk**](https://z88dk.org/):
 
   ```sh
   zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build a binary for CP/M‑80 for **8080** systems, use a version
-  of [z88dk](https://z88dk.org/) from **2026‑05‑01** or later (earlier versions
-  have a bug which causes the CRC to be miscalculated on 8080 processors):
+  of [**z88dk**](https://z88dk.org/) from **2026‑05‑01** or later (earlier
+  versions have a bug which causes the CRC to be miscalculated on
+  8080 processors):
 
   ```sh
   zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
@@ -508,7 +509,7 @@ the current `z88dk`.
     zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
-For **Z80** builds using SDCC, adding the `--max-allocs-per-node250000`
+For **Z80** builds using **SDCC**, adding the `--max-allocs-per-node250000`
 compiler option will improve performance by \~6%, but increases compilation
 time from several seconds to many minutes.
 
@@ -516,8 +517,8 @@ time from several seconds to many minutes.
 
 CP/M‑80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
 
-Builds targeting the Z80 using SDCC will execute about twice as fast as the
-8080 builds.
+Builds targeting the Z80 using **SDCC** will execute about twice as fast as
+the 8080 builds.
 
 The [**LZPACK**](https://github.com/johnsonjh/lzpack) utility can be used to
 transparently compress the generated CP/M executable, reducing its on‑disk
@@ -578,7 +579,7 @@ To build the program for CP/M‑86 we are using the most recent versions
 of the [Aztec C cross‑compiler](https://github.com/tsupplis/cpm86-crossdev)
 from [tsupplis](https://github.com/tsupplis).
 
-* To build a binary for CP/M‑86 using cross‑Aztec C 4.2 (recommended):
+* To build a binary for CP/M‑86 using **cross‑Aztec C 4.2** (*recommended*):
 
   ```sh
   aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
@@ -587,7 +588,7 @@ from [tsupplis](https://github.com/tsupplis).
   pcdev_cmdinfo crc.cmd
   ```
 
-* To build a binary for CP/M‑86 using cross‑Aztec C 3.4:
+* To build a binary for CP/M‑86 using **cross‑Aztec C 3.4**:
 
   ```sh
   sed 's|const||g' crc.c > crc_nc.c
@@ -610,7 +611,8 @@ later) can be used to pack CP/M‑86 binaries.
 
 ### Building for ELKS
 
-* To build a binary for [ELKS](https://github.com/ghaerr/elks) using IA16‑GCC:
+* To build a binary for [ELKS](https://github.com/ghaerr/elks) using
+  **IA16‑GCC**:
 
   ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
@@ -618,14 +620,14 @@ later) can be used to pack CP/M‑86 binaries.
 
 ### Building for AmigaOS
 
-* To build a binary for AmigaOS using Aztec C68K/Amiga 5.2a:
+* To build a binary for AmigaOS using **Aztec C68K/Amiga 5.2a**:
 
   ```sh
   cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -qv -mc -md -o crc.o crc.c
   ln -t crc -T -O crc.o -lc
   ```
 
-* To build a binary for AmigaOS using Vbcc:
+* To build a binary for AmigaOS using **Vbcc**:
 
   ```sh
   vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -o crc crc.c
@@ -640,14 +642,14 @@ later) can be used to pack CP/M‑86 binaries.
 
 ### Building for Atari ST
 
-* To build a binary for Atari ST (TOS/MINT) using Vbcc:
+* To build a binary for Atari ST (TOS/MINT) using **Vbcc**:
 
   ```sh
   vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -o crc.ttp crc.c
   ```
 
 * To build a binary for Atari ST (TOS/MINT) using
-  [CrossMINT](https://tho-otto.de/crossmint.php):
+  [**CrossMINT**](https://tho-otto.de/crossmint.php):
 
   ```sh
   m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -o crc.ttp crc.c
@@ -655,58 +657,59 @@ later) can be used to pack CP/M‑86 binaries.
 
 ### Building for MS-DOS
 
-* To build a binary for MS‑DOS using IA16‑GCC:
+* To build a binary for MS‑DOS using **IA16‑GCC**:
 
   ```sh
   ia16-elf-gcc -march=i8086 -std=c89 -O2 -mregparmcall -mcmodel=tiny -o crc.com crc.c
   ```
 
-* To build a binary for MS‑DOS using Microsoft C 6.00A (1990):
+* To build a binary for MS‑DOS using **Microsoft C 6.00A** (1990):
 
   ```sh
   cl /AT /O /Ot /Ol /Og /Oi /Gr /Gs /Fecrc.com crc.c
   ```
 
-* To build a binary for MS‑DOS using Microsoft C/C++ 8.00c (1993):
+* To build a binary for MS‑DOS using **Microsoft C/C++ 8.00c** (1993):
 
   ```sh
   cl /AT /O /Ot /Ol /Og /Oi /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c
   ```
 
 * To build a binary for MS‑DOS using
-  [Open Watcom V2](https://github.com/open-watcom/open-watcom-v2):
+  [**Open Watcom V2**](https://github.com/open-watcom/open-watcom-v2):
 
   ```sh
   owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c
   ```
 
-* To build a binary for MS‑DOS using Watcom C:
+* To build a binary for MS‑DOS using **Watcom C**:
 
   ```sh
   wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
   wlink system com file crc.obj name crc.com
   ```
 
-* To build a binary for MS‑DOS using dev86 0.16.21+:
+* To build a binary for MS‑DOS using **dev86 0.16.21+**:
 
   ```sh
   bcc -Md -O -o crc.com crc.c
   ```
 
-* To build a binary for MS‑DOS using Turbo C 1.0 (1987) or Turbo C 1.5 (1988):
+* To build a binary for MS‑DOS using **Turbo C 1.0** (1987) or
+  **Turbo C 1.5** (1988):
 
   ```sh
   tcc -G -O -Z -f- -mt crc.c
   exe2bin crc.exe crc.com
   ```
 
-* To build a binary for MS‑DOS using Turbo C++ 1.01 (1990):
+* To build a binary for MS‑DOS using **Turbo C++ 1.01** (1990):
 
   ```sh
   tcc -G -O -Z -f- -mt -lt crc.c
   ```
 
-* To build a binary for MS‑DOS using DJGPP:
+* To build a binary for MS‑DOS using **DJGPP**:
 
   ```sh
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
