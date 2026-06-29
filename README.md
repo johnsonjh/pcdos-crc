@@ -81,7 +81,7 @@ Turbo C, Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
 [lcc‑win](https://lcc-win32.services.net/)), **ELKS** (IA16‑GCC), **Atari ST**
 (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, **AmigaOS**
-(Vbcc, Aztec C, [Amiga-GCC](https://franke.ms/amiga/amiga-gcc.wiki)), and
+(Vbcc, Aztec C, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)), and
 systems supported by [SoftIntegration **Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
@@ -634,7 +634,7 @@ later) can be used to pack CP/M‑86 binaries.
   ```
 
 * To build a binary for AmigaOS using
-  [Amiga-GCC](https://franke.ms/amiga/amiga-gcc.wiki):
+  [**Amiga‑GCC**](https://franke.ms/amiga/amiga-gcc.wiki):
 
   ```sh
   m68k-amigaos-gcc -m68000 -mcrt=nix13 -O3 -std=gnu90 crc.c -o crc
