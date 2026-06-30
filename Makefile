@@ -43,6 +43,22 @@ lint: .lint.sh .common.sh
 
 ################################################################################
 
+scc: README.md
+	awk '/<!-- scc-start -->/ { \
+		print; system("scc --remap-all \"bdos68k.a68:Assembly\" \
+			--exclude-file \"crckcc.c,LICENSE,*.md,*.json,*.out\" \
+			--exclude-dir .git --no-size --no-cocomo \
+			--no-complexity -u -f html-table; \
+			printf \"\n%s\n\" \"<!-- scc-end -->\""); \
+			skip=1; next } \
+		skip && /<!-- scc-end -->/ { skip=0; next } \
+		!skip' README.md > README.awk && \
+	mv -f README.awk README.md && \
+	expand README.md > README.out && \
+	mv -f README.out README.md
+
+################################################################################
+
 tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out tag: crc.c
 	@command -v etags > /dev/null 2>&1 && \
 		{ { echo etags...; etags crc.c && exit 0; }; \

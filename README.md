@@ -35,6 +35,7 @@
   * [Building for Atari ST](#building-for-atari-st)
   * [Building for MS-DOS](#building-for-ms-dos)
 - [Security](#security)
+- [Code statistics](#code-statistics)
 - [License](#license)
 
 <!-- tocstop -->
@@ -732,6 +733,115 @@ cost of a small increase in load time.
   (or send an
   [email](mailto:contact-project+dps8m-crc-81891805-issue-@incoming.gitlab.com)
   to the author).
+
+## Code statistics
+
+<!-- scc-start -->
+<table id="scc-table">
+        <thead><tr>
+                <th>Language</th>
+                <th>Files</th>
+                <th>Lines</th>
+                <th>Blank</th>
+                <th>Comment</th>
+                <th>Code</th>
+                <th>Complexity</th>
+                <th>Bytes</th>
+                <th>Uloc</th>
+        </tr></thead>
+        <tbody><tr>
+                <th>Shell</th>
+                <th>3</th>
+                <th>1407</th>
+                <th>282</th>
+                <th>210</th>
+                <th>915</th>
+                <th>0</th>
+                <th>40662</th>
+                <th>601</th>
+        </tr><tr>
+                <th>Assembly</th>
+                <th>1</th>
+                <th>17</th>
+                <th>4</th>
+                <th>0</th>
+                <th>13</th>
+                <th>0</th>
+                <th>776</th>
+                <th>12</th>
+        </tr><tr>
+                <th>C</th>
+                <th>1</th>
+                <th>3831</th>
+                <th>685</th>
+                <th>148</th>
+                <th>2998</th>
+                <th>0</th>
+                <th>81063</th>
+                <th>1751</th>
+        </tr><tr>
+                <th>C Header</th>
+                <th>1</th>
+                <th>46</th>
+                <th>7</th>
+                <th>32</th>
+                <th>7</th>
+                <th>0</th>
+                <th>1538</th>
+                <th>32</th>
+        </tr><tr>
+                <th>Makefile</th>
+                <th>1</th>
+                <th>105</th>
+                <th>25</th>
+                <th>34</th>
+                <th>46</th>
+                <th>0</th>
+                <th>3596</th>
+                <th>65</th>
+        </tr><tr>
+                <th>Markdown</th>
+                <th>1</th>
+                <th>862</th>
+                <th>186</th>
+                <th>0</th>
+                <th>676</th>
+                <th>0</th>
+                <th>31683</th>
+                <th>589</th>
+        </tr><tr>
+                <th>Plain Text</th>
+                <th>1</th>
+                <th>18</th>
+                <th>3</th>
+                <th>0</th>
+                <th>15</th>
+                <th>0</th>
+                <th>943</th>
+                <th>16</th>
+        </tr><tr>
+                <th>YAML</th>
+                <th>1</th>
+                <th>148</th>
+                <th>6</th>
+                <th>29</th>
+                <th>113</th>
+                <th>0</th>
+                <th>8492</th>
+                <th>121</th>
+        </tr></tbody>
+        <tfoot><tr>
+                <th>Total</th>
+                <th>10</th>
+                <th>6434</th>
+                <th>1198</th>
+                <th>453</th>
+                <th>4783</th>
+                <th>0</th>
+                <th>168753</th>
+                <th>3143</th>
+        </tr></tfoot></table>
+<!-- scc-end -->
 
 ## License
 

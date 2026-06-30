@@ -43,6 +43,7 @@
 /*.out
 /profile.txt
 /pvsreport
+/README.awk
 /selftest
 /*.sym
 /tags
