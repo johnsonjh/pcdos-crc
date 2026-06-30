@@ -2605,11 +2605,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 #  include <cpm.h>
 #  define BDOS_FCB(p) ((int)(p))
 # else
-#  ifndef __AZTEC_C_36T__
-#   ifndef __CPM68K__
-extern int bdos (); /* We provide our own for Aztec C68K/Rom for CP/M-68K */
-#   endif
-#  endif
+extern int bdos (); /* We provide our own for Aztec C68K/ROM for CP/M-68K */
 #  define BDOS_FCB(p) (p)
 # endif
 
@@ -2675,38 +2671,6 @@ cpm_setfcb (fcb, fn)
 
 /******************************************************************************/
 
-/*
- * Aztec C68K inline assembly.  Written for Aztec C68K 3.6b/Rom which does
- * not include its own bdos() or any other specific CP/M-68K library code.
- */
-
-# ifdef __AZTEC_C_36T__
-#  ifdef __CPM68K__
-static int
-#   ifdef ANSI_COMPILER
-bdos68k (
-  int func,
-  void *param)
-#   else
-bdos68k (func, param)
-  int func;
-  void *param;
-#   endif
-{
-#   include "bdos68k.c"
-}
-#   ifdef bdos68k
-#    undef bdos68k
-#   endif
-#   ifdef bdos
-#    undef bdos
-#   endif
-#   define bdos(func, param) (bdos68k(func, param))
-#  endif
-# endif
-
-/******************************************************************************/
-
 static long
 # ifdef ANSI_COMPILER
 cpm_file_size (
@@ -2724,19 +2688,12 @@ cpm_file_size (fn, isx, chars)
   long records, total, base, exact, unused, last_ext;
   int lrbc;
 
-/*
- * CP/M-68K versions in the wild may or may not support the LRBC via S1.
- * Support seems to be the exception and not the rule!  *If* support exists,
- * BDOS on CP/M-68K systems still reports a version <3.0.  This should be safe
- * for all the known CP/M-68K variants examined, as S1 is always zero when the
- * LRBC is not supported.  If this turns out to be an incorrect assumption,
- * then simply bypassing the BDOS version check below will need to re-examined.
- */
-
 # ifndef __CPM68K__
   if (0x30 > (bdos (12, 0) & 0x00ff))
     return -2L;
-# else
+# endif
+
+# ifdef __CPM68K__
 #  ifndef BDOS_BIG_ENDIAN
 #   define BDOS_BIG_ENDIAN
 #  endif

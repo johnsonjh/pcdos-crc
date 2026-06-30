@@ -1,0 +1,17 @@
+; IBM PC-DOS CRC.EXE-compatible CRC calculator - bdos68k.a68
+; Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
+; SPDX-License-Identifier: MIT-0
+; scspell-id: 8a1243aa-747c-11f1-9ad9-80ee73e9b8e7
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+        XDEF    _bdos          ; export symbol to C
+
+_bdos:  MOVE.W  4(SP),D0       ; BDOS function number (int)
+        MOVE.L  6(SP),D1       ; BDOS parameter (pointer or int)
+        TRAP    #2             ; enter BDOS
+        RTS                    ; return (result in D0.W)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; vim: set ft=asm ai expandtab cc=80 :
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
