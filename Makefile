@@ -44,11 +44,15 @@ lint: .lint.sh .common.sh
 ################################################################################
 
 scc: README.md
+	"$${MAKE:-$(MAKE)}" distclean
 	awk '/<!-- scc-start -->/ { \
 		print; system("scc --remap-all \"bdos68k.a68:Assembly\" \
-			--exclude-file \"crckcc.c,LICENSE,*.md,*.json,*.out\" \
-			--exclude-dir .git --no-size --no-cocomo \
-			--no-complexity -u -f html-table; \
+			--exclude-file \"LICENSE,README.md\" \
+			--exclude-file \"log.pvs,.ref_results.log\" \
+			--exclude-file \"compile_commands.json\" \
+			--exclude-file \"LICENSES/MIT-0.txt\" \
+			--exclude-dir \".git\" --no-size --no-cocomo \
+			-u -f html-table; \
 			printf \"\n%s\n\" \"<!-- scc-end -->\""); \
 			skip=1; next } \
 		skip && /<!-- scc-end -->/ { skip=0; next } \

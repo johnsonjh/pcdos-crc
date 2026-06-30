@@ -756,7 +756,7 @@ cost of a small increase in load time.
                 <th>282</th>
                 <th>210</th>
                 <th>915</th>
-                <th>0</th>
+                <th>104</th>
                 <th>40662</th>
                 <th>601</th>
         </tr><tr>
@@ -776,7 +776,7 @@ cost of a small increase in load time.
                 <th>685</th>
                 <th>148</th>
                 <th>2998</th>
-                <th>0</th>
+                <th>669</th>
                 <th>81063</th>
                 <th>1751</th>
         </tr><tr>
@@ -792,23 +792,13 @@ cost of a small increase in load time.
         </tr><tr>
                 <th>Makefile</th>
                 <th>1</th>
-                <th>105</th>
+                <th>109</th>
                 <th>25</th>
                 <th>34</th>
-                <th>46</th>
-                <th>0</th>
-                <th>3596</th>
-                <th>65</th>
-        </tr><tr>
-                <th>Markdown</th>
-                <th>1</th>
-                <th>862</th>
-                <th>186</th>
-                <th>0</th>
-                <th>676</th>
-                <th>0</th>
-                <th>31683</th>
-                <th>589</th>
+                <th>50</th>
+                <th>21</th>
+                <th>3736</th>
+                <th>69</th>
         </tr><tr>
                 <th>Plain Text</th>
                 <th>1</th>
@@ -832,14 +822,14 @@ cost of a small increase in load time.
         </tr></tbody>
         <tfoot><tr>
                 <th>Total</th>
-                <th>10</th>
-                <th>6434</th>
-                <th>1198</th>
+                <th>9</th>
+                <th>5576</th>
+                <th>1012</th>
                 <th>453</th>
-                <th>4783</th>
-                <th>0</th>
-                <th>168753</th>
-                <th>3143</th>
+                <th>4111</th>
+                <th>794</th>
+                <th>137210</th>
+                <th>2559</th>
         </tr></tfoot></table>
 <!-- scc-end -->
 
