@@ -750,6 +750,16 @@ cost of a small increase in load time.
                 <th>Uloc</th>
         </tr></thead>
         <tbody><tr>
+                <th>C</th>
+                <th>1</th>
+                <th>3831</th>
+                <th>685</th>
+                <th>148</th>
+                <th>2998</th>
+                <th>669</th>
+                <th>81063</th>
+                <th>1751</th>
+        </tr><tr>
                 <th>Shell</th>
                 <th>3</th>
                 <th>1407</th>
@@ -760,25 +770,25 @@ cost of a small increase in load time.
                 <th>40662</th>
                 <th>601</th>
         </tr><tr>
-                <th>Assembly</th>
+                <th>YAML</th>
                 <th>1</th>
-                <th>17</th>
-                <th>4</th>
-                <th>0</th>
-                <th>13</th>
-                <th>0</th>
-                <th>776</th>
-                <th>12</th>
-        </tr><tr>
-                <th>C</th>
-                <th>1</th>
-                <th>3831</th>
-                <th>685</th>
                 <th>148</th>
-                <th>2998</th>
-                <th>669</th>
-                <th>81063</th>
-                <th>1751</th>
+                <th>6</th>
+                <th>29</th>
+                <th>113</th>
+                <th>0</th>
+                <th>8492</th>
+                <th>121</th>
+        </tr><tr>
+                <th>Makefile</th>
+                <th>1</th>
+                <th>108</th>
+                <th>25</th>
+                <th>34</th>
+                <th>49</th>
+                <th>21</th>
+                <th>3748</th>
+                <th>68</th>
         </tr><tr>
                 <th>C Header</th>
                 <th>1</th>
@@ -790,25 +800,15 @@ cost of a small increase in load time.
                 <th>1538</th>
                 <th>32</th>
         </tr><tr>
-                <th>Makefile</th>
+                <th>Assembly</th>
                 <th>1</th>
-                <th>108</th>
-                <th>25</th>
-                <th>34</th>
-                <th>49</th>
-                <th>21</th>
-                <th>3729</th>
-                <th>68</th>
-        </tr><tr>
-                <th>YAML</th>
-                <th>1</th>
-                <th>148</th>
-                <th>6</th>
-                <th>29</th>
-                <th>113</th>
+                <th>17</th>
+                <th>4</th>
                 <th>0</th>
-                <th>8492</th>
-                <th>121</th>
+                <th>13</th>
+                <th>0</th>
+                <th>776</th>
+                <th>12</th>
         </tr></tbody>
         <tfoot><tr>
                 <th>Total</th>
@@ -818,7 +818,7 @@ cost of a small increase in load time.
                 <th>453</th>
                 <th>4095</th>
                 <th>794</th>
-                <th>136260</th>
+                <th>136279</th>
                 <th>2543</th>
         </tr></tfoot></table>
 <!-- scc-end -->

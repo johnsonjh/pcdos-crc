@@ -50,8 +50,8 @@ scc: README.md
 			--exclude-file LICENSE,README.md,*.pvs,*.out,*.txt \
 			--exclude-file log.pvs,.ref_results.log,*.log,*.awk \
 			--exclude-file compile_commands.json,*.json \
-			--exclude-dir LICENSES,.git,pvsreport \
-			--no-size --no-cocomo -u -f html-table; \
+			--exclude-dir LICENSES,.git,pvsreport --no-size \
+			--no-cocomo -u --no-size -s lines -f html-table; \
 			printf \"\n%s\n\" \"<!-- scc-end -->\""); \
 			skip=1; next } \
 		skip && /<!-- scc-end -->/ { skip=0; next } \
