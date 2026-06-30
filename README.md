@@ -792,23 +792,13 @@ cost of a small increase in load time.
         </tr><tr>
                 <th>Makefile</th>
                 <th>1</th>
-                <th>109</th>
+                <th>108</th>
                 <th>25</th>
                 <th>34</th>
-                <th>50</th>
+                <th>49</th>
                 <th>21</th>
-                <th>3736</th>
-                <th>69</th>
-        </tr><tr>
-                <th>Plain Text</th>
-                <th>1</th>
-                <th>18</th>
-                <th>3</th>
-                <th>0</th>
-                <th>15</th>
-                <th>0</th>
-                <th>943</th>
-                <th>16</th>
+                <th>3729</th>
+                <th>68</th>
         </tr><tr>
                 <th>YAML</th>
                 <th>1</th>
@@ -822,14 +812,14 @@ cost of a small increase in load time.
         </tr></tbody>
         <tfoot><tr>
                 <th>Total</th>
-                <th>9</th>
-                <th>5576</th>
-                <th>1012</th>
+                <th>8</th>
+                <th>5557</th>
+                <th>1009</th>
                 <th>453</th>
-                <th>4111</th>
+                <th>4095</th>
                 <th>794</th>
-                <th>137210</th>
-                <th>2559</th>
+                <th>136260</th>
+                <th>2543</th>
         </tr></tfoot></table>
 <!-- scc-end -->
 
