@@ -787,7 +787,7 @@ cost of a small increase in load time.
                 <th>34</th>
                 <th>49</th>
                 <th>21</th>
-                <th>3738</th>
+                <th>3705</th>
                 <th>68</th>
         </tr><tr>
                 <th>C Header</th>
@@ -818,7 +818,7 @@ cost of a small increase in load time.
                 <th>453</th>
                 <th>4095</th>
                 <th>794</th>
-                <th>136269</th>
+                <th>136236</th>
                 <th>2543</th>
         </tr></tfoot></table>
 <!-- scc-end -->

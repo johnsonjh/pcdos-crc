@@ -47,9 +47,9 @@ scc: README.md
 	"$${MAKE:-$(MAKE)}" distclean
 	awk '/<!-- scc-start -->/ { \
 		print; system("scc --remap-all bdos68k.a68:Assembly \
-			--exclude-file LICENSE,README.md,*.pvs,*.out,*.txt \
-			--exclude-file log.pvs,.ref_results.log,*.log,*.awk \
-			--exclude-file compile_commands.json,*.json \
+			--exclude-file LICENSE,README.md \
+			--exclude-file log.pvs,.ref_results.log \
+			--exclude-file compile_commands.json \
 			--exclude-dir LICENSES,.git,pvsreport \
 			--no-cocomo -u --no-size -s lines -f html-table; \
 			printf \"\n%s\n\" \"<!-- scc-end -->\""); \
