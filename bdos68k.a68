@@ -13,5 +13,5 @@ _bdos:  MOVE.W  4(SP),D0       ; BDOS function number (int)
         RTS                    ; return (result in D0.W)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; vim: set ft=asm ai expandtab cc=80 :
+; vim: set ft=asm ai expandtab cc=80 :
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
