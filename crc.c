@@ -2587,7 +2587,7 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 
   return compute_crc_fb (fp,
     filename, tbl, use_cb, mask32, inmask, pad, lim_bits, processed_bits,
-    processed_chars, actually_padded, batch_limit, expected_chars
+      processed_chars, actually_padded, batch_limit, expected_chars
   );
 }
 
@@ -3187,8 +3187,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   {
     const crc_t crcval = compute_crc (fp,
       filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, & eff_lim,
-      & processed_bits, & processed_chars, & actually_padded, batch_limit,
-      & expected_chars);
+        & processed_bits, & processed_chars, & actually_padded, batch_limit,
+          & expected_chars);
 
     if (0 != fclose (fp))
       error_msg ("Error closing", filename, errno);
