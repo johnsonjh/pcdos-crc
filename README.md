@@ -752,6 +752,7 @@ automatically via the [`.lint.sh`](.lint.sh) script):
 |-----:|:------|
 | [**PVS‑Studio**](https://pvs-studio.com/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) | Static analysis tool for C, C++, C#, and Java code                       |
 | [Clang&nbsp;Analyzer](https://clang-analyzer.llvm.org/),&nbsp;[Sanitizers](https://github.com/google/sanitizers)   | Static and dynamic analysis tools for C, C++, and Objective‑C code       |
+| [CodeQL](https://codeql.github.com/)                                                                               | Semantic code analysis engine                                            |
 | [Cppcheck](https://cppchecksolutions.com/)                                                                         | Static analysis tool for C and C++ code                                  |
 | [Dr.&nbsp;Memory](https://drmemory.org/)                                                                           | Memory debugging tool for Windows, Linux, macOS, and Android             |
 | [DUMA](https://github.com/johnsonjh/duma)                                                                          | Detect Unintended Memory Access, a memory debugger                       |
