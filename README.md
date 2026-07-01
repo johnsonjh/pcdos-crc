@@ -276,6 +276,13 @@ The `crc.c` source code should build easily anywhere with no changes needed:
   cc -O3 -o crc crc.c
   ```
 
+* To build a native binary on Windows using the Microsoft Visual Studio C/C++
+  compiler, from a **Developer Command Prompt for Visual Studio** window, run:
+
+  ```sh
+  msvcbuild.bat
+  ```
+
 ### Porting tips
 
 * If you are using a non‑ANSI C compiler, you may need to define `NOANSI`
