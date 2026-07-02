@@ -643,7 +643,7 @@ To build the program for CP/M‑68K we are using
 
 #### CP/M-68K notes
 
-**NB**: CP/M‑68K is currently a work‑in‑progress!
+**CP/M‑68K is currently a work‑in‑progress!**
 
 CP/M‑68K builds do **not** support internal wildcard expansion at this time.
 
