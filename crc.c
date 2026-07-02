@@ -477,6 +477,26 @@ extern char * strerror ();
 
 /******************************************************************************/
 
+#ifdef __CPM68K__
+# ifdef __AZTEC_C_36T__
+#  ifndef CRC_EOL
+#   ifndef CRC_EOL_CRLF
+#    define CRC_EOL_CRLF
+#   endif
+#  endif
+# endif
+#endif
+
+#ifndef CRC_EOL
+# ifdef CRC_EOL_CRLF
+#  define CRC_EOL "\r\n"
+# else
+#  define CRC_EOL "\n"
+# endif
+#endif
+
+/******************************************************************************/
+
 typedef struct {
   unsigned char d [MAX_CB_DIGITS];
 } counter_t;
@@ -1256,33 +1276,45 @@ error_msg (m, n, e)
 #endif
 {
   out_err_check_int (
-    fprintf (stderr, "ERROR: %s", m)
+    fprintf (stderr, "ERROR: %s",
+      m
+    )
   );
 
   if (NULL != n)
     out_err_check_int (
-      fprintf (stderr, " %s", n)
+      fprintf (stderr, " %s",
+        n
+      )
     );
 
   if (0 != e) {
     out_err_check_int (
-      fprintf (stderr, " (Error %d", e)
+      fprintf (stderr, " (Error %d",
+        e
+      )
     );
 #ifdef ANSI_COMPILER
 # ifndef NOSTRING
     out_err_check_int (
-      fprintf (stderr, ": %s", trim_str (strerror (e)))
+      fprintf (stderr, ": %s",
+        trim_str (strerror (e))
+      )
     );
 # endif
 #else
 # ifdef FORCE_STRERROR
     out_err_check_int (
-      fprintf (stderr, ": %s", trim_str (strerror (e)))
+      fprintf (stderr, ": %s",
+        trim_str (strerror (e))
+      )
     );
 # else
 #  ifdef USE_PSYSERROR
     out_err_check_int (
-      fprintf (stderr, ": %s", trim_str (psyserror (e)))
+      fprintf (stderr, ": %s",
+        trim_str (psyserror (e))
+      )
     );
 #  endif
 # endif
@@ -1293,7 +1325,9 @@ error_msg (m, n, e)
   }
 
   out_err_check_int (
-    fprintf (stderr, ".\n")
+    fprintf (stderr, ".%s",
+      CRC_EOL
+    )
   );
 
   g_anyerr = 1;
@@ -1603,10 +1637,11 @@ test_crc_table (tbl, mask32)
     if (c != tbl [i]) {
       out_err_check_int (
         fprintf (stderr,
-          "FATAL: CRC table mismatch at index %d; expected %08lX, got %08lX.\n",
-            i, (unsigned long)c, (unsigned long)tbl [i]
+          "FATAL: CRC table mismatch at index %d; expected %08lX, got %08lX.%s",
+            i, (unsigned long)c, (unsigned long)tbl [i], CRC_EOL
         )
       );
+
       exit (EXIT_FAILURE);
     }
   }
@@ -1934,7 +1969,9 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
               )
             );
             out_err_check_int (
-              fprintf (stderr, " use --pad if needed.\n")
+              fprintf (stderr, " use --pad if needed.%s",
+                CRC_EOL
+              )
             );
 
             cb_zero (& rem_bits);
@@ -2178,11 +2215,13 @@ done:
         out_err_check_int (
           fprintf (stderr, "WARNING: %s with %d dangling bit%s ",
             (0 != limit_reached ? "Limit reached" : "File ended"),
-            bib, (1 == bib ? "" : "s")
+              bib, (1 == bib ? "" : "s")
           )
         );
         out_err_check_int (
-          fprintf (stderr, "(not a full 8-bit CRC input octet).\n")
+          fprintf (stderr, "(not a full 8-bit CRC input octet).%s",
+            CRC_EOL
+          )
         );
         hinted = 1;
       }
@@ -2219,7 +2258,9 @@ done:
         );
         cb_printf (stderr, lim_bits);
         out_err_check_int (
-          fprintf (stderr, " was requested.\n")
+          fprintf (stderr, " was requested.%s",
+            CRC_EOL
+          )
         );
         hinted = 1;
       } else
@@ -2228,7 +2269,9 @@ done:
 
     if (0 != hinted && 0 == pad && 0 == g_pad_auto)
       out_err_check_int (
-        fprintf (stderr, "         Use --pad to zero-fill remaining bits.\n")
+        fprintf (stderr, "         Use --pad to zero-fill remaining bits.%s",
+          CRC_EOL
+        )
       );
   }
 
@@ -2278,15 +2321,21 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 {
   if (NULL == fp) {
     out_err_check_int (
-      fprintf (stderr, "FATAL: compute_crc called with NULL file pointer.\n")
+      fprintf (stderr, "FATAL: compute_crc called with NULL file pointer.%s",
+        CRC_EOL
+      )
     );
+
     exit (EXIT_FAILURE);
   }
 
   if (32 > ub) {
     out_err_check_int (
-      fprintf (stderr, "FATAL: Need >=32-bit crc_t type, have %d bits.\n", ub)
+      fprintf (stderr, "FATAL: Need >=32-bit crc_t type, have %d bits.%s",
+        ub, CRC_EOL
+      )
     );
+
     exit (EXIT_FAILURE);
   }
 
@@ -2442,7 +2491,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             fprintf (stderr, "WARNING: Input --limit caused truncation")
           );
           out_err_check_int (
-            fprintf (stderr, " mid-character; use --pad if needed.\n")
+            fprintf (stderr, " mid-character; use --pad if needed.%s",
+              CRC_EOL
+            )
           );
 
           cb_zero (& rem_bits);
@@ -2519,8 +2570,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             );
             cb_printf (stderr, & rem_bits);
             out_err_check_int (
-              fprintf (stderr, " bit%s ignored in 8-bit mode.\n",
-                (cb_is_one (& rem_bits) ? "" : "s")
+              fprintf (stderr, " bit%s ignored in 8-bit mode.%s",
+                (cb_is_one (& rem_bits) ? "" : "s"), CRC_EOL
               )
             );
 
@@ -2530,7 +2581,8 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
               );
               out_err_check_int (
                 fprintf (stderr,
-                  "Result calculated only up to the last full character.\n"
+                  "Result calculated only up to the last full character.%s",
+                    CRC_EOL
                 )
               );
             }
@@ -2569,14 +2621,16 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
         );
         cb_printf (stderr, lim_bits);
         out_err_check_int (
-          fprintf (stderr, " requested.\n")
+          fprintf (stderr, " requested.%s",
+            CRC_EOL
+          )
         );
         out_err_check_int (
           fprintf (stderr, "         ")
         );
         out_err_check_int (
-          fprintf (stderr, "Use --pad to zero-fill the remaining bit%s.\n",
-            (cb_is_one (& rem_bits) ? "" : "s")
+          fprintf (stderr, "Use --pad to zero-fill the remaining bit%s.%s",
+            (cb_is_one (& rem_bits) ? "" : "s"), CRC_EOL
           )
         );
       }
@@ -3118,19 +3172,21 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
       if (-2L == exact) {
         if (0 == g_lrbc_warned) {
           out_err_check_int (
-            fprintf (stderr,
-              "WARNING: --lrbc requires CP/M 3.0 or later; ")
+            fprintf (stderr, "WARNING: --lrbc requires CP/M 3.0 or later; ")
           );
           out_err_check_int (
-            fprintf (stderr, "processing all records.\n")
+            fprintf (stderr, "processing all records.%s",
+              CRC_EOL
+            )
           );
           g_lrbc_warned = 1;
         }
       } else
         out_err_check_int (
           fprintf (stderr,
-            "WARNING: Could not read LRBC for %s; processing all records.\n",
-            filename)
+            "WARNING: Could not read LRBC for %s; processing all records.%s",
+              filename, CRC_EOL
+          )
         );
     }
   }
@@ -3206,7 +3262,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
       )
     );
     out_err_check_int (
-      fprintf (stderr, "assuming %d-bit characters.\n", cb)
+      fprintf (stderr, "assuming %d-bit characters.%s",
+        cb, CRC_EOL
+      )
     );
   }
 
@@ -3224,8 +3282,8 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
       const int cmp = cb_cmp (& processed_bits, & expected_bits);
 
       out_err_check_int (
-        fprintf (stderr, "ERROR: %s: bit count discrepancy detected.\n",
-          filename
+        fprintf (stderr, "ERROR: %s: bit count discrepancy detected.%s",
+          filename, CRC_EOL
         )
       );
       out_err_check_int (
@@ -3237,7 +3295,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
       );
       cb_printf (stderr, & processed_bits);
       out_err_check_int (
-        fprintf (stderr, " bits.\n")
+        fprintf (stderr, " bits.%s",
+          CRC_EOL
+        )
       );
 
       if (1 == cmp) {
@@ -3247,7 +3307,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
         );
         cb_printf (stderr, & processed_bits);
         out_err_check_int (
-          fprintf (stderr, " bits.\n")
+          fprintf (stderr, " bits.%s",
+            CRC_EOL
+          )
         );
       } else {
         cb_sub_counter (& expected_bits, & processed_bits);
@@ -3256,7 +3318,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
         );
         cb_printf (stderr, & expected_bits);
         out_err_check_int (
-          fprintf (stderr, " bits.\n")
+          fprintf (stderr, " bits.%s",
+            CRC_EOL
+          )
         );
       }
 
@@ -3277,7 +3341,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   buf [8] = '\0';
 
   out_err_check_int (
-    fprintf (stdout, "%s\t\tCRC=%s", filename, buf)
+    fprintf (stdout, "%s\t\tCRC=%s",
+      filename, buf
+    )
   );
 
   if (0 != g_verbose || 0 != auto_v ||
@@ -3313,7 +3379,9 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   }
 
   out_err_check_int (
-    fprintf (stdout, "\n")
+    fprintf (stdout, "%s",
+      CRC_EOL
+    )
   );
 }
 
@@ -3331,82 +3399,101 @@ usage (progname, cb)
 #endif
 {
   out_err_check_int (
-    fprintf (stderr,
-      "Usage: %s [option(s)...] <file> [file(s)...]\n", progname
+    fprintf (stderr, "Usage: %s [option(s)...] <file> [file(s)...]%s",
+      progname, CRC_EOL
     )
   );
   out_err_check_int (
-    fprintf (stderr, "Options:\n")
+    fprintf (stderr, "Options:%s",
+      CRC_EOL
+    )
   );
   out_err_check_int (
-    fprintf (stderr, "  --limit=N        Stops processing after N bits\n")
+    fprintf (stderr, "  --limit=N        Stops processing after N bits%s",
+      CRC_EOL
+    )
   );
 #ifdef CRC_CPM
   out_err_check_int (
     fprintf (stderr,
-      "  --lrbc           Limits to the CP/M Last Record Byte Count\n"
+      "  --lrbc           Limits to the CP/M Last Record Byte Count%s",
+        CRC_EOL
     )
   );
   out_err_check_int (
     fprintf (stderr,
-      "  --lrbc=isx       Use the ISX LRBC convention (unused bytes)\n"
+      "  --lrbc=isx       Use the ISX LRBC convention (unused bytes)%s",
+        CRC_EOL
     )
   );
 #endif
   out_err_check_int (
     fprintf (stderr,
-      "  --bits=N         Reads as N bits per storage character\n"
+      "  --bits=N         Reads as N bits per storage character%s",
+        CRC_EOL
     )
   );
   out_err_check_int (
     fprintf (stderr,
-      "  --bits=auto      Automatically determines significant bits\n"
+      "  --bits=auto      Automatically determines significant bits%s",
+        CRC_EOL
     )
   );
   out_err_check_int (
-    fprintf (stderr, "  --pad            Pads trailing bits with zeros\n")
-  );
-  out_err_check_int (
-    fprintf (stderr,
-      "  --pad=auto       Automatically pads bits when necessary\n"
-    )
-  );
-  out_err_check_int (
-    fprintf (stderr,
-      "  --auto           Enables '--bits=auto --pad=auto --verbose'\n"
+    fprintf (stderr, "  --pad            Pads trailing bits with zeros%s",
+      CRC_EOL
     )
   );
   out_err_check_int (
     fprintf (stderr,
-      "  --verbose, -v    Verbose mode (shows processing details)\n"
+      "  --pad=auto       Automatically pads bits when necessary%s",
+        CRC_EOL
     )
   );
   out_err_check_int (
-    fprintf (stderr, "  --help, -h       Shows this help and usage text\n")
+    fprintf (stderr,
+      "  --auto           Enables '--bits=auto --pad=auto --verbose'%s",
+        CRC_EOL
+    )
+  );
+  out_err_check_int (
+    fprintf (stderr,
+      "  --verbose, -v    Verbose mode (shows processing details)%s",
+        CRC_EOL
+    )
+  );
+  out_err_check_int (
+    fprintf (stderr, "  --help, -h       Shows this help and usage text%s",
+      CRC_EOL
+    )
   );
 
 #ifdef CRC_CPM
   out_err_check_int (
-    fprintf (stderr,
-      "\nNOTE: On CP/M 3 or later (CP/M-Plus)")
+    fprintf (stderr, "%sNOTE: On CP/M 3 or later (CP/M-Plus)",
+      CRC_EOL
+    )
   );
   out_err_check_int (
-    fprintf (stderr,
-      ", '--auto' also enables '--lrbc'.\n")
+    fprintf (stderr, ", '--auto' also enables '--lrbc'.%s",
+      CRC_EOL
+    )
   );
 #endif
 
   if (8 != cb)
     out_err_check_int (
       fprintf (stderr,
-        "\nNOTE: This system has a character size of %d-bits.\n", cb
+        "%sNOTE: This system has a character size of %d-bits.%s",
+          CRC_EOL, cb, CRC_EOL
       )
     );
 
   if (8 < cb)
     out_err_check_int (
       fprintf (stderr,
-        "Use '--bits=8' to process 8-bit input data on this system.\n"
+        "Use '--bits=8' to process 8-bit input data on this system.%s",
+          CRC_EOL
       )
     );
 }
@@ -3472,7 +3559,8 @@ main (argc, argv)
   if (16 > uib) {
     out_err_check_int (
       fprintf (stderr,
-        "FATAL: Non-conforming %d-bit unsigned int (must be >= 16).\n", uib
+        "FATAL: Non-conforming %d-bit unsigned int (must be >= 16).%s",
+          uib, CRC_EOL
       )
     );
 
@@ -3482,7 +3570,8 @@ main (argc, argv)
   if (32 > ub) {
     out_err_check_int (
       fprintf (stderr,
-        "FATAL: Non-conforming %d-bit crc_t type (must be >= 32).\n", ub
+        "FATAL: Non-conforming %d-bit crc_t type (must be >= 32).%s",
+          ub, CRC_EOL
       )
     );
 
@@ -3498,7 +3587,8 @@ main (argc, argv)
   if (v == (v >> 1)) { /* //-V547 */
     out_err_check_int (
       fprintf (stderr,
-        "FATAL: Broken compiler: logical right-shift is not logical.\n"
+        "FATAL: Broken compiler: logical right-shift is not logical.%s",
+          CRC_EOL
       )
     );
 
@@ -3514,7 +3604,8 @@ main (argc, argv)
   if ((8 > cb) || (32 < cb)) {
     out_err_check_int (
       fprintf (stderr,
-        "FATAL: Unsupported %d-bit character size (must be 8-32).\n", cb
+        "FATAL: Unsupported %d-bit character size (must be 8-32).%s",
+          cb, CRC_EOL
       )
     );
 
@@ -3580,7 +3671,9 @@ bits_error:
           fprintf (stderr, "FATAL: --bits must be a positive integer ")
         );
         out_err_check_int (
-          fprintf (stderr, "between 1 and %d (or 'auto').\n", ub - 8)
+          fprintf (stderr, "between 1 and %d (or 'auto').%s",
+            (ub - 8), CRC_EOL
+          )
         );
 
         return EXIT_FAILURE;
@@ -3622,7 +3715,9 @@ bits_error:
     if (0 == stop && 0 == xstrncasecmp (argv [j], "--limit=", 8)) {
       if (0 == cb_parse (& lim_bits, argv [j] + 8)) {
         out_err_check_int (
-          fprintf (stderr, "FATAL: --limit must be a positive integer.\n")
+          fprintf (stderr, "FATAL: --limit must be a positive integer.%s",
+            CRC_EOL
+          )
         );
 
         return EXIT_FAILURE;
@@ -3630,7 +3725,9 @@ bits_error:
 
       if (0 != cb_is_zero (& lim_bits)) {
         out_err_check_int (
-          fprintf (stderr, "FATAL: --limit must be greater than zero.\n")
+          fprintf (stderr, "FATAL: --limit must be greater than zero.%s",
+            CRC_EOL
+          )
         );
 
         return EXIT_FAILURE;
@@ -3654,7 +3751,9 @@ bits_error:
       }
 
       out_err_check_int (
-        fprintf (stderr, "FATAL: --lrbc takes no value, or '=isx'.\n")
+        fprintf (stderr, "FATAL: --lrbc takes no value, or '=isx'.%s",
+          CRC_EOL
+        )
       );
 
       return EXIT_FAILURE;
@@ -3663,7 +3762,9 @@ bits_error:
 
     if (0 == stop && '-' == argv [j] [0]) {
       out_err_check_int (
-        fprintf (stderr, "FATAL: Unknown option: %s.\n", argv [j])
+        fprintf (stderr, "FATAL: Unknown option: %s.%s",
+          argv [j], CRC_EOL
+        )
       );
       usage (progname, cb);
 
@@ -3675,7 +3776,9 @@ bits_error:
 
   if (0 == found) {
     out_err_check_int (
-      fprintf (stderr, "FATAL: No filename provided.\n")
+      fprintf (stderr, "FATAL: No filename provided.%s",
+        CRC_EOL
+      )
     );
     usage (progname, cb);
 
@@ -3690,8 +3793,8 @@ bits_error:
     );
     out_err_check_int (
       fprintf (stderr,
-        "Specified --bits=%d is greater than host %d-bit character size.\n",
-          use_cb, cb
+        "Specified --bits=%d is greater than host %d-bit character size.%s",
+          use_cb, cb, CRC_EOL
       )
     );
     out_err_check_int (
@@ -3699,8 +3802,8 @@ bits_error:
     );
     out_err_check_int (
       fprintf (stderr,
-        "Each %d-bit character read will be zero-filled to reach %d bits.\n",
-          cb, use_cb
+        "Each %d-bit character read will be zero-filled to reach %d bits.%s",
+          cb, use_cb, CRC_EOL
       )
     );
   }
@@ -3709,8 +3812,8 @@ bits_error:
   if ((1 > use_cb) || ((ub - 8) < use_cb)) { /* //-V560 */
     out_err_check_int (
       fprintf (stderr,
-        "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.\n",
-          use_cb, ub
+        "FATAL: Unsupported %d-bit processing with %d-bit crc_t type.%s",
+          use_cb, ub, CRC_EOL
       )
     );
 
@@ -3770,7 +3873,9 @@ bits_error:
 
       if (0 == match_found)
         out_err_check_int (
-          fprintf (stderr, "WARNING: No wildcard match for %s\n", filename)
+          fprintf (stderr, "WARNING: No wildcard match for %s.%s",
+            filename, CRC_EOL
+          )
         );
     } else
 # endif
@@ -3793,7 +3898,9 @@ bits_error:
 # ifdef __CPM__
   if (0 == processed) {
     out_err_check_int (
-      fprintf (stderr, "ERROR: No files processed.\n")
+      fprintf (stderr, "ERROR: No files processed.%s",
+        CRC_EOL
+      )
     );
     g_anyerr = 1;
   }
@@ -3801,10 +3908,12 @@ bits_error:
 #endif
 
   if (0 != g_out_err) {
-    (void)fprintf (stderr, "\nWARNING: %ld output operation%s failed; ",
-      g_out_err, (1 == g_out_err ? "" : "s")
+    (void)fprintf (stderr, "%sWARNING: %ld output operation%s failed; ",
+      CRC_EOL, g_out_err, (1 == g_out_err ? "" : "s")
     );
-    (void)fprintf (stderr, "displayed results may not be reliable!\n");
+    (void)fprintf (stderr, "displayed results may not be reliable!%s",
+      CRC_EOL
+    );
 
     return EXIT_FAILURE;
   }
