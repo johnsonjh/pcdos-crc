@@ -46,7 +46,7 @@ pages:
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p $HOME/.local/venvs
     - python3 -m venv $HOME/.local/venvs/vamos
-    - $HOME/.local/venvs/vamos/bin/pip install --upgrade pip
+    - $HOME/.local/venvs/vamos/bin/pip install --upgrade pip || true
     - $HOME/.local/venvs/vamos/bin/pip install --upgrade amitools[vamos]
     - mkdir -p $HOME/.local/bin
     - printf '%s\n' '#!/bin/sh' 'exec "$HOME/.local/venvs/vamos/bin/vamos" "$@"' > "$HOME/.local/bin/vamos"
@@ -112,14 +112,6 @@ pages:
       # End of Microsoft C 6.00A build ...
       echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
     - |
-      # Start of Aztec C68K/Amiga 5.2a build ...
-      echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
-    - mkdir -p public/Aztec_C68K_Amiga_5.2a
-    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && vamos $VAMOS_FLAGS -- ./crc --auto crc )
-    - |
-      # End of Aztec C68K/Amiga 5.2a build ...
-      echo -e "section_end:`date +%s`:C68Amiga52a_section\r\e[0K" || true
-    - |
       # Start of Microsoft C 8.00c build ...
       echo -e "section_start:`date +%s`:MSC800c_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c build ...\033[0m" || true
     - mkdir -p public/MSC800c
@@ -153,6 +145,22 @@ pages:
     - |
       # End of Microsoft C 8.00c build ...
       echo -e "section_end:`date +%s`:MSC800c_section\r\e[0K" || true
+    - |
+      # Start of Aztec C68K/Amiga 5.2a build ...
+      echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
+    - mkdir -p public/Aztec_C68K_Amiga_5.2a
+    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && vamos $VAMOS_FLAGS -- ./crc --auto crc )
+    - |
+      # End of Aztec C68K/Amiga 5.2a build ...
+      echo -e "section_end:`date +%s`:C68Amiga52a_section\r\e[0K" || true
+    - |
+      # Start of Aztec C68K/ROM CP/M-68K 3.6b build ...
+      echo -e "section_start:`date +%s`:C68CPM36b_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/ROM CP/M-68K 3.6b build ...\033[0m" || true
+    - mkdir -p public/Aztec_C68K_CPM68K_3.6b
+    - ( set -x; cd /tmp/old_c/Aztec_C68K_ROM_3.6b && cp -f $CI_PROJECT_DIR/bdos68k.a68 $CI_PROJECT_DIR/crc.c . && sed 's|const||g' crc.c > crc.tmp && mv -f crc.tmp crc.c && sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' crc.c > crc.tmp && mv -f crc.tmp crc.c && emu2 bin/as68.exe -o bdos.r bdos68k.a68 -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/c68.exe -o crc.r crc.c -DNOANSI -DNOSTDLIB -DUSE_CONST -D__CPM68K__ -D__AZTEC_C_36T__ -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/ln68.exe +C 8100 -t CPM68K/CPM.R BDOS.R CRC.R -lCPM68K/C68K -T -O CRC.68K -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && cp -f crc.68k $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b/CRC.68K && rm -f bdos* crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b && test -f ./CRC.68K )
+    - |
+      # End of Aztec C68K/ROM CP/M-68K 3.6b build ...
+      echo -e "section_end:`date +%s`:C68CPM36b_section\r\e[0K" || true
   artifacts:
     expire_in: 1 day
     paths:
