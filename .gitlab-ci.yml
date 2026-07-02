@@ -141,7 +141,7 @@ pages:
     - cp -f crc.com $CI_PROJECT_DIR/public/MSC800c
     - emu2 $CI_PROJECT_DIR/public/MSC800c/crc.com --auto crc.com crc.c
     - rm -f crc.*
-    - cd
+    - cd $CI_PROJECT_DIR
     - |
       # End of Microsoft C 8.00c build ...
       echo -e "section_end:`date +%s`:MSC800c_section\r\e[0K" || true
