@@ -30,6 +30,8 @@
     + [CP/M-80 notes](#cpm-80-notes)
   * [Building for CP/M-86](#building-for-cpm-86)
     + [CP/M-86 notes](#cpm-86-notes)
+  * [Building for CP/M-68K](#building-for-cpm-68k)
+    + [CP/M-68K notes](#cpm-68k-notes)
   * [Building for ELKS](#building-for-elks)
   * [Building for AmigaOS](#building-for-amigaos)
   * [Building for Atari ST](#building-for-atari-st)
