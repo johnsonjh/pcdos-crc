@@ -888,7 +888,9 @@ cb_printf (fp, c)
       );
     else
       out_err_check_int (
-        printf ("%c", ch)
+        printf ("%c",
+          ch
+        )
       );
   }
 }
