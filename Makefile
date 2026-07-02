@@ -46,7 +46,7 @@ lint: .lint.sh .common.sh
 scc: README.md
 	"$${MAKE:-$(MAKE)}" distclean
 	awk '/<!-- scc-start -->/ { \
-		print; system("scc --remap-all bdos68k.a68:Assembly \
+		print; system("scc --count-as a68:asm \
 			--exclude-file LICENSE,README.md \
 			--exclude-file log.pvs,.ref_results.log \
 			--exclude-file compile_commands.json \
