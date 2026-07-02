@@ -633,7 +633,9 @@ To build the program for CP/M‑68K we are using
 
   ```sh
   sed 's|const||g' crc.c > crc.tmp
-  mv -f crc.tmp crc.c
+  sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
+      -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
+    crc.tmp > crc.c
   as68 -o bdos.r bdos68k.a68
   c68 -o crc.r -DNOANSI -DNOSTDLIB -DUSE_CONST -D__CPM68K__ -D__AZTEC_C_36T__ crc.c
   ln68 +C 8100 -t cpm68k/cpm.r bdos.r crc.r -lcpm68k/c68k -T -O CRC.68K
