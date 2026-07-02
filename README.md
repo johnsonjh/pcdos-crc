@@ -75,16 +75,17 @@ The only current requirements are:
   * and optionally: `setbuf` and `fread`.
 
 It has been tested on various exotic and retro platforms including **Multics**
-([Multics C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
+([Multics&nbsp;C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
 **TOPS‑20** (KCC), **CP/M‑80** ([z88dk](https://z88dk.org/) with `sccz80` and
-`zsdcc`), **CP/M‑86** ([Aztec C](https://github.com/tsupplis/cpm86-crossdev)),
+`zsdcc`), **CP/M‑86** ([Aztec&nbsp;C](https://github.com/tsupplis/cpm86-crossdev)),
+**CP/M‑68K** ([Aztec&nbsp;C](https://gitlab.com/johnsonjh/old_c/-/tree/master/Aztec_C68K_ROM_3.6b)),
 **MS‑DOS** ([IA16‑GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
-Turbo C, Aztec C, Microsoft C, [DJGPP](https://www.delorie.com/djgpp/)),
+Turbo&nbsp;C, Aztec&nbsp;C, Microsoft&nbsp;C, [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
 [lcc‑win](https://lcc-win32.services.net/)), **ELKS** (IA16‑GCC), **Atari ST**
 (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)), **UNIX**, **AmigaOS**
-(Vbcc, Aztec C, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)), and
-systems supported by [SoftIntegration **Ch**](https://www.softintegration.com/),
+(Vbcc, Aztec&nbsp;C, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)), and
+systems supported by [SoftIntegration&nbsp;**Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
 
@@ -116,9 +117,9 @@ Options:
   --help, -h       Shows this help and usage text
 ```
 
-* The `--lrbc` options are available **only** on CP/M builds (CP/M-80 and
-  CP/M-86); see the [CP/M-80 notes](#cpm-80-notes).  On CP/M 3.0 or later,
-  `--auto` also enables `--lrbc`.
+* The `--lrbc` options are available **only** on CP/M builds (CP/M-80,
+  CP/M-86, CP/M-68K); see the [CP/M-80 notes](#cpm-80-notes).  On CP/M 3.0 or
+  later, `--auto` also enables `--lrbc`.
 
 * If multiple `--bits`, `--pad`, or `--limit` options are provided, only the
   last value is effective.
@@ -328,7 +329,7 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 
 * If you have a C preprocessor that **wonʼt** allow you to define away `const`
   even when the compiler **doesnʼt** support it, like some older versions of
-  Aztec C, you should remove `const` from the source code using a global
+  Aztec&nbsp;C, you should remove `const` from the source code using a global
   search and replace operation and (somewhat unintuitively) define `USE_CONST`
   when compiling.  The transformation is easily performed using POSIX `sed`:
 
@@ -586,10 +587,10 @@ this feature is only enabled when compiling for CP/M targets.
 ### Building for CP/M-86
 
 To build the program for CP/M‑86 we are using the most recent versions
-of the [Aztec C cross‑compiler](https://github.com/tsupplis/cpm86-crossdev)
+of the [Aztec&nbsp;C cross‑compiler](https://github.com/tsupplis/cpm86-crossdev)
 from [tsupplis](https://github.com/tsupplis).
 
-* To build a binary for CP/M‑86 using **cross‑Aztec C 4.2** (*recommended*):
+* To build a binary for CP/M‑86 using **cross‑Aztec&nbsp;C 4.2** (*recommended*):
 
   ```sh
   aztec42_cc "+FA" -DNOSTRING -D__AZTEC_C_42T__ crc.c
@@ -598,7 +599,7 @@ from [tsupplis](https://github.com/tsupplis).
   pcdev_cmdinfo crc.cmd
   ```
 
-* To build a binary for CP/M‑86 using **cross‑Aztec C 3.4**:
+* To build a binary for CP/M‑86 using **cross‑Aztec&nbsp;C 3.4**:
 
   ```sh
   sed 's|const||g' crc.c > crc_nc.c
@@ -612,12 +613,40 @@ from [tsupplis](https://github.com/tsupplis).
 
 CP/M‑86 builds do **not** support internal wildcard expansion at this time.
 
-Builds using Aztec C 4.2 will execute about 10% faster than Aztec C 3.4 builds.
+Builds using Aztec&nbsp;C 4.2 will execute about 10% faster than Aztec&nbsp;C
+3.4 builds.
 
 All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of the **LZPACK**
 executable compressor, also apply to CP/M‑86.  Instead of **LZPACK**, the
 [UPX](https://upx.github.io/) executable compressor, version **5.2.0** (or
 later) can be used to pack CP/M‑86 binaries.
+
+### Building for CP/M-68K
+
+To build the program for CP/M‑68K we are using
+[Aztec&nbsp;C68K/ROM 3.6b](https://gitlab.com/johnsonjh/old_c/-/tree/master/Aztec_C68K_ROM_3.6b)
+(which includes basic CP/M‑68K support by [David Lee](https://github.com/davidly/m68/tree/main/aztec68k)).
+
+* To build a binary for CP/M‑68K using **cross‑Aztec&nbsp;C68K/ROM 3.6b**:
+
+  ```sh
+  sed 's|const||g' crc.c > crc.tmp
+  sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
+      -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
+    crc.tmp > crc.c
+  as68 -o bdos.r bdos68k.a68
+  c68 -o crc.r -DNOANSI -DNOSTDLIB -DUSE_CONST -D__CPM68K__ -D__AZTEC_C_36T__ crc.c
+  ln68 +C 8100 -t cpm68k/cpm.r bdos.r crc.r -lcpm68k/c68k -T -O CRC.68K
+  ```
+
+#### CP/M-68K notes
+
+**NB**: CP/M‑68K is currently a work‑in‑progress!
+
+CP/M‑68K builds do **not** support internal wildcard expansion at this time.
+
+All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of executable
+compression, apply to CP/M‑68K builds.
 
 ### Building for ELKS
 
@@ -630,7 +659,7 @@ later) can be used to pack CP/M‑86 binaries.
 
 ### Building for AmigaOS
 
-* To build a binary for AmigaOS using **Aztec C68K/Amiga 5.2a**:
+* To build a binary for AmigaOS using **Aztec&nbsp;C68K/Amiga 5.2a**:
 
   ```sh
   cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -qv -mc -md -o crc.o crc.c
