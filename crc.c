@@ -51,7 +51,11 @@
 # ifdef __MSDOS__
 #  define CRC_NAME "CRC"
 # else
-#  define CRC_NAME "crc"
+#  ifdef __CPM68K__
+#   define CRC_NAME "CRC"
+#  else
+#   define CRC_NAME "crc"
+#  endif
 # endif
 #endif
 
@@ -3546,8 +3550,12 @@ main (argc, argv)
   const int uib = unsigned_int_bits ();
   const unsigned int batch_limit = safe_batch_limit ();
   const char * const progname =
+#ifdef __CPM68K__
+    CRC_NAME;
+#else
     (((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
       ? ('\0' == argv [0] [1] ? CRC_NAME : argv [0]) : CRC_NAME);
+#endif
 
   cb_zero (& lim_bits);
 
