@@ -25,6 +25,7 @@
 /crc_nc.c
 /crc_test
 /*.dsk
+/.envrc
 /*.exe
 /*.EXE
 /GPATH
