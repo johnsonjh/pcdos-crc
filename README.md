@@ -492,7 +492,7 @@ on how its stored) on the system.
   of [**z88dk**](https://z88dk.org/):
 
   ```sh
-  zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
+  zcc +cpm -compiler=sdcc -DNOSTRING -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build a binary for CP/M‑80 for **8080** systems, use a version
@@ -512,7 +512,7 @@ the current `z88dk`.
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-    zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
+    zcc +cpm -compiler=sdcc -DNOSTRING -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build for **8080** CP/M‑80:
