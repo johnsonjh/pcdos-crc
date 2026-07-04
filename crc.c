@@ -899,7 +899,9 @@ cb_printf (fp, c)
 
     if (NULL != fp)
       out_err_check_fputc (
-        fputc (ch, fp)
+        fputc (ch,
+          fp
+        )
       );
     else
       out_err_check_int (
