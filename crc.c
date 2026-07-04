@@ -2799,10 +2799,15 @@ cpm_file_size (fn, isx, chars)
   fcb [12] = (unsigned char)(last_ext & 0x1f);
   fcb [14] = (unsigned char)((last_ext >> 5) & 0x3f);
 
+  fcb [32] = 0xff;
+
   if (0xff == (bdos (15, BDOS_FCB (fcb)) & 0x00ff))
     return -1L;
 
-  lrbc = fcb [13] & 0xff;
+  lrbc = fcb [32] & 0xff;
+
+  fcb [32] = 0x00;
+
   (void)bdos (16, BDOS_FCB (fcb));
 
   total = records * 128L;
