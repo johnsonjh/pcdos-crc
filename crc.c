@@ -140,6 +140,7 @@ typedef unsigned long crc_t;
 #   ifdef ANSI_COMPILER
 #    undef ANSI_COMPILER
 #   endif
+#  else
 #   ifndef NOSTRERROR
 #    define NOSTRERROR
 #   endif
