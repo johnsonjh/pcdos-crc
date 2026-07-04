@@ -125,12 +125,23 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+#ifdef __AZTEC_C_42T__
+# ifndef NOSTRERROR
+#  define NOSTRERROR
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef __Z88DK
 # ifdef __CPM__
 #  include <unistd.h>
 #  ifndef __SDCC
 #   ifdef ANSI_COMPILER
 #    undef ANSI_COMPILER
+#   endif
+#   ifndef NOSTRERROR
+#    define NOSTRERROR
 #   endif
 #  endif
 #  ifdef USE_PSYSERROR
@@ -375,7 +386,7 @@ typedef unsigned long crc_t;
 #endif
 
 #ifdef ANSI_COMPILER
-# ifndef NOSTRING
+# ifndef NOSTRERROR
 #  include <string.h>
 # endif
 #else
@@ -1301,7 +1312,7 @@ error_msg (m, n, e)
       )
     );
 #ifdef ANSI_COMPILER
-# ifndef NOSTRING
+# ifndef NOSTRERROR
     out_err_check_int (
       fprintf (stderr, ": %s",
         trim_str (strerror (e))
