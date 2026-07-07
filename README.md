@@ -258,6 +258,7 @@ In this mode:
   * Additional testing builds compiled with
     [Microsoft C 6.00A](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
     [Turbo C++ 1.01](https://dps8m.gitlab.io/crc/TCPP101/crc.com),
+    [Turbo C 2.01](https://dps8m.gitlab.io/crc/TC201/crc.com),
     [Turbo C 1.5](https://dps8m.gitlab.io/crc/TC15/crc.com),
     [Turbo C 1.0](https://dps8m.gitlab.io/crc/TC10/crc.com), and
     [dev86](https://dps8m.gitlab.io/crc/dev86/crc.com) are also available.
@@ -744,7 +745,8 @@ compression, apply to CP/M‑68K builds.
   exe2bin crc.exe crc.com
   ```
 
-* To build a binary for MS‑DOS using **Turbo C++ 1.01** (1990):
+* To build a binary for MS‑DOS using **Turbo C 2.01** (1989) or
+  **Turbo C++ 1.01** (1990):
 
   ```sh
   tcc -G -O -Z -f- -mt -lt crc.c
