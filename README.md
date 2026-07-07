@@ -758,6 +758,8 @@ compression, apply to CP/M‑68K builds.
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
   ```
 
+#### MS-DOS notes
+
 The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
 [UPX](https://upx.github.io/) utilities can be used to compress the generated
 MS‑DOS executables, reducing their on‑disk size by approximately 60%, at the
