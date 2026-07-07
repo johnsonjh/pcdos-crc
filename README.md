@@ -36,6 +36,7 @@
   * [Building for AmigaOS](#building-for-amigaos)
   * [Building for Atari ST](#building-for-atari-st)
   * [Building for MS-DOS](#building-for-ms-dos)
+    + [MS-DOS notes](#ms-dos-notes)
 - [Security](#security)
 - [SAST and linters](#sast-and-linters)
 - [Code statistics](#code-statistics)
