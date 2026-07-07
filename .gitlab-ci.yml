@@ -90,7 +90,10 @@ pages:
       # Start of Turbo C 2.01 build ...
       echo -e "section_start:`date +%s`:TC201_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 2.01 build ...\033[0m" || true
     - mkdir -p public/TC201
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c )
+    - cp -f crc.c crc1.c
+    - unix2dos -f crc1.c
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc1.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc1.c crc.c )
+    - rm -f crc1.c
     - |
       # End of Turbo C 2.01 build ...
       echo -e "section_end:`date +%s`:TC201_section\r\e[0K" || true
