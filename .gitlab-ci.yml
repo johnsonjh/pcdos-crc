@@ -92,7 +92,7 @@ pages:
     - mkdir -p public/TC201
     - cp -f crc.c crc.c.bak
     - unix2dos -f crc.c
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
     - mv -f crc.c.bak crc.c
     - |
       # End of Turbo C 2.01 build ...
