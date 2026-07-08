@@ -87,12 +87,12 @@ It has been tested on various exotic and retro platforms including
 **CP/M‑86** ([Aztec&nbsp;C86](https://github.com/tsupplis/cpm86-crossdev)),
 **CP/M‑68K** ([Aztec&nbsp;C68K](https://gitlab.com/johnsonjh/old_c/-/tree/master/Aztec_C68K_ROM_3.6b)),
 **MS‑DOS** ([IA16‑GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
-Turbo&nbsp;C, Aztec&nbsp;C86, Microsoft&nbsp;C,
+Turbo&nbsp;C, Borland&nbsp;C++, Aztec&nbsp;C86, Microsoft&nbsp;C,
 [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
 [lcc‑win](https://lcc-win32.services.net/)),
 **ELKS** (IA16‑GCC),
-**Atari ST** (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)),
+**Atari&nbsp;ST** (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)),
 **AmigaOS** (Vbcc, Aztec&nbsp;C68K, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)),
 **UNIX**, and systems supported by [SoftIntegration&nbsp;**Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
@@ -708,13 +708,13 @@ compression, apply to CP/M‑68K builds.
 
 ### Building for Atari ST
 
-* To build a binary for Atari ST (TOS/MINT) using **Vbcc**:
+* To build a binary for Atari&nbsp;ST (TOS/MINT) using **Vbcc**:
 
   ```sh
   vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -o crc.ttp crc.c
   ```
 
-* To build a binary for Atari ST (TOS/MINT) using
+* To build a binary for Atari&nbsp;ST (TOS/MINT) using
   [**CrossMINT**](https://tho-otto.de/crossmint.php):
 
   ```sh
