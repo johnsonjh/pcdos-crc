@@ -80,19 +80,20 @@ The only current requirements are:
     ⑹ `feof`, ⑺ `clearerr`,
   * and optionally: `setbuf` and `fread`.
 
-It has been tested on various exotic and retro platforms including **Multics**
-([Multics&nbsp;C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
-**TOPS‑20** (KCC), **CP/M‑80** ([z88dk](https://z88dk.org/) with `sccz80` and
-`zsdcc`, [Ack](https://github.com/davidgiven/ack)), **CP/M‑86**
-([Aztec&nbsp;C86](https://github.com/tsupplis/cpm86-crossdev)), **CP/M‑68K**
-([Aztec&nbsp;C68K](https://gitlab.com/johnsonjh/old_c/-/tree/master/Aztec_C68K_ROM_3.6b)),
+It has been tested on various exotic and retro platforms including
+**Multics** ([Multics&nbsp;C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
+**TOPS‑20** (KCC),
+**CP/M‑80** ([z88dk](https://z88dk.org/), [Ack](https://github.com/davidgiven/ack)),
+**CP/M‑86** ([Aztec&nbsp;C86](https://github.com/tsupplis/cpm86-crossdev)),
+**CP/M‑68K** ([Aztec&nbsp;C68K](https://gitlab.com/johnsonjh/old_c/-/tree/master/Aztec_C68K_ROM_3.6b)),
 **MS‑DOS** ([IA16‑GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
 Turbo&nbsp;C, Aztec&nbsp;C86, Microsoft&nbsp;C,
-[DJGPP](https://www.delorie.com/djgpp/)), **Windows** (MSVC,
-[OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
-[lcc‑win](https://lcc-win32.services.net/)), **ELKS** (IA16‑GCC), **Atari ST**
-(Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)), **AmigaOS**
-(Vbcc, Aztec&nbsp;C68K, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)),
+[DJGPP](https://www.delorie.com/djgpp/)),
+**Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC), GCC, Clang,
+[lcc‑win](https://lcc-win32.services.net/)),
+**ELKS** (IA16‑GCC),
+**Atari ST** (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)),
+**AmigaOS** (Vbcc, Aztec&nbsp;C68K, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)),
 **UNIX**, and systems supported by [SoftIntegration&nbsp;**Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
