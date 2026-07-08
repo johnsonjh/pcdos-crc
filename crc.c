@@ -355,6 +355,22 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+#ifdef __ACK__
+# ifndef NO_SYS_STAT
+#  define NO_SYS_STAT
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef NO_SYS_STAT
+# ifdef HAVE_SYS_STAT
+#  undef HAVE_SYS_STAT
+# endif
+#endif
+
+/******************************************************************************/
+
 #include <stdio.h>
 
 #ifndef multics
@@ -2679,8 +2695,12 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
 #  include <cpm.h>
 #  define BDOS_FCB(p) ((int)(p))
 # else
-extern int bdos (); /* We provide our own for Aztec C68K/ROM for CP/M-68K */
-#  define BDOS_FCB(p) (p)
+extern int bdos (); /* We provide our own for Ack CP/M-80 and Aztec CP/M-68K */
+#  ifdef __ACK__
+#   define BDOS_FCB(p) ((int)(p))
+#  else
+#   define BDOS_FCB(p) (p)
+#  endif
 # endif
 
 /******************************************************************************/
