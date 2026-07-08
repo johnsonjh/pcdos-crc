@@ -157,7 +157,7 @@ pages:
       echo -e "section_end:`date +%s`:MSC800c_section\r\e[0K" || true
     - |
       # Start of Turbo C++ 3.00 build ...
-      echo -e "section_start:`date +%s`:TCPP3_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c build ...\033[0m" || true
+      echo -e "section_start:`date +%s`:TCPP3_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 3.00 build ...\033[0m" || true
     - mkdir -p public/TCPP3
     - cd /tmp/old_c/TCPP3
     - cp -f ../UTILS/REDIR.COM .
