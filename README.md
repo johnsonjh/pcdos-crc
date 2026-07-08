@@ -28,6 +28,8 @@
   * [Building for TOPS-20](#building-for-tops-20)
     + [TOPS-20 notes](#tops-20-notes)
   * [Building for CP/M-80](#building-for-cpm-80)
+      - [Building with `z88dk`](#building-with-z88dk)
+      - [Building with Ack](#building-with-ack)
     + [CP/M-80 notes](#cpm-80-notes)
   * [Building for CP/M-86](#building-for-cpm-86)
     + [CP/M-86 notes](#cpm-86-notes)
@@ -499,6 +501,8 @@ on how its stored) on the system.
 
 ### Building for CP/M-80
 
+##### Building with `z88dk`
+
 * To build a binary for CP/M‑80 for **Z80** systems, using a recent version
   of [**z88dk**](https://z88dk.org/):
 
@@ -532,6 +536,8 @@ the current `z88dk`.
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
     zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
+
+##### Building with Ack
 
 * To build for **8080** CP/M‑80 using
   [**Ack**](https://github.com/davidgiven/ack):
