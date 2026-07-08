@@ -156,6 +156,30 @@ pages:
       # End of Microsoft C 8.00c build ...
       echo -e "section_end:`date +%s`:MSC800c_section\r\e[0K" || true
     - |
+      # Start of Turbo C++ 3.00 build ...
+      echo -e "section_start:`date +%s`:TCPP3_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c build ...\033[0m" || true
+    - mkdir -p public/TCPP3
+    - cd /tmp/old_c/TCPP3
+    - cp -f ../UTILS/REDIR.COM .
+    - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
+    - cp -f $CI_PROJECT_DIR/crc.c .
+    - printf '%s\n' 'path=%path%;\bin' "set include=include" "set lib=lib" > build.bat
+    - printf '%s\n' "tcc -G -Z -f- -mt -lt crc.c" >> build.bat
+    - unix2dos build.bat 2> /dev/null
+    - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
+    - rm -f build.bat > /dev/null 2>&1 || true
+    - cat OUT.TXT
+    - rm -f OUT.TXT > /dev/null 2>&1 || true
+    - test -f CRC.COM
+    - mv -f CRC.COM crc.com && rm -f CRC.*
+    - cp -f crc.com $CI_PROJECT_DIR/public/TCPP3
+    - emu2 $CI_PROJECT_DIR/public/TCPP3/crc.com --auto crc.com crc.c
+    - rm -f crc.*
+    - cd $CI_PROJECT_DIR
+    - |
+      # End of Turbo C++ 3.00 build ...
+      echo -e "section_end:`date +%s`:TCPP3_section\r\e[0K" || true
+    - |
       # Start of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_Amiga_5.2a

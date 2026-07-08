@@ -258,6 +258,7 @@ In this mode:
   compiled with **Microsoft C++ 8.00c** for MS‑DOS.
   * Additional testing builds compiled with
     [Microsoft C 6.00A](https://dps8m.gitlab.io/crc/MSC600A/crc.com),
+    [Turbo C++ 3.00](https://dps8m.gitlab.io/crc/TCPP3/crc.com),
     [Turbo C++ 1.01](https://dps8m.gitlab.io/crc/TCPP101/crc.com),
     [Turbo C 2.01](https://dps8m.gitlab.io/crc/TC201/crc.com),
     [Turbo C 1.5](https://dps8m.gitlab.io/crc/TC15/crc.com),
@@ -751,6 +752,11 @@ compression, apply to CP/M‑68K builds.
 
   ```sh
   tcc -G -O -Z -f- -mt -lt crc.c
+  ```
+* To build a binary for MS‑DOS using **Turbo C++ 3.00** (1992):
+
+  ```sh
+  tcc -G -Z -f- -mt -lt crc.c
   ```
 
 * To build a binary for MS‑DOS using **DJGPP**:
