@@ -47,20 +47,6 @@
 
 /******************************************************************************/
 
-#ifndef CRC_NAME
-# ifdef __MSDOS__
-#  define CRC_NAME "CRC"
-# else
-#  ifdef __CPM68K__
-#   define CRC_NAME "CRC"
-#  else
-#   define CRC_NAME "crc"
-#  endif
-# endif
-#endif
-
-/******************************************************************************/
-
 #ifdef multics
 typedef unsigned int crc_t;
 #else
@@ -202,6 +188,20 @@ typedef unsigned long crc_t;
 # ifdef __AZTEC_C_36T__
 #  ifdef __CPM68K__
 #   define CRC_CPM
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifndef CRC_NAME
+# ifdef __MSDOS__
+#  define CRC_NAME "CRC"
+# else
+#  ifdef CRC_CPM
+#   define CRC_NAME "CRC"
+#  else
+#   define CRC_NAME "crc"
 #  endif
 # endif
 #endif
@@ -3589,7 +3589,7 @@ main (argc, argv)
   const int uib = unsigned_int_bits ();
   const unsigned int batch_limit = safe_batch_limit ();
   const char * const progname =
-#ifdef __CPM68K__
+#ifdef CRC_CPM
     CRC_NAME;
 #else
     (((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
