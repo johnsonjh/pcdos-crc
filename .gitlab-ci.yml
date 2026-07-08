@@ -216,7 +216,7 @@ pages:
       # Start of Aztec C86/DOS 5.2a build ...
       echo -e "section_start:`date +%s`:C86DOS52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C86/DOS 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C86_DOS_5.2a
-    - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cc.exe "+FA" crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/ln.exe -o crc.com crc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && emu2 crc.com --auto crc crc.c && rm -f crc.c )
+    - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cc.exe "+FA" crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/ln.exe -o crc.com crc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - |
       # End of Aztec C86/DOS 5.2a build ...
       echo -e "section_end:`date +%s`:C86DOS52a_section\r\e[0K" || true
