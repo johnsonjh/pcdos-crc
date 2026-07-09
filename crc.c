@@ -1263,6 +1263,22 @@ done:
 # ifndef CPM_WILDCARD
 #  define CPM_WILDCARD
 # endif
+# ifndef CPM_BDOS_WILDCARD
+#  define CPM_BDOS_WILDCARD
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __ACK__
+# ifdef CRC_CPM
+#  ifndef CPM_WILDCARD
+#   define CPM_WILDCARD
+#  endif
+#  ifndef CPM_BDOS_WILDCARD
+#   define CPM_BDOS_WILDCARD
+#  endif
+# endif
 #endif
 
 /******************************************************************************/
@@ -3041,7 +3057,7 @@ cpm_file_size (fn, isx, chars)
 
 /******************************************************************************/
 
-# ifdef HI_TECH_CPM
+# ifdef CPM_BDOS_WILDCARD
 
 /*
  * Build a CP/M FCB from a wildcard pattern.  Like cpm_setfcb() but expands
@@ -4237,7 +4253,7 @@ bits_error:
     } else
 # endif
 #endif
-#ifdef HI_TECH_CPM
+#ifdef CPM_BDOS_WILDCARD
     if (is_wildcard (filename)) {
       static unsigned char htc_dma [128];
       static unsigned char htc_fcb [36];
