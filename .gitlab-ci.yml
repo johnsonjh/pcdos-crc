@@ -55,6 +55,7 @@ pages:
     - mkdir -p /tmp/xdg
     - chmod 700 /tmp/xdg
     - export XDG_RUNTIME_DIR=/tmp/xdg
+    - env WINEDEBUG=-all wine wineboot --init > /dev/null 2>&1 || true
     - mkdir -p public
     - |
       # End of Setup ...
@@ -243,7 +244,7 @@ pages:
       # Start of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_start:`date +%s`:DMCPPDOS_section[collapsed=true]\r\e[0K\033[0;36mDigital Mars C/C++ DOS 8.57 build ...\033[0m" || true
     - mkdir -p public/Digital_Mars_C_8.57
-    - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c . && env WINEDEBUG=-all wine64 bin/dmc.exe -0 -o -mt crc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
+    - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c . && env WINEDEBUG=-all wine bin/dmc.exe -0 -o -mt crc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - |
       # End of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_end:`date +%s`:DMCPPDOS_section\r\e[0K" || true
