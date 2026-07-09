@@ -119,6 +119,44 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+#ifdef NDEBUG
+# ifdef DEBUG
+#  undef DEBUG
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __FreeBSD__
+# ifdef DEBUG
+#  if !(__FreeBSD_version < 1000011)
+const char * malloc_conf = "abort:true,confirm_conf:true,junk:true";
+#  else
+const char * malloc_conf = "JR";
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __NetBSD__
+# ifdef DEBUG
+const char * malloc_conf = "abort:true,junk:true";
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __OpenBSD__
+# ifdef DEBUG
+const char * const malloc_options = "CFGJRU";
+# else
+const char * const malloc_options = "j";
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef __Z88DK
 # ifdef __CPM__
 #  include <unistd.h>
