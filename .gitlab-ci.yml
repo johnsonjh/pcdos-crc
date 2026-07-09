@@ -248,6 +248,14 @@ pages:
     - |
       # End of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_end:`date +%s`:DMCPPDOS_section\r\e[0K" || true
+    - |
+      # Start of HI-TECH C Z80 CP/M 4.11 build ...
+      echo -e "section_start:`date +%s`:HTCZ80_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH C Z80 CP/M 4.11 build ...\033[0m" || true
+    - mkdir -p public/HI-TECH_4.11
+    - ( set -x; cd /tmp/old_c/HI-TECH_4.11 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|if HAS_INCLUDE.*$|if 0|' crc.c.bak > crc.c && emu2 zc.exe -CPM -V -O -Mcrc.map crc.c && cp -f crc.com $CI_PROJECT_DIR/public/HI-TECH_4.1 && rm -f crc.* && rm -f *.sym && rm -f *.map && cd $CI_PROJECT_DIR/public/HI-TECH_4.1 && ls -la crc.com )
+    - |
+      # End of Digital Mars C/C++ DOS 8.57 build ...
+      echo -e "section_end:`date +%s`:HTCZ80_section\r\e[0K" || true
   artifacts:
     expire_in: 1 day
     paths:
