@@ -157,6 +157,35 @@ const char * const malloc_options = "j";
 
 /******************************************************************************/
 
+#ifdef __ACK__
+# ifdef CRC_CPM
+#  ifndef MAX_CB_DIGITS
+#   define MAX_CB_DIGITS 9 /* ~119 MiB (CP/M-Plus 3.0 allows 32 MiB files) */
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef HI_TECH_C
+# ifdef CPM
+#  ifndef HI_TECH_CPM
+#   define HI_TECH_CPM
+#  endif
+#  ifdef ANSI_COMPILER
+#   undef ANSI_COMPILER
+#  endif
+#  ifndef NOANSI
+#   define NOANSI
+#  endif
+#  ifndef MAX_CB_DIGITS
+#   define MAX_CB_DIGITS 9 /* ~119 MiB (CP/M-Plus 3.0 allows 32 MiB files) */
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef __Z88DK
 # ifdef __CPM__
 #  include <unistd.h>
@@ -196,11 +225,13 @@ const char * const malloc_options = "j";
  * CP/M Last Record Byte Count (LRBC) support.
  *
  * The --lrbc and --lrbc=isx options and the direct BDOS calls they rely on
- * are compiled only for CP/M targets: CP/M-80 via z88dk, and CP/M-68K and
- * CP/M-86 via Aztec C (the build passes -D__AZTEC_C_42T__ for C86 4.2,
- * -D__AZTEC_C_34T__ for C86 3.4, and -D__AZTEC_C_36T__ -D__CPM68K__ for
- * C68K 3.6).  Define CRC_CPM on the command line to force it on elsewhere.
+ * are compiled only for CP/M targets: CP/M-80 via z88dk or HI-TECH C, and
+ * CP/M-68K and CP/M-86 via Aztec C (the build passes -D__AZTEC_C_42T__ for
+ * C86 4.2, -D__AZTEC_C_34T__ for C86 3.4, and -D__AZTEC_C_36T__ -D__CPM68K__
+ * for C68K 3.6).  Define CRC_CPM on the command line to force it on elsewhere.
  */
+
+/******************************************************************************/
 
 #ifndef CRC_CPM
 # ifdef __Z88DK
@@ -210,11 +241,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifndef CRC_CPM
 # ifdef __AZTEC_C_42T__
 #  define CRC_CPM
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifndef CRC_CPM
 # ifdef __AZTEC_C_34T__
@@ -222,9 +257,21 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifndef CRC_CPM
 # ifdef __AZTEC_C_36T__
 #  ifdef __CPM68K__
+#   define CRC_CPM
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifndef CRC_CPM
+# ifdef HI_TECH_C
+#  ifdef CPM
 #   define CRC_CPM
 #  endif
 # endif
@@ -291,11 +338,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef _POSIX_VERSION
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __unix
 # ifndef HAVE_SYS_STAT
@@ -303,11 +354,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __UNIX__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __unix__
 # ifndef HAVE_SYS_STAT
@@ -315,11 +370,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef unix
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __HAIKU__
 # ifndef HAVE_SYS_STAT
@@ -327,17 +386,23 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __WATCOMC__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __DJGPP__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __APPLE__
 # ifdef __MACH__
@@ -347,6 +412,8 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __NeXT__
 # ifdef __MACH__
 #  ifndef HAVE_SYS_STAT
@@ -355,11 +422,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef _AIX
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __ORANGEC__
 # ifndef HAVE_SYS_STAT
@@ -367,11 +438,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef _MSC_VER
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __DMC__
 # ifndef HAVE_SYS_STAT
@@ -379,11 +454,15 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __ZTC__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef __SC__
 # ifndef HAVE_SYS_STAT
@@ -391,17 +470,23 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __BORLANDC__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef __IMPORTC__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifdef _CH_
 # ifndef HAVE_SYS_STAT
@@ -429,6 +514,8 @@ const char * const malloc_options = "j";
 
 #include <stdio.h>
 
+/******************************************************************************/
+
 #ifndef multics
 # ifdef __BCC__
 #  ifdef __MSDOS__
@@ -449,14 +536,20 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+/******************************************************************************/
+
 #ifdef USE_ERRNO
-# include <errno.h>
+# ifndef HI_TECH_CPM /* HI-TECH has errno but no errno.h */
+#  include <errno.h>
+# endif
 #else
 # ifdef errno
 #  undef errno
 # endif
 # define errno 0
 #endif
+
+/******************************************************************************/
 
 #ifdef ANSI_COMPILER
 # ifndef NOSTRERROR
@@ -477,6 +570,8 @@ extern char * strerror ();
 # include <sys/stat.h>
 #endif
 
+/******************************************************************************/
+
 #ifdef multics
 # include <types.h>
 # include <stat.h>
@@ -484,6 +579,8 @@ extern char * strerror ();
 #  define HAVE_SYS_STAT
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifndef __BORLANDC__
 # ifdef __TURBOC__
@@ -493,6 +590,8 @@ extern char * strerror ();
 #  endif
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifndef S_ISDIR
 # ifndef S_IFMT
@@ -574,6 +673,8 @@ extern char * strerror ();
 #  endif
 # endif
 #endif
+
+/******************************************************************************/
 
 #ifndef CRC_EOL
 # ifdef CRC_EOL_CRLF
@@ -2014,8 +2115,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   if (expected_chars != expected_chars) { }
 #  else
 #   ifndef __SDCC
+#    ifndef HI_TECH_C
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (expected_chars)) { }
+#    endif
 #   else
   (void)expected_chars;
 #   endif
@@ -3177,8 +3280,10 @@ check_is_directory (filename)
   if (filename != filename) { }
 # else
 #  ifndef __SDCC
+#   ifndef HI_TECH_C
   /*LINTED E_FALSE_LOGICAL_EXPR*/
   if ((0) && (filename)) { }
+#   endif
 #  else
   (void)filename;
 #  endif
