@@ -83,7 +83,9 @@ The only current requirements are:
 It has been tested on various exotic and retro platforms including
 **Multics** ([Multics&nbsp;C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
 **TOPS‑20** (KCC),
-**CP/M‑80** ([z88dk](https://z88dk.org/), [Ack](https://github.com/davidgiven/ack)),
+**CP/M‑80** ([z88dk](https://z88dk.org/),
+[Ack](https://github.com/davidgiven/ack),
+[HI‑TECH&nbsp;C](https://gitlab.com/johnsonjh/old_c/-/tree/master/HI-TECH-Z80_4.11)),
 **CP/M‑86** ([Aztec&nbsp;C86](https://github.com/tsupplis/cpm86-crossdev)),
 **CP/M‑68K** ([Aztec&nbsp;C68K](https://gitlab.com/johnsonjh/old_c/-/tree/master/Aztec_C68K_ROM_3.6b)),
 **MS‑DOS** ([IA16‑GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
@@ -95,8 +97,10 @@ Digital&nbsp;Mars&nbsp;C/C++, GCC, Clang,
 [lcc‑win](https://lcc-win32.services.net/)),
 **ELKS** (IA16‑GCC),
 **Atari&nbsp;ST** (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)),
-**AmigaOS** (Vbcc, Aztec&nbsp;C68K, [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)),
-**UNIX**, and systems supported by [SoftIntegration&nbsp;**Ch**](https://www.softintegration.com/),
+**AmigaOS** (Vbcc, Aztec&nbsp;C68K,
+[Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)),
+**UNIX**, and systems supported
+by [SoftIntegration&nbsp;**Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
 
@@ -549,6 +553,26 @@ the current `z88dk`.
 
   ```sh
   ack -mcpm -O4 -DCRC_CPM -D__ACK__ bdosack.s crc.c -o crc.com
+  ```
+
+#### Building with HI-TECH C
+
+* To build for **Z80** CP/M‑80 using (MS‑DOS hosted)
+  [**HI‑TECH&nbsp;C 4.11**](https://gitlab.com/johnsonjh/old_c/-/tree/master/HI-TECH-Z80_4.11):
+
+  First, transform the source appropriately using POSIX `sed` or a similar
+  tool (adjusting the `#if HAS_INCLUDE(…)` lines to `#if 0`) to work around a
+  bug in the HI‑TECH&nbsp;C preprocessor:
+
+  ```sh
+  sed 's|if HAS_INCLUDE.*$|if 0|' crc.c | \
+    { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
+  ```
+
+  Then cross‑compile the source using `zc`:
+
+  ```sh
+  zc -CPM -O crc.c
   ```
 
 #### CP/M-80 notes
