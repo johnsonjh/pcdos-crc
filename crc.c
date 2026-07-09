@@ -1251,14 +1251,31 @@ done:
 
 #ifdef __Z88DK
 # ifdef __CPM__
+#  ifndef CPM_WILDCARD
+#   define CPM_WILDCARD
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef HI_TECH_CPM
+# ifndef CPM_WILDCARD
+#  define CPM_WILDCARD
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef CPM_WILDCARD
 static int
-#  ifdef ANSI_COMPILER
+# ifdef ANSI_COMPILER
 is_wildcard (
   const char * s)
-#  else
+# else
 is_wildcard (s)
   const char * s;
-#  endif
+# endif
 {
   int c;
 
@@ -1271,7 +1288,6 @@ is_wildcard (s)
 
   return 0;
 }
-# endif
 #endif
 
 /******************************************************************************/
@@ -3023,6 +3039,139 @@ cpm_file_size (fn, isx, chars)
   return exact;
 }
 
+/******************************************************************************/
+
+# ifdef HI_TECH_CPM
+
+/*
+ * Build a CP/M FCB from a wildcard pattern.  Like cpm_setfcb() but expands
+ * '*' into runs of '?' so BDOS Search First and Search Next match correctly.
+ */
+
+static void
+#  ifdef ANSI_COMPILER
+cpm_setfcb_wild (
+  unsigned char * const fcb,
+  const char * const fn)
+#  else
+cpm_setfcb_wild (fcb, fn)
+  unsigned char * const fcb;
+  const char * const fn;
+#  endif
+{
+  const char * p = fn;
+  int i, c;
+
+  for (i = 0; 36 > i; i++)
+    fcb [i] = 0;
+
+  for (i = 1; 11 >= i; i++)
+    fcb [i] = ' ';
+
+  if ('\0' != p [0] && ':' == p [1])
+    p += 2;
+
+  i = 1;
+
+  while ('\0' != * p && '.' != * p && 8 >= i) {
+    if ('*' == * p) {
+      while (8 >= i)
+        fcb [i++] = '?';
+
+      break;
+    }
+
+    c = (int)(unsigned char)* p++;
+
+    if ('a' <= c && 'z' >= c)
+      c -= 32;
+
+    fcb [i++] = (unsigned char)c;
+  }
+
+  while ('\0' != * p && '.' != * p)
+    p++;
+
+  if ('.' == * p)
+    p++;
+
+  i = 9;
+
+  while ('\0' != * p && 11 >= i) {
+    if ('*' == * p) {
+      while (11 >= i)
+        fcb [i++] = '?';
+
+      break;
+    }
+
+    c = (int)(unsigned char)* p++;
+
+    if ('a' <= c && 'z' >= c)
+      c -= 32;
+
+    fcb [i++] = (unsigned char)c;
+  }
+}
+
+/******************************************************************************/
+
+/*
+ * Convert a 32-byte CP/M directory entry into a NUL-terminated filename
+ * string (up to 12 characters: "FILENAME.EXT").
+ */
+
+static void
+#  ifdef ANSI_COMPILER
+cpm_dir_to_name (
+  char * const buf,
+  const unsigned char * const entry)
+#  else
+cpm_dir_to_name (buf, entry)
+  char * const buf;
+  const unsigned char * const entry;
+#  endif
+{
+  int i, j, last, c, has_ext;
+
+  j = 0;
+  last = 0;
+
+  for (i = 1; 8 >= i; i++) {
+    c = entry [i] & 0x7f;
+    buf [j++] = (char)c;
+
+    if (' ' != c)
+      last = j;
+  }
+
+  j = last;
+  has_ext = 0;
+
+  for (i = 9; 11 >= i; i++)
+    if (' ' != (entry [i] & 0x7f))
+      has_ext = 1;
+
+  if (0 != has_ext) {
+    buf [j++] = '.';
+    last = j;
+
+    for (i = 9; 11 >= i; i++) {
+      c = entry [i] & 0x7f;
+      buf [j++] = (char)c;
+
+      if (' ' != c)
+        last = j;
+    }
+
+    j = last;
+  }
+
+  buf [j] = '\0';
+}
+
+# endif
+
 #endif
 
 /******************************************************************************/
@@ -3736,10 +3885,8 @@ main (argc, argv)
   int opt_lrbc = 0;
   int opt_lrbc_isx = 0;
 #endif
-#ifdef __Z88DK
-# ifdef __CPM__
+#ifdef CPM_WILDCARD
   int processed = 0;
-# endif
 #endif
   counter_t lim_bits;
   const char * filename = (char *)0;
@@ -4090,22 +4237,57 @@ bits_error:
     } else
 # endif
 #endif
+#ifdef HI_TECH_CPM
+    if (is_wildcard (filename)) {
+      static unsigned char htc_dma [128];
+      static unsigned char htc_fcb [36];
+      static char htc_names [64] [13];
+      int htc_cnt, htc_r, htc_i;
+      int match_found = 0;
+
+      cpm_setfcb_wild (htc_fcb, filename);
+      (void)bdos (26, BDOS_FCB (htc_dma));
+      htc_cnt = 0;
+      htc_r = bdos (17, BDOS_FCB (htc_fcb)) & 0xff;
+
+      while (0xff != htc_r && 64 > htc_cnt) {
+        cpm_dir_to_name (htc_names [htc_cnt],
+          & htc_dma [htc_r * 32]);
+        htc_cnt++;
+        htc_r = bdos (18, BDOS_FCB (htc_fcb)) & 0xff;
+      }
+
+      for (htc_i = 0; htc_cnt > htc_i; htc_i++) {
+        match_found = 1;
+        process_file (htc_names [htc_i],
+          crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
+          batch_limit);
+
+        if (0 == g_fileerr)
+          processed++;
+      }
+
+      if (0 == match_found)
+        out_err_check_int (
+          fprintf (stderr, "WARNING: No wildcard match for %s.%s",
+            filename, CRC_EOL
+          )
+        );
+    } else
+#endif
     {
       process_file (filename,
         crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
         batch_limit);
 
-#ifdef __Z88DK
-# ifdef __CPM__
+#ifdef CPM_WILDCARD
       if (0 == g_fileerr)
         processed++;
-# endif
 #endif
     }
   }
 
-#ifdef __Z88DK
-# ifdef __CPM__
+#ifdef CPM_WILDCARD
   if (0 == processed) {
     out_err_check_int (
       fprintf (stderr, "ERROR: No files processed.%s",
@@ -4114,7 +4296,6 @@ bits_error:
     );
     g_anyerr = 1;
   }
-# endif
 #endif
 
   if (0 != g_out_err) {

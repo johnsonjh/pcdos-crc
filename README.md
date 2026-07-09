@@ -30,6 +30,7 @@
   * [Building for CP/M-80](#building-for-cpm-80)
     + [Building with `z88dk`](#building-with-z88dk)
     + [Building with Ack](#building-with-ack)
+    + [Building with HI-TECH C Z80](#building-with-hi-tech-c-z80)
     + [CP/M-80 notes](#cpm-80-notes)
   * [Building for CP/M-86](#building-for-cpm-86)
     + [CP/M-86 notes](#cpm-86-notes)
@@ -265,9 +266,10 @@ In this mode:
 
 ## Binary builds
 
-* [**MS‑DOS**](https://dps8m.gitlab.io/crc/MSC800c/crc.com)
-* [**CP/M‑68K**](https://dps8m.gitlab.io/crc/Aztec_C68K_CPM68K_3.6b/CRC.68K)
-* [**AmigaOS**](https://dps8m.gitlab.io/crc/Aztec_C68K_Amiga_5.2a/crc)
+* [**MS‑DOS**](https://dps8m.gitlab.io/crc/MSC800c/crc.com) (Microsoft C 8.00c)
+* [**CP/M‑68K**](https://dps8m.gitlab.io/crc/Aztec_C68K_CPM68K_3.6b/CRC.68K) (Aztec C68K/ROM 3.6b)
+* [**AmigaOS**](https://dps8m.gitlab.io/crc/Aztec_C68K_Amiga_5.2a/crc) (Aztec C68K/Amiga 5.2a)
+* [**CP/M‑80**](https://dps8m.gitlab.io/crc/HI-TECH-Z80_4.11/crc.com) (HI-TECH C Z80 4.11)
 
 ### Extra builds
 
@@ -555,10 +557,10 @@ the current `z88dk`.
   ack -mcpm -O4 -DCRC_CPM -D__ACK__ bdosack.s crc.c -o crc.com
   ```
 
-#### Building with HI-TECH C
+#### Building with HI-TECH C Z80
 
 * To build for **Z80** CP/M‑80 using (MS‑DOS hosted)
-  [**HI‑TECH&nbsp;C 4.11**](https://gitlab.com/johnsonjh/old_c/-/tree/master/HI-TECH-Z80_4.11):
+  [**HI‑TECH&nbsp;C Z80 4.11**](https://gitlab.com/johnsonjh/old_c/-/tree/master/HI-TECH-Z80_4.11):
 
   First, transform the source appropriately using POSIX `sed` or a similar
   tool (adjusting the `#if HAS_INCLUDE(…)` lines to `#if 0`) to work around a
@@ -577,7 +579,8 @@ the current `z88dk`.
 
 #### CP/M-80 notes
 
-CP/M‑80 builds support internal wildcard expansion (*i.e.*, `*` and `?`).
+CP/M‑80 builds using `z88dk` and HI‑TECH&nbsp;C support internal wildcard
+expansion (*i.e.*, `*` and `?`).
 
 Builds targeting the Z80 using **SDCC** will execute about twice as fast as
 the 8080 builds.
