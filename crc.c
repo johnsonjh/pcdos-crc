@@ -373,6 +373,24 @@ const char * const malloc_options = "j";
 # endif
 #endif
 
+#ifdef __DMC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __ZTC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+#ifdef __SC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
 #ifdef __BORLANDC__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
