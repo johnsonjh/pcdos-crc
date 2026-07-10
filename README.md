@@ -130,8 +130,8 @@ Options:
   --help, -h       Shows this help and usage text
 ```
 
-* The `--lrbc` options are available **only** on CP/M builds (CP/M-80,
-  CP/M-86, CP/M-68K); see the [CP/M-80 notes](#cpm-80-notes).  On CP/M 3.0 or
+* The `--lrbc` options are available **only** on CP/M builds (CP/M‑80,
+  CP/M‑86, CP/M‑68K); see the [CP/M‑80 notes](#cpm-80-notes).  On CP/M 3.0 or
   later, `--auto` also enables `--lrbc`.
 
 * If multiple `--bits`, `--pad`, or `--limit` options are provided, only the
@@ -231,7 +231,7 @@ When processing 8‑bit characters on a system with an 8‑bit native character
 size, the `--pad` option affects behavior in two ways:
 
 1. **Synthesizing data**: If the specified `--limit` exceeds the file size,
-   the program will synthesize zero-filled **full** 8‑bit characters to reach
+   the program will synthesize zero‑filled **full** 8‑bit characters to reach
    the limit.  If the `--limit` is not a multiple of 8, any trailing bits
    that cannot form a complete octet are **discarded**.
 
@@ -514,7 +514,7 @@ on how its stored) on the system.
 #### Building with `z88dk`
 
 * To build a binary for CP/M‑80 for **Z80** systems, using a version
-  of [**z88dk**](https://z88dk.org/) from **2026-07-10** or later (earlier
+  of [**z88dk**](https://z88dk.org/) from **2026‑07‑10** or later (earlier
   versions have a bug which causes the character count to be miscalculated
   when using `-SO3`):
 
@@ -560,15 +560,24 @@ the current `z88dk`.
 
 #### CP/M-80 notes
 
-CP/M‑80 builds using `z88dk`, Ack, and HI‑TECH&nbsp;C support internal
-wildcard expansion (*i.e.*, `*` and `?`).
+CP/M‑80 builds using `z88dk` and Ack support internal wildcard expansion
+(*i.e.*, `*` and `?`).  Other compilers may need some small adaptations.
 
-Builds targeting the Z80 using **SDCC** will execute about twice as fast as
-the 8080 builds.
+HI‑TECH C (4.11) currently miscompiles the algorithm, resulting in *incorrect*
+CRC calculations.  Use `z88dk` and/or Ack to build CP/M‑80 binaries until a
+workaround can be found.
 
-For **Z80** builds using **SDCC**, adding the `--max-allocs-per-node250000`
-compiler option will improve performance by \~6%, but increases compilation
-time from several seconds to many minutes.
+For **Z80** builds using the `z88dk` **SDCC** compiler, adding the
+`--max-allocs-per-node250000` option will improve performance by \~6%, but
+increases compilation time from several seconds to a few minutes.
+
+`z88dk` Z80 builds require \~**32K** TPA, `z88dk` 8080 builds require
+\~**35K**, Ack 8080 builds require \~**45K**.  HI‑TECH C builds (*currently
+non‑functional; see above*) require \~**42K**.
+
+Z80 builds using the `z88dk` compiler will execute about twice as fast as
+`z88dk` 8080 builds.  For 8080 builds, `z88dk` builds execute \~**20%** faster
+than Ack builds.
 
 The [**LZPACK**](https://github.com/johnsonjh/lzpack) utility can be used to
 transparently compress the generated CP/M executable, reducing its on‑disk
@@ -616,7 +625,7 @@ default; pass `--lrbc=isx` instead to select the DRI ISX (unused octets)
 interpretation.  When the LRBC indicates a full final record or when running
 under CP/M 2.x, which has no LRBC all records are processed as before.
 
-For convenience, `--auto` also enables `--lrbc` (DOS-PLUS interpretation) on
+For convenience, `--auto` also enables `--lrbc` (DOS‑PLUS interpretation) on
 CP/M 3.0 and later.  When `--lrbc` is requested explicitly on a host that
 predates CP/M 3.0, a warning is printed and all records are processed.  If
 both `--lrbc` and `--limit` are given, the smaller (most restrictive) of the
@@ -879,7 +888,7 @@ automatically via the [`.lint.sh`](.lint.sh) script):
 | [Oracle&nbsp;Developer&nbsp;Studio](https://www.oracle.com/application-development/developerstudio/)               | Performance, security, and thread analysis tools for C, C++, and FORTRAN |
 | [PurifyPlus](https://www.teamblue.unicomsi.com/products/purifyplus/)                                               | Run‑time analysis tools for application reliability and performance      |
 | [REUSE](https://reuse.software/)                                                                                   | Verifies compliance with the REUSE software licensing guidelines         |
-| [Semgrep](https://semgrep.dev/)                                                                                    | A fast, open-source, static analysis engine for many languages           |
+| [Semgrep](https://semgrep.dev/)                                                                                    | A fast, open‑source, static analysis engine for many languages           |
 | [ShellCheck](https://www.shellcheck.net/)                                                                          | A static analysis tool for Unix shell scripts                            |
 | [Smatch](https://repo.or.cz/w/smatch.git)                                                                          | Smatch (Source Matcher) is a static analysis tool for C code             |
 | [SoftIntegration Ch](https://www.softintegration.com/)                                                             | C/C++ interpreter and interactive platform for scientific computing      |
