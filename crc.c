@@ -167,6 +167,8 @@ const char * const malloc_options = "j";
 
 /******************************************************************************/
 
+/* NB: HI-TECH C builds **miscalculate** the CRC -- use z88dk or Ack instead! */
+
 #ifdef HI_TECH_C
 # ifdef CPM
 #  ifndef HI_TECH_CPM
