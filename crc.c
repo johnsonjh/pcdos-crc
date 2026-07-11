@@ -4073,7 +4073,20 @@ main (argc, argv)
 #ifdef CRC_CPM
     CRC_NAME;
 #else
-    (((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
+# ifdef CX1
+#  undef CX1
+# endif
+# ifdef CX0
+#  undef CX0
+# endif
+# ifdef __SIERRA__
+#  define CX1 0
+#  define CX0 0
+# else
+#  define CX1 (char *)0
+#  define CX0 (char **)0
+# endif
+    ((CX0 != argv && CX1 != argv [0] && '\0' != * argv [0])
       ? ('\0' == argv [0] [1] ? CRC_NAME : argv [0]) : CRC_NAME);
 #endif
 
