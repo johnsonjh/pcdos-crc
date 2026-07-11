@@ -42,7 +42,8 @@ pages:
     - apk upgrade --prune || true
     - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl pango py3-codespell python3-dev reuse seatd shellcheck shfmt wine wayland-libs-egl xwayland
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
-    - ( set -x; cd /tmp && ( git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git ) && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
+    - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
+    - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p $HOME/.local/venvs
     - python3 -m venv $HOME/.local/venvs/vamos
@@ -86,7 +87,7 @@ pages:
       # Start of CI C86PLUS 1.10 build ...
       echo -e "section_start:`date +%s`:C86PLUS_section[collapsed=true]\r\e[0K\033[0;36mCI C86PLUS 1.10 build ...\033[0m" || true
     - mkdir -p public/C86PLUS_1.10
-    - ( set -x; cd /tmp/old_c/C86PLUS_1.10 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|const||g' crc.c.bak > crc.c && env emu2 bin/cc.exe -c -AS -Za -G0 -Oa -Ox crc.c -- NO87=TRUE C86LIB=LIB C86INCLUDE=INCLUDE C86TMP=TMP C86FLAGS= C86CAROLE= PATH=bin && emu2 bin/carole.exe -Llib crc.obj lib/cwildsnd.obj -s2000 && cp -f crc.exe $CI_PROJECT_DIR/public/C86PLUS_1.10 && emu2 crc.exe --auto crc.exe crc.c crc.c.bak && rm -f crc.* )
+    - ( set -x; cd /tmp/old_c/C86PLUS_1.10 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|const||g' crc.c.bak > crc.c && env emu2 bin/cc.exe -c -AS -Za -G0 -Oa -Ox crc.c -- NO87=TRUE C86LIB=LIB C86INCLUDE=INCLUDE C86TMP=TMP C86FLAGS= C86CAROLE= PATH=bin && emu2 bin/carole.exe -Llib crc.obj lib/cwildsnd.obj -s2000 && cp -f crc.exe $CI_PROJECT_DIR/public/C86PLUS_1.10 && ls -la crc.exe && emu2 crc.exe --auto crc.exe crc.c crc.c.bak && rm -f crc.* )
     - |
       # End of CI C86PLUS 1.10 build ...
       echo -e "section_end:`date +%s`:C86PLUS_section\r\e[0K" || true
@@ -94,7 +95,7 @@ pages:
       # Start of Turbo C++ 1.01 build ...
       echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 build ...\033[0m" || true
     - mkdir -p public/TCPP101
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && mv -f crc.com public/TCPP101 && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && mv -f crc.com public/TCPP101 && ls -la public/TCPP101/crc.com && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
     - |
       # End of Turbo C++ 1.01 build ...
       echo -e "section_end:`date +%s`:TCPP101_section\r\e[0K" || true
@@ -104,7 +105,7 @@ pages:
     - mkdir -p public/TC201
     - cp -f crc.c crc.c.bak
     - unix2dos -f crc.c
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && ls -la public/TC201/crc.com && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
     - mv -f crc.c.bak crc.c
     - |
       # End of Turbo C 2.01 build ...
@@ -113,7 +114,7 @@ pages:
       # Start of Turbo C 1.5 build ...
       echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
     - mkdir -p public/TC15
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
     - |
       # End of Turbo C 1.5 build ...
       echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
@@ -121,7 +122,7 @@ pages:
       # Start of Turbo C 1.0 build ...
       echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
     - mkdir -p public/TC10
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
     - |
       # End of Turbo C 1.0 build ...
       echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
@@ -130,7 +131,7 @@ pages:
       echo -e "section_start:`date +%s`:MSC51_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 5.10 build ...\033[0m" || true
     - mkdir -p public/MSC51
     - true -- NOTE -- 'warning C4051 - data conversion' messages are expected for MSC51 /W3 builds!
-    - ( set -x; cd /tmp/old_c/MSC51 && cp -f $CI_PROJECT_DIR/crc.c . && emu2 cl.exe /W3 /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Fecrc.exe /Dconst= crc.c -- INCLUDE=include LIB=lib && cp -f crc.exe $CI_PROJECT_DIR/public/MSC51 && emu2 $CI_PROJECT_DIR/public/MSC51/crc.exe --auto crc.exe crc.c && rm -f crc.* )
+    - ( set -x; cd /tmp/old_c/MSC51 && cp -f $CI_PROJECT_DIR/crc.c . && emu2 cl.exe /W3 /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Fecrc.exe /Dconst= crc.c -- INCLUDE=include LIB=lib && cp -f crc.exe $CI_PROJECT_DIR/public/MSC51 && ls -la $CI_PROJECT_DIR/public/MSC51/crc.exe && emu2 $CI_PROJECT_DIR/public/MSC51/crc.exe --auto crc.exe crc.c && rm -f crc.* )
     - |
       # End of Microsoft C 5.10 build ...
       echo -e "section_end:`date +%s`:MSC51_section\r\e[0K" || true
@@ -139,7 +140,7 @@ pages:
       echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A build ...\033[0m" || true
     - mkdir -p public/MSC600A
     - true -- NOTE -- 'warning C4135 - conversion between different integral types' messages are expected for MSC600A /W4 builds!
-    - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
+    - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && ls -la $CI_PROJECT_DIR/public/MSC600A/crc.com && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
     - |
       # End of Microsoft C 6.00A build ...
       echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
@@ -170,6 +171,7 @@ pages:
     - test -f CRC.COM
     - mv -f CRC.COM crc.com && rm -f CRC.*
     - cp -f crc.com $CI_PROJECT_DIR/public/MSC800c
+    - ls -la $CI_PROJECT_DIR/public/MSC800c/crc.com
     - emu2 $CI_PROJECT_DIR/public/MSC800c/crc.com --auto crc.com crc.c
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
@@ -194,6 +196,7 @@ pages:
     - test -f CRC.COM
     - mv -f CRC.COM crc.com && rm -f CRC.*
     - cp -f crc.com $CI_PROJECT_DIR/public/TCPP3
+    - ls -la $CI_PROJECT_DIR/public/TCPP3/crc.com
     - emu2 $CI_PROJECT_DIR/public/TCPP3/crc.com --auto crc.com crc.c
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
@@ -218,6 +221,7 @@ pages:
     - test -f CRC.COM
     - mv -f CRC.COM crc.com && rm -f CRC.*
     - cp -f crc.com $CI_PROJECT_DIR/public/BCPP31
+    - ls -la $CI_PROJECT_DIR/public/BCPP31/crc.com
     - emu2 $CI_PROJECT_DIR/public/BCPP31/crc.com --auto crc.com crc.c
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
@@ -242,6 +246,7 @@ pages:
     - test -f CRC.EXE
     - mv -f CRC.EXE crc.exe && rm -f CRC.*
     - cp -f crc.exe $CI_PROJECT_DIR/public/Pacific_C_7.51
+    - ls -la $CI_PROJECT_DIR/public/Pacific_C_7.51/crc.exe
     - emu2 $CI_PROJECT_DIR/public/Pacific_C_7.51/crc.exe --auto crc.exe crc.c
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
@@ -252,7 +257,7 @@ pages:
       # Start of Aztec C86/DOS 5.2a build ...
       echo -e "section_start:`date +%s`:C86DOS52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C86/DOS 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C86_DOS_5.2a
-    - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cc.exe "+FA" crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/ln.exe -o crc.com crc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
+    - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cc.exe "+FA" crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/ln.exe -o crc.com crc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - |
       # End of Aztec C86/DOS 5.2a build ...
       echo -e "section_end:`date +%s`:C86DOS52a_section\r\e[0K" || true
@@ -260,7 +265,7 @@ pages:
       # Start of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_Amiga_5.2a
-    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && vamos $VAMOS_FLAGS -- ./crc --auto crc )
+    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && ls -la crc && vamos $VAMOS_FLAGS -- ./crc --auto crc )
     - |
       # End of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_end:`date +%s`:C68Amiga52a_section\r\e[0K" || true
@@ -268,7 +273,7 @@ pages:
       # Start of Aztec C68K/ROM CP/M-68K 3.6b build ...
       echo -e "section_start:`date +%s`:C68CPM36b_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/ROM CP/M-68K 3.6b build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_CPM68K_3.6b
-    - ( set -x; cd /tmp/old_c/Aztec_C68K_ROM_3.6b && cp -f $CI_PROJECT_DIR/bdos68k.a68 $CI_PROJECT_DIR/crc.c . && sed 's|const||g' crc.c > crc.tmp && mv -f crc.tmp crc.c && sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' crc.c > crc.tmp && mv -f crc.tmp crc.c && emu2 bin/as68.exe -o bdos.r bdos68k.a68 -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/c68.exe -o crc.r crc.c -DNOANSI -DNOSTDLIB -DUSE_CONST -D__CPM68K__ -D__AZTEC_C_36T__ -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/ln68.exe +C 8100 -t CPM68K/CPM.R BDOS.R CRC.R -lCPM68K/C68K -T -O CRC.68K -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && cp -f crc.68k $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b/CRC.68K && rm -f bdos* crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b && test -f ./CRC.68K )
+    - ( set -x; cd /tmp/old_c/Aztec_C68K_ROM_3.6b && cp -f $CI_PROJECT_DIR/bdos68k.a68 $CI_PROJECT_DIR/crc.c . && sed 's|const||g' crc.c > crc.tmp && mv -f crc.tmp crc.c && sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' crc.c > crc.tmp && mv -f crc.tmp crc.c && emu2 bin/as68.exe -o bdos.r bdos68k.a68 -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/c68.exe -o crc.r crc.c -DNOANSI -DNOSTDLIB -DUSE_CONST -D__CPM68K__ -D__AZTEC_C_36T__ -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/ln68.exe +C 8100 -t CPM68K/CPM.R BDOS.R CRC.R -lCPM68K/C68K -T -O CRC.68K -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && cp -f crc.68k $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b/CRC.68K && rm -f bdos* crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b && test -f CRC.68K && ls -la CRC.68K )
     - |
       # End of Aztec C68K/ROM CP/M-68K 3.6b build ...
       echo -e "section_end:`date +%s`:C68CPM36b_section\r\e[0K" || true
@@ -276,7 +281,7 @@ pages:
       # Start of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_start:`date +%s`:DMCPPDOS_section[collapsed=true]\r\e[0K\033[0;36mDigital Mars C/C++ DOS 8.57 build ...\033[0m" || true
     - mkdir -p public/Digital_Mars_C_8.57
-    - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c . && env WINEDEBUG=-all wine bin/dmc.exe -0 -o -mt crc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
+    - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c . && env WINEDEBUG=-all wine bin/dmc.exe -0 -o -mt crc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - |
       # End of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_end:`date +%s`:DMCPPDOS_section\r\e[0K" || true
@@ -284,9 +289,9 @@ pages:
       # Start of HI-TECH C Z80 CP/M 4.11 build ...
       echo -e "section_start:`date +%s`:HTCZ80_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH C Z80 CP/M 4.11 build ...\033[0m" || true
     - mkdir -p public/HI-TECH-Z80_4.11
-    - ( set -x; cd /tmp/old_c/HI-TECH-Z80_4.11 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|if HAS_INCLUDE.*$|if 0|' crc.c.bak > crc.c && emu2 zc.exe -CPM -V -O -Mcrc.map crc.c && cp -f crc.com $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && rm -f crc.* && rm -f *.sym && rm -f *.map && cd $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && ls -la crc.com )
+    - ( set -x; cd /tmp/old_c/HI-TECH-Z80_4.11 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|if HAS_INCLUDE.*$|if 0|' crc.c.bak > crc.c && emu2 zc.exe -CPM -V -O -Mcrc.map crc.c && cp -f crc.com $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && rm -f crc.* && rm -f *.sym && rm -f *.map && cd $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && ls -la crc.com && tnylpo crc.com --auto crc.com )
     - |
-      # End of End of HI-TECH C Z80 CP/M 4.11 build ...
+      # End of HI-TECH C Z80 CP/M 4.11 build ...
       echo -e "section_end:`date +%s`:HTCZ80_section\r\e[0K" || true
   artifacts:
     expire_in: 1 day
