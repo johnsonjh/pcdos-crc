@@ -27,7 +27,7 @@ before_script:
 
 pages:
   stage: deploy
-  image: alpine:edge
+  image: alpine:latest
   tags:
     - saas-linux-2xlarge-amd64
   rules:
