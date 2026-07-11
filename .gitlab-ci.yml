@@ -86,10 +86,7 @@ pages:
       # Start of CI C86PLUS 1.10 build ...
       echo -e "section_start:`date +%s`:C86PLUS_section[collapsed=true]\r\e[0K\033[0;36mCI C86PLUS 1.10 build ...\033[0m" || true
     - mkdir -p public/C86PLUS_1.10
-    - cp -f crc.c crc.c.bak
-    - sed 's|const||g' crc.c.bak > crc.c
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/C86PLUS_1.10/bin EMU2_DRIVE_C=/tmp/old_c/C86PLUS_1.10 EMU2_DRIVE_D=. emu2 /tmp/old_c/C86PLUS_1.10/bin/cc.exe -c -AS -Za -G0 -Oa -Ox crc.c -- NO87=TRUE C86LIB=LIB C86INCLUDE=INCLUDE C86TMP=TMP C86FLAGS= C86CAROLE= PATH=bin && emu2 bin/carole.exe -Llib crc.obj lib/cwildsnd.obj -s2000 && cp -f /tmp/old_c/C86PLUS_1.10/crc.exe . && rm -f /tmp/old_c/C86PLUS/crc.* && mv -f crc.exe public/C86PLUS_1.10 && emu2 public/C86PLUS_1.10/crc.exe --auto public/C86PLUS_1.10/crc.exe crc.c crc.c.bak )
-    - mv -f crc.c.bak crc.c
+    - ( set -x; cd /tmp/old_c/C86PLUS_1.10 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|const||g' crc.c.bak > crc.c && env emu2 bin/cc.exe -c -AS -Za -G0 -Oa -Ox crc.c -- NO87=TRUE C86LIB=LIB C86INCLUDE=INCLUDE C86TMP=TMP C86FLAGS= C86CAROLE= PATH=bin && emu2 bin/carole.exe -Llib crc.obj lib/cwildsnd.obj -s2000 && cp -f crc.exe $CI_PROJECT_DIR/public/C86PLUS_1.10 && emu2 crc.exe --auto crc.exe crc.c crc.c.bak && rm -f crc.* )
     - |
       # End of CI C86PLUS 1.10 build ...
       echo -e "section_end:`date +%s`:C86PLUS_section\r\e[0K" || true
