@@ -217,6 +217,30 @@ pages:
       # End of Borland C++ 3.1 build ...
       echo -e "section_end:`date +%s`:BCPP31_section\r\e[0K" || true
     - |
+      # Start of HI-TECH Pacific C 7.51 build ...
+      echo -e "section_start:`date +%s`:PACC751_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH Pacific C 7.51 build ...\033[0m" || true
+    - mkdir -p public/Pacific_C_7.51
+    - cd /tmp/old_c/Pacific_C_7.51
+    - cp -f ../UTILS/REDIR.COM .
+    - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
+    - cp -f $CI_PROJECT_DIR/crc.c .
+    - printf '%s\n' 'path=%path%;\bin' > build.bat
+    - printf '%s\n' "pacc -R -O crc.c" >> build.bat
+    - unix2dos build.bat 2> /dev/null
+    - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
+    - rm -f build.bat > /dev/null 2>&1 || true
+    - cat OUT.TXT
+    - rm -f OUT.TXT > /dev/null 2>&1 || true
+    - test -f CRC.COM
+    - mv -f CRC.COM crc.com && rm -f CRC.*
+    - cp -f crc.com $CI_PROJECT_DIR/public/Pacific_C_7.51
+    - emu2 $CI_PROJECT_DIR/public/Pacific_C_7.51/crc.com --auto crc.com crc.c
+    - rm -f crc.*
+    - cd $CI_PROJECT_DIR
+    - |
+      # End of HI-TECH Pacific C 7.51 build ...
+      echo -e "section_end:`date +%s`:PACC751_section\r\e[0K" || true
+    - |
       # Start of Aztec C86/DOS 5.2a build ...
       echo -e "section_start:`date +%s`:C86DOS52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C86/DOS 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C86_DOS_5.2a
