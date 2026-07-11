@@ -279,7 +279,7 @@ In this mode:
 |                                                         Platform | Toolchain                              |
 |-----------------------------------------------------------------:|:---------------------------------------|
 | [MS‑DOS](https://dps8m.gitlab.io/Digital_Mars_C_8.57/crc.com)    | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57 |
-| [MS‑DOS](https://dps8m.gitlab.io/Pacific_C_7.51/crc.com)         | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51  |
+| [MS‑DOS](https://dps8m.gitlab.io/Pacific_C_7.51/crc.exe)         | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51  |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com) | Aztec&nbsp;C86&nbsp;5.2a               |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)            | Microsoft&nbsp;C&nbsp;6.00A            |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)              | Microsoft&nbsp;C&nbsp;5.10             |
