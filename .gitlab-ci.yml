@@ -42,7 +42,7 @@ pages:
     - apk upgrade --prune || true
     - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl pango py3-codespell python3-dev reuse seatd shellcheck shfmt wine wayland-libs-egl xwayland
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
-    - ( set -x; cd /tmp && git clone https://github.com/dmsc/emu2.git && cd emu2 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2 )
+    - ( set -x; cd /tmp && ( git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git ) && cd emu2 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2 )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p $HOME/.local/venvs
     - python3 -m venv $HOME/.local/venvs/vamos
