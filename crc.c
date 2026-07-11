@@ -942,7 +942,7 @@ cb_sub (c, v)
   const unsigned int v;
 #endif
 {
-  int i = 0;
+  int i;
   unsigned int val = v;
   unsigned char d [MAX_CB_DIGITS];
 
