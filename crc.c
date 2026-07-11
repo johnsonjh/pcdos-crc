@@ -2006,20 +2006,21 @@ make_mask (bits)
 
 /******************************************************************************/
 
+#ifndef HI_TECH_CPM
 static crc_t
-#ifdef ANSI_COMPILER
+# ifdef ANSI_COMPILER
 crc_update_byte (
   crc_t crc,
   const crc_t * const tbl,
   const crc_t mask32,
   const unsigned char b)
-#else
+# else
 crc_update_byte (crc, tbl, mask32, b)
   crc_t crc;
   const crc_t * const tbl;
   const crc_t mask32;
   const unsigned char b;
-#endif
+# endif
 {
   crc_t idx, t;
 
@@ -2039,25 +2040,27 @@ crc_update_byte (crc, tbl, mask32, b)
 
   return crc;
 }
+#endif
 
 /******************************************************************************/
 
+#ifndef HI_TECH_CPM
 static crc_t
-#ifdef ANSI_COMPILER
+# ifdef ANSI_COMPILER
 crc_update_buffer (
   crc_t crc,
   const crc_t * const tbl,
   const crc_t mask32,
   const unsigned char * const buf,
   const long n)
-#else
+# else
 crc_update_buffer (crc, tbl, mask32, buf, n)
   crc_t crc;
   const crc_t * const tbl;
   const crc_t mask32;
   const unsigned char * const buf;
   const long n;
-#endif
+# endif
 {
   long i;
 
@@ -2066,6 +2069,72 @@ crc_update_buffer (crc, tbl, mask32, buf, n)
 
   return crc;
 }
+#endif
+
+/******************************************************************************/
+
+#ifdef HI_TECH_CPM
+static crc_t hitc_crc;
+static crc_t hitc_idx;
+static crc_t hitc_t;
+#endif
+
+/******************************************************************************/
+
+#ifdef HI_TECH_CPM
+static void
+# ifdef ANSI_COMPILER
+crc_update_byte_hitc (
+  const crc_t * const tbl,
+  const crc_t mask32,
+  const unsigned char b)
+# else
+crc_update_byte_hitc (tbl, mask32, b)
+  const crc_t * const tbl;
+  const crc_t mask32;
+  const unsigned char b;
+# endif
+{
+  hitc_t = hitc_crc;
+  hitc_t >>= 24;
+
+  hitc_idx = hitc_t;
+  hitc_idx ^= (crc_t)b;
+  hitc_idx &= (crc_t)0xFF;
+
+  hitc_t = hitc_crc;
+  hitc_t <<= 8;
+
+  hitc_crc = hitc_t;
+  hitc_crc ^= tbl [hitc_idx];
+  hitc_crc &= mask32;
+}
+#endif
+
+/******************************************************************************/
+
+#ifdef HI_TECH_CPM
+static void
+# ifdef ANSI_COMPILER
+crc_update_buffer_hitc (
+  const crc_t * const tbl,
+  const crc_t mask32,
+  const unsigned char * const buf,
+  const long n)
+# else
+crc_update_buffer_hitc (tbl, mask32, buf, n)
+  const crc_t * const tbl;
+  const crc_t mask32;
+  const unsigned char * const buf;
+  const long n;
+# endif
+{
+  long i;
+
+  for (i = 0; n > i; i++)
+    crc_update_byte_hitc (tbl, mask32, buf [i]);
+}
+#endif
 
 /******************************************************************************/
 
@@ -2140,6 +2209,10 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
   unsigned int acc_chars = 0;
   counter_t rem_bits;
   int limit_reached = 0;
+
+#ifdef HI_TECH_CPM
+  hitc_crc = 0;
+#endif
 
   cb_copy (& rem_bits, lim_bits);
 
@@ -2357,7 +2430,11 @@ compute_crc_fb (fp, filename, tbl, use_cb, mask32, inmask, pad, lim_bits,
       break;
 
     oct = (unsigned char)(buf & (crc_t)0xFF);
+#ifdef HI_TECH_CPM
+    crc_update_byte_hitc (tbl, mask32, oct);
+#else
     crc = crc_update_byte (crc, tbl, mask32, oct);
+#endif
 
     buf >>= 8;
     bib -= 8;
@@ -2426,7 +2503,11 @@ done:
 
         while (8 <= bib) {
           oct = (unsigned char)(buf & (crc_t)0xFF);
+#ifdef HI_TECH_CPM
+          crc_update_byte_hitc (tbl, mask32, oct);
+#else
           crc = crc_update_byte (crc, tbl, mask32, oct);
+#endif
 
           buf >>= 8;
           bib -= 8;
@@ -2438,7 +2519,11 @@ done:
     if (0 < bib) {
       if (0 != pad || 0 != g_pad_auto) {
         oct = (unsigned char)(buf & (crc_t)0xFF);
+#ifdef HI_TECH_CPM
+        crc_update_byte_hitc (tbl, mask32, oct);
+#else
         crc = crc_update_byte (crc, tbl, mask32, oct);
+#endif
         * actually_padded = 1;
       } else {
         out_err_check_int (
@@ -2504,6 +2589,9 @@ done:
       );
   }
 
+#ifdef HI_TECH_CPM
+  crc = hitc_crc;
+#endif
   return crc;
 }
 
@@ -2571,6 +2659,10 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
   if (8 == use_cb && 8 == cb) {
     crc_t crc = 0;
     counter_t rem_bits;
+
+#ifdef HI_TECH_CPM
+    hitc_crc = 0;
+#endif
 
     cb_zero (& rem_bits);
 
@@ -2680,7 +2772,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
           remaining -= (long)chunk;
         }
 
+#ifdef HI_TECH_CPM
+        crc_update_buffer_hitc (tbl, mask32, g_buf, bytes_to_process);
+#else
         crc = crc_update_buffer (crc, tbl, mask32, g_buf, bytes_to_process);
+#endif
       }
 
       if (0 == cb_is_zero (lim_bits) &&
@@ -2711,7 +2807,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             return (crc_t)0;
           }
 
+#ifdef HI_TECH_CPM
+          crc_update_byte_hitc (tbl, mask32, final_byte);
+#else
           crc = crc_update_byte (crc, tbl, mask32, final_byte);
+#endif
           * actually_padded = 1;
 
           cb_zero (& rem_bits);
@@ -2785,7 +2885,11 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
             }
 
             * actually_padded = 1;
+#ifdef HI_TECH_CPM
+            crc_update_buffer_hitc (tbl, mask32, zbuf, chunk);
+#else
             crc = crc_update_buffer (crc, tbl, mask32, zbuf, chunk);
+#endif
           }
         }
 
@@ -2865,6 +2969,9 @@ compute_crc (fp, filename, tbl, cb, ub, use_cb, mask32, inmask, pad,
       }
     }
 
+#ifdef HI_TECH_CPM
+    crc = hitc_crc;
+#endif
     return crc;
   }
 
@@ -3614,10 +3721,16 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
   }
 
   {
-    const crc_t crcval = compute_crc (fp,
+#ifndef HI_TECH_CPM
+    const
+#endif
+     crc_t crcval = compute_crc (fp,
       filename, tbl, cb, ub, local_use_cb, mask32, local_inmask, pad, & eff_lim,
         & processed_bits, & processed_chars, & actually_padded, batch_limit,
           & expected_chars);
+#ifdef HI_TECH_CPM
+    crcval = hitc_crc;
+#endif
 
     if (0 != fclose (fp))
       error_msg ("Error closing", filename, errno);
