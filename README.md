@@ -589,8 +589,14 @@ the current `z88dk`.
 
 #### CP/M-80 notes
 
-CP/M‑80 builds (using `z88dk`, HI‑TECH C Z80, or Ack) support internal wildcard
-expansion (*i.e.*, `*` and `?`).  Other compilers may need small adaptations.
+* CP/M‑80 builds (using `z88dk`, HI‑TECH C Z80, or Ack) support internal
+  wildcard expansion (*i.e.*, `*` and `?`).  Other compilers may need
+  small adaptations.
+
+* The [**LZPACK**](https://github.com/johnsonjh/lzpack) utility can be used to
+  transparently compress the generated CP/M executable, reducing its on‑disk
+  size by approximately 50% and slightly lowering its memory usage, at the cost
+  of a small increase in load time.
 
 ##### CP/M-80 memory usage
 
@@ -610,11 +616,6 @@ expansion (*i.e.*, `*` and `?`).  Other compilers may need small adaptations.
   Ack binaries.
 * `z88dk` Z80 binaries execute about **twice as fast** as `z88dk`
   8080 binaries.
-
-The [**LZPACK**](https://github.com/johnsonjh/lzpack) utility can be used to
-transparently compress the generated CP/M executable, reducing its on‑disk
-size by approximately 50% and slightly lowering its memory usage, at the cost
-of a small increase in load time.
 
 ##### CP/M-80 LRBC (Last Record Byte Count)
 
@@ -694,15 +695,15 @@ from [tsupplis](https://github.com/tsupplis).
 
 #### CP/M-86 notes
 
-CP/M‑86 builds do **not** support internal wildcard expansion at this time.
+* CP/M‑86 builds do **not** support internal wildcard expansion at this time.
 
-Builds using Aztec&nbsp;C 4.2 will execute about 10% faster than Aztec&nbsp;C
-3.4 builds.
+* Builds using Aztec&nbsp;C 4.2 will execute about 10% faster than Aztec&nbsp;C
+  3.4 builds.
 
-All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of the **LZPACK**
-executable compressor, also apply to CP/M‑86.  Instead of **LZPACK**, the
-[UPX](https://upx.github.io/) executable compressor, version **5.2.0** (or
-later) can be used to pack CP/M‑86 binaries.
+* All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of the
+  **LZPACK** executable compressor, also apply to CP/M‑86.  Instead of
+  **LZPACK**, the [UPX](https://upx.github.io/) executable compressor, version
+  **5.2.0** (or later) can be used to pack CP/M‑86 binaries.
 
 ### Building for CP/M-68K
 
@@ -724,12 +725,12 @@ To build the program for CP/M‑68K we are using
 
 #### CP/M-68K notes
 
-**CP/M‑68K is currently a work‑in‑progress!**
+> **CP/M‑68K is currently a work‑in‑progress!**
 
-CP/M‑68K builds do **not** support internal wildcard expansion at this time.
+* CP/M‑68K builds do **not** support internal wildcard expansion at this time.
 
-All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of executable
-compression, apply to CP/M‑68K builds.
+* All of the [CP/M‑80 notes](#cpm-80-notes), with the exception of executable
+  compression, apply to CP/M‑68K builds.
 
 ### Building for ELKS
 
@@ -878,24 +879,24 @@ compression, apply to CP/M‑68K builds.
 
 #### MS-DOS notes
 
-MS‑DOS builds using DJGPP or HI‑TECH Pacific&nbsp;C support internal wildcard
-expansion (*i.e.*, `*` and `?`).  Wildcard support for other MS‑DOS compilers
-may be added in a future release.
+* MS‑DOS builds using DJGPP or HI‑TECH Pacific&nbsp;C support internal wildcard
+  expansion (*i.e.*, `*` and `?`).  Wildcard support for other MS‑DOS compilers
+  may be added in a future release.
 
-The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
-[UPX](https://upx.github.io/) utilities can be used to compress the generated
-MS‑DOS executables, reducing their on‑disk size by approximately 60%, at the
-cost of a small increase in load time.
+* The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
+  [UPX](https://upx.github.io/) utilities can be used to compress the generated
+  MS‑DOS executables, reducing their on‑disk size by approximately 60%, at the
+  cost of a small increase in load time.
 
-When compiling with **Turbo C++ 3.00**, ensure that the `-O` (jump
-optimization) option is *not enabled*.  This avoids a compiler bug that
-results in the CRC code being miscompiled.
+* When compiling with **Turbo C++ 3.00**, ensure that the `-O` (jump
+  optimization) option is *not enabled*.  This avoids a compiler bug that
+  results in the CRC code being miscompiled.
 
-**Borland C++** versions later than **3.1** are unable to build binaries that
-are 8086/8088‑compatible due to the use of 186/286 instructions in their
-standard libraries.  It should be possible to rebuild the runtime libraries
-from source (explicitly using the `-0` option) if 8086/8088 compatibility is
-required when using these compilers.
+* **Borland C++** versions later than **3.1** are unable to build binaries that
+  are 8086/8088‑compatible due to the use of 186/286 instructions in their
+  standard libraries.  It should be possible to rebuild the runtime libraries
+  from source (explicitly using the `-0` option) if 8086/8088 compatibility is
+  required when using these compilers.
 
 ## Security
 
