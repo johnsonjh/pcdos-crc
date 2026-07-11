@@ -476,6 +476,14 @@ const char * const malloc_options = "j";
 
 /******************************************************************************/
 
+#ifdef C86PLUS
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef _MSC_VER
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
