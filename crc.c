@@ -4062,7 +4062,7 @@ main (argc, argv)
   int processed = 0;
 #endif
   counter_t lim_bits;
-  const char * filename = (char *)0;
+  const char * filename;
   crc_t mask32 = 0;
   crc_t v;
   const int cb = char_bits ();
