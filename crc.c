@@ -380,6 +380,14 @@ const char * const malloc_options = "j";
 
 /******************************************************************************/
 
+#ifdef __PACIFIC__
+# ifndef HAVE_SYS_STAT
+#  define HAVE_SYS_STAT
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef __HAIKU__
 # ifndef HAVE_SYS_STAT
 #  define HAVE_SYS_STAT
@@ -566,8 +574,12 @@ extern char * strerror ();
 /******************************************************************************/
 
 #ifdef HAVE_SYS_STAT
-# include <sys/types.h>
-# include <sys/stat.h>
+# ifdef __PACIFIC__
+#  include <stat.h>
+# else
+#  include <sys/types.h>
+#  include <sys/stat.h>
+# endif
 #endif
 
 /******************************************************************************/
@@ -3514,7 +3526,11 @@ check_is_directory (filename)
 #  ifdef DOS_MSC_VER
       (char *)(void *)filename,
 #  else
+#   ifdef __PACIFIC__
+      (char *)(void *)filename,
+#   else
       filename,
+#   endif
 #  endif
       & st
     )

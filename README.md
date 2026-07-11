@@ -92,6 +92,7 @@ It has been tested on various exotic and retro platforms including
 **MS‑DOS** ([IA16‑GCC](https://gitlab.com/tkchia/build-ia16/), dev86, Watcom C,
 Turbo&nbsp;C, Borland&nbsp;C++, Aztec&nbsp;C86, Microsoft&nbsp;C,
 [Digital&nbsp;Mars&nbsp;C/C++](https://digitalmars.com),
+[Pacific&nbsp;C](https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/devel/c/pacific/freeware/),
 [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC),
 Digital&nbsp;Mars&nbsp;C/C++, GCC, Clang,
@@ -278,6 +279,7 @@ In this mode:
 |                                                         Platform | Toolchain                              |
 |-----------------------------------------------------------------:|:---------------------------------------|
 | [MS‑DOS](https://dps8m.gitlab.io/Digital_Mars_C_8.57/crc.com)    | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57 |
+| [MS‑DOS](https://dps8m.gitlab.io/Pacific_C_7.51/crc.com)         | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51  |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com) | Aztec&nbsp;C86&nbsp;5.2a               |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)            | Microsoft&nbsp;C&nbsp;6.00A            |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)              | Microsoft&nbsp;C&nbsp;5.10             |
@@ -584,20 +586,24 @@ the current `z88dk`.
 
 #### CP/M-80 notes
 
-CP/M‑80 builds using `z88dk` and Ack support internal wildcard expansion
-(*i.e.*, `*` and `?`).  Other compilers may need some small adaptations.
+CP/M‑80 builds (using `z88dk`, HI‑TECH C Z80, or Ack) support internal wildcard
+expansion (*i.e.*, `*` and `?`).  Other compilers may need small adaptations.
 
-For **Z80** builds using the `z88dk` **SDCC** compiler, adding the
-`--max-allocs-per-node250000` option will improve performance by \~6%, but
-increases compilation time from several seconds to a few minutes.
+**Memory usage**:
+* `z88dk` Z80 builds require \~**32K** TPA.
+* HI‑TECH C Z80 builds require \~**38K** TPA.
+* `z88dk` 8080 builds require \~**35K** TPA.
+* Ack 8080 builds require \~**45K** TPA.
 
-`z88dk` Z80 builds require \~**32K** TPA, `z88dk` 8080 builds require
-\~**35K**, Ack 8080 builds require \~**45K**.  HI‑TECH C builds
-require \~**42K**.
-
-Z80 builds using the `z88dk` compiler will execute about twice as fast as
-`z88dk` 8080 builds.  For 8080 builds, `z88dk` builds execute \~**20%** faster
-than Ack builds.
+**Performance**:
+* **Z80** builds: `z88dk` binaries execute about \~**2‑8%** faster than HI‑TECH
+  C Z80 binaries.
+  * For Z80 builds using the `z88dk` **SDCC** compiler, adding the
+    `--max-allocs-per-node250000` option improves performance by \~**6%**, but
+    increases compilation time (from several seconds to a few minutes).
+* **8080** builds: `z88dk` binaries execute \~**20%** faster than Ack binaries.
+  * `z88dk` Z80 binaries execute about **twice as fast** as `z88dk`
+    8080 binaries.
 
 The [**LZPACK**](https://github.com/johnsonjh/lzpack) utility can be used to
 transparently compress the generated CP/M executable, reducing its on‑disk
@@ -609,8 +615,8 @@ systems, you should always constrain processing to the actual number of
 significant bits.  This can be done automatically **only** on CP/M 3.0
 and later!
 
-On CP/M‑80 systems, files **do not have exact sizes** but are stored on disk in
-fixed‑size records of 1024 bits (*i.e.,* 128 8‑bit octets) each.  Files
+On CP/M‑80 systems, files **do not have exact sizes** but are stored on disk
+in fixed‑size records of 1024 bits (*i.e.,* 128 8‑bit octets) each.  Files
 transferred from other systems that are not a multiple of the CP/M record size
 will be padded with **undefined** data to fill a complete record, and there is
 **no** universal EOF marker that can be used to find the true end of file.
@@ -654,11 +660,12 @@ this feature is only enabled when compiling for CP/M targets.
 
 ### Building for CP/M-86
 
-To build the program for CP/M‑86 we are using the most recent versions
-of the [Aztec&nbsp;C cross‑compiler](https://github.com/tsupplis/cpm86-crossdev)
+To build the program for CP/M‑86 we are using the most recent versions of
+the [Aztec&nbsp;C cross‑compiler](https://github.com/tsupplis/cpm86-crossdev)
 from [tsupplis](https://github.com/tsupplis).
 
-* To build a binary for CP/M‑86 using **cross‑Aztec&nbsp;C 4.2** (*recommended*):
+* To build a binary for CP/M‑86 using
+  **cross‑Aztec&nbsp;C 4.2** (*recommended*):
 
   ```sh
   aztec42_cc "+FA" -D__AZTEC_C_42T__ crc.c
@@ -788,6 +795,12 @@ compression, apply to CP/M‑68K builds.
   cl /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c
   ```
 
+* To build a binary for MS‑DOS using **HI‑TECH Pacific C 7.51**:
+
+  ```sh
+  pacc -R -O crc.c
+  ```
+
 * To build a binary for MS‑DOS using
   [**Open Watcom V2**](https://github.com/open-watcom/open-watcom-v2):
 
@@ -849,13 +862,17 @@ compression, apply to CP/M‑68K builds.
   bcc -O2 -f- -mt -lt crc.c
   ```
 
-* To build a binary for MS‑DOS using **DJGPP**:
+* To build a binary for MS‑DOS (386+) using **DJGPP**:
 
   ```sh
   ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
   ```
 
 #### MS-DOS notes
+
+MS‑DOS builds using DJGPP or HI‑TECH Pacific&nbsp;C support internal wildcard
+expansion (*i.e.*, `*` and `?`).  Wildcard support for other MS‑DOS compilers
+may be added in a future release.
 
 The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
 [UPX](https://upx.github.io/) utilities can be used to compress the generated
@@ -887,8 +904,8 @@ required when using these compilers.
 ## SAST and linters
 
 The following static analysis and dynamic verification tools are used as part
-of the comprehensive **TPZASM** testing process (with many invoked
-automatically via the [`.lint.sh`](.lint.sh) script):
+of the comprehensive testing process (with many invoked automatically via the
+[`.lint.sh`](.lint.sh) script):
 
 | Tool | Usage |
 |-----:|:------|
