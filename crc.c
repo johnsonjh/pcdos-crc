@@ -55,6 +55,24 @@ typedef unsigned long crc_t;
 
 /******************************************************************************/
 
+/*
+ * MAX_CB_DIGITS is the number of maximum digits used for counting bits.
+ *  ____________________
+ *  | Value |   Size   |
+ *  |-------|----------|
+ *  |     8 | 11.9 MiB |
+ *  |     9 |  119 MiB |
+ *  |    10 | 1.16 GiB |
+ *  |    11 | 11.6 GiB |
+ *  |    12 |  117 GiB |
+ *  |    13 | 1.14 TiB |
+ *  |    14 | 11.4 TiB |
+ *  |    15 |  114 TiB |
+ *  --------------------
+ */
+
+/******************************************************************************/
+
 #ifdef multics
 # ifdef ANSI_COMPILER
 #  undef ANSI_COMPILER
@@ -180,6 +198,16 @@ const char * const malloc_options = "j";
 #  endif
 #  ifndef MAX_CB_DIGITS
 #   define MAX_CB_DIGITS 9 /* ~119 MiB (CP/M-Plus 3.0 allows 32 MiB files) */
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef HI_TECH_C
+# ifdef DOS
+#  ifndef __PACIFIC__
+#   define __PACIFIC__
 #  endif
 # endif
 #endif
