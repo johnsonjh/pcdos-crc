@@ -280,21 +280,21 @@ In this mode:
 
 ### Extra builds
 
-|                                                         Platform | Toolchain                                        |
-|-----------------------------------------------------------------:|:-------------------------------------------------|
-| [MS‑DOS](https://dps8m.gitlab.io/C86PLUS_1.10/crc.exe)           | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
-| [MS‑DOS](https://dps8m.gitlab.io/Digital_Mars_C_8.57/crc.com)    | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57           |
-| [MS‑DOS](https://dps8m.gitlab.io/Pacific_C_7.51/crc.exe)         | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com) | Aztec&nbsp;C86&nbsp;5.2a                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)            | Microsoft&nbsp;C&nbsp;6.00A                      |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)              | Microsoft&nbsp;C&nbsp;5.10                       |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/BCPP31/crc.com)             | Borland&nbsp;C++&nbsp;3.1                        |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP3/crc.com)              | Turbo&nbsp;C++&nbsp;3.00                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP101/crc.com)            | Turbo&nbsp;C++&nbsp;1.01                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC201/crc.com)              | Turbo&nbsp;C&nbsp;2.01                           |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC15/crc.com)               | Turbo&nbsp;C&nbsp;1.5                            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC10/crc.com)               | Turbo&nbsp;C&nbsp;1.0                            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/dev86/crc.com)              | dev86                                            |
+|                                                          Platform | Toolchain                                        |
+|------------------------------------------------------------------:|:-------------------------------------------------|
+| [MS‑DOS](https://dps8m.gitlab.io/crc/C86PLUS_1.10/crc.exe)        | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/Digital_Mars_C_8.57/crc.com) | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57           |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/Pacific_C_7.51/crc.exe)      | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51            |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com)  | Aztec&nbsp;C86&nbsp;5.2a                         |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)             | Microsoft&nbsp;C&nbsp;6.00A                      |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)               | Microsoft&nbsp;C&nbsp;5.10                       |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/BCPP31/crc.com)              | Borland&nbsp;C++&nbsp;3.1                        |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP3/crc.com)               | Turbo&nbsp;C++&nbsp;3.00                         |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP101/crc.com)             | Turbo&nbsp;C++&nbsp;1.01                         |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TC201/crc.com)               | Turbo&nbsp;C&nbsp;2.01                           |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TC15/crc.com)                | Turbo&nbsp;C&nbsp;1.5                            |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TC10/crc.com)                | Turbo&nbsp;C&nbsp;1.0                            |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/dev86/crc.com)               | dev86                                            |
 
 ## Building from source
 
