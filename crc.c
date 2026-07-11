@@ -4073,7 +4073,7 @@ main (argc, argv)
 #ifdef CRC_CPM
     CRC_NAME;
 #else
-    ((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
+    (((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
       ? ('\0' == argv [0] [1] ? CRC_NAME : argv [0]) : CRC_NAME);
 #endif
 
