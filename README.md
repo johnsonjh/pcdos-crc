@@ -96,6 +96,7 @@ It has been tested on various exotic and retro platforms including
 Turbo&nbsp;C, Borland&nbsp;C++, Aztec&nbsp;C86, Microsoft&nbsp;C,
 [Digital&nbsp;Mars&nbsp;C/C++](https://digitalmars.com),
 [Pacific&nbsp;C](https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/devel/c/pacific/freeware/),
+[CI&nbsp;C86PLUS](https://www.clipshop.ca/c86/),
 [DJGPP](https://www.delorie.com/djgpp/)),
 **Windows** (MSVC, [OrangeC](https://github.com/LADSoft/OrangeC),
 Digital&nbsp;Mars&nbsp;C/C++, GCC, Clang,
@@ -279,20 +280,21 @@ In this mode:
 
 ### Extra builds
 
-|                                                         Platform | Toolchain                              |
-|-----------------------------------------------------------------:|:---------------------------------------|
-| [MS‑DOS](https://dps8m.gitlab.io/Digital_Mars_C_8.57/crc.com)    | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57 |
-| [MS‑DOS](https://dps8m.gitlab.io/Pacific_C_7.51/crc.exe)         | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51  |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com) | Aztec&nbsp;C86&nbsp;5.2a               |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)            | Microsoft&nbsp;C&nbsp;6.00A            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)              | Microsoft&nbsp;C&nbsp;5.10             |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/BCPP31/crc.com)             | Borland&nbsp;C++&nbsp;3.1              |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP3/crc.com)              | Turbo&nbsp;C++&nbsp;3.00               |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP101/crc.com)            | Turbo&nbsp;C++&nbsp;1.01               |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC201/crc.com)              | Turbo&nbsp;C&nbsp;2.01                 |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC15/crc.com)               | Turbo&nbsp;C&nbsp;1.5                  |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC10/crc.com)               | Turbo&nbsp;C&nbsp;1.0                  |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/dev86/crc.com)              | dev86                                  |
+|                                                         Platform | Toolchain                                        |
+|-----------------------------------------------------------------:|:-------------------------------------------------|
+| [MS‑DOS](https://dps8m.gitlab.io/C86PLUS_1.10/crc.exe)           | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
+| [MS‑DOS](https://dps8m.gitlab.io/Digital_Mars_C_8.57/crc.com)    | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57           |
+| [MS‑DOS](https://dps8m.gitlab.io/Pacific_C_7.51/crc.exe)         | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51            |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com) | Aztec&nbsp;C86&nbsp;5.2a                         |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)            | Microsoft&nbsp;C&nbsp;6.00A                      |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)              | Microsoft&nbsp;C&nbsp;5.10                       |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/BCPP31/crc.com)             | Borland&nbsp;C++&nbsp;3.1                        |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP3/crc.com)              | Turbo&nbsp;C++&nbsp;3.00                         |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP101/crc.com)            | Turbo&nbsp;C++&nbsp;1.01                         |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TC201/crc.com)              | Turbo&nbsp;C&nbsp;2.01                           |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TC15/crc.com)               | Turbo&nbsp;C&nbsp;1.5                            |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TC10/crc.com)               | Turbo&nbsp;C&nbsp;1.0                            |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/dev86/crc.com)              | dev86                                            |
 
 ## Building from source
 
@@ -365,8 +367,9 @@ The `crc.c` source code should build easily anywhere with no changes needed:
 * If you have a C preprocessor that **wonʼt** allow you to define away `const`
   even when the compiler **doesnʼt** support it, like some older versions of
   Aztec&nbsp;C, you should remove `const` from the source code using a global
-  search and replace operation and (somewhat unintuitively) define `USE_CONST`
-  when compiling.  The transformation is easily performed using POSIX `sed`:
+  search and replace operation (and somewhat unintuitively, you may need to
+  define `USE_CONST` when compiling).  The required transformation is easily
+  performed using POSIX `sed`:
 
   ```sh
   sed 's|const||g' crc.c | \
@@ -809,6 +812,16 @@ To build the program for CP/M‑68K we are using
   cl /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c
   ```
 
+* To build a binary for MS‑DOS using
+  **Computer Innovations C86PLUS 1.10** (1987):
+
+  ```sh
+  sed 's|const||g' crc.c | \
+    { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
+  cc -c -AS -Za -G0 -Oa -Ox crc.c
+  carole crc.obj lib/cwildsnd.obj -s2000
+  ```
+
 * To build a binary for MS‑DOS using **HI‑TECH Pacific C 7.51**:
 
   ```sh
@@ -884,9 +897,9 @@ To build the program for CP/M‑68K we are using
 
 #### MS-DOS notes
 
-* MS‑DOS builds using DJGPP or HI‑TECH Pacific&nbsp;C support internal wildcard
-  expansion (*i.e.*, `*` and `?`).  Wildcard support for other MS‑DOS compilers
-  may be added in a future release.
+* MS‑DOS builds using DJGPP, C86PLUS, and HI‑TECH Pacific&nbsp;C support
+  internal wildcard expansion (*i.e.*, `*` and `?`).  Wildcard support for
+  other MS‑DOS compilers may be added in a future release.
 
 * The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
   [UPX](https://upx.github.io/) utilities can be used to compress the generated
