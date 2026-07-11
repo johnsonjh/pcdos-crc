@@ -587,17 +587,13 @@ the current `z88dk`.
 CP/M‑80 builds using `z88dk` and Ack support internal wildcard expansion
 (*i.e.*, `*` and `?`).  Other compilers may need some small adaptations.
 
-HI‑TECH C (4.11) currently miscompiles the algorithm, resulting in *incorrect*
-CRC calculations.  Use `z88dk` and/or Ack to build CP/M‑80 binaries until a
-workaround can be found.
-
 For **Z80** builds using the `z88dk` **SDCC** compiler, adding the
 `--max-allocs-per-node250000` option will improve performance by \~6%, but
 increases compilation time from several seconds to a few minutes.
 
 `z88dk` Z80 builds require \~**32K** TPA, `z88dk` 8080 builds require
-\~**35K**, Ack 8080 builds require \~**45K**.  HI‑TECH C builds (*currently
-non‑functional; see above*) require \~**42K**.
+\~**35K**, Ack 8080 builds require \~**45K**.  HI‑TECH C builds
+require \~**42K**.
 
 Z80 builds using the `z88dk` compiler will execute about twice as fast as
 `z88dk` 8080 builds.  For 8080 builds, `z88dk` builds execute \~**20%** faster
