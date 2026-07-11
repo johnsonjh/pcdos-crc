@@ -3779,6 +3779,7 @@ process_file (filename, tbl, cb, ub, use_cb, mask32, inmask, pad, lim_bits,
         & processed_bits, & processed_chars, & actually_padded, batch_limit,
           & expected_chars);
 #ifdef HI_TECH_CPM
+    /*cppcheck-suppress redundantInitialization*/
     crcval = hitc_crc;
 #endif
 

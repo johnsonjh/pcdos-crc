@@ -521,7 +521,8 @@ command -v cppcheck > /dev/null 2>&1 && {
   rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
-  cppcheck --platform=unix64 --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+  cppcheck ${CPPCHECK_FLAGS} --platform=unix64 \
+    --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
   rm -rf ./.cppcheck-build-dir || :
 }
 
@@ -551,7 +552,8 @@ command -v cppcheck > /dev/null 2>&1 && {
   rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
-  cppcheck --platform=unix32 --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+  cppcheck ${CPPCHECK_FLAGS} --platform=unix32 \
+    --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
   rm -rf ./.cppcheck-build-dir || :
 }
 
@@ -581,7 +583,8 @@ command -v cppcheck > /dev/null 2>&1 && {
   rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
-  cppcheck --platform=avr8 --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+  cppcheck ${CPPCHECK_FLAGS} --platform=avr8 \
+    --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
   rm -rf ./.cppcheck-build-dir || :
 }
 
