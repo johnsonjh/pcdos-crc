@@ -234,7 +234,7 @@ pages:
     - test -f CRC.EXE
     - mv -f CRC.EXE crc.exe && rm -f CRC.*
     - cp -f crc.exe $CI_PROJECT_DIR/public/Pacific_C_7.51
-    - emu2 $CI_PROJECT_DIR/public/Pacific_C_7.51/crc.exe --auto crc.com crc.c
+    - emu2 $CI_PROJECT_DIR/public/Pacific_C_7.51/crc.exe --auto crc.exe crc.c
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
     - |
