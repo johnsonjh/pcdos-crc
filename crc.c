@@ -3358,7 +3358,7 @@ find_max_bits (filename, cb, is_all_zeros, num_chars, max_chars)
 {
   FILE * fp;
   crc_t aggregate = 0;
-  int bits = 0;
+  int bits;
   long got = 0;
 
   * is_all_zeros = 1;
