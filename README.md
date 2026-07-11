@@ -523,7 +523,7 @@ on how its stored) on the system.
   when using `-SO3`):
 
   ```sh
-  zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
+  zcc +cpm -compiler=sdcc -SO3 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build a binary for CP/M‑80 for **8080** systems, using a version
@@ -532,7 +532,7 @@ on how its stored) on the system.
   8080 processors):
 
   ```sh
-  zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
+  zcc +cpm -SO3 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
 If you are using a Linux system with Docker you can use the `z88dk/z88dk`
@@ -543,14 +543,14 @@ the current `z88dk`.
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-    zcc +cpm -compiler=sdcc -SO2 -O3 -vn crc.c -clib=ixiy -o crc.com
+    zcc +cpm -compiler=sdcc -SO3 -O3 -vn crc.c -clib=ixiy -o crc.com
   ```
 
 * To build for **8080** CP/M‑80 using `z88dk` via Docker:
 
   ```sh
   docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
-    zcc +cpm -SO2 -O3 -vn crc.c -clib=8080 -o crc.com
+    zcc +cpm -SO3 -O3 -vn crc.c -clib=8080 -o crc.com
   ```
 
 #### Building with Ack
