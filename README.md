@@ -486,9 +486,9 @@ can be recovered.
      { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
    ```
 
-2. You should ensure that the transformed source code file (`crckcc.c`) is
-   transferred to the PDP‑10 system as text (7‑bit ASCII with `<CR><LF>` line
-   endings).  The appropriate conversion should happen automatically if you use
+2. You should ensure that the transformed source code file is transferred to
+   the PDP‑10 system as text (7‑bit ASCII with `<CR><LF>` line endings).
+   The appropriate conversion should happen automatically if you use
    **Kermit** or **ASCII‑mode** FTP for the file transfer.  If you plan to
    transfer the file via other means, you *might* need to convert the line
    endings first.  You can do this easily with the
