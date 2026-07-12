@@ -3941,13 +3941,15 @@ usage (progname, cb)
     )
   );
   out_err_check_int (
-    fprintf (stderr, "Options:%s",
-      CRC_EOL
+    fprintf (stderr,
+      "Options:%s",
+        CRC_EOL
     )
   );
   out_err_check_int (
-    fprintf (stderr, "  --limit=N        Stops processing after N bits%s",
-      CRC_EOL
+    fprintf (stderr,
+      "  --limit=N        Stops processing after N bits%s",
+        CRC_EOL
     )
   );
 #ifdef CRC_CPM
@@ -3977,8 +3979,9 @@ usage (progname, cb)
     )
   );
   out_err_check_int (
-    fprintf (stderr, "  --pad            Pads trailing bits with zeros%s",
-      CRC_EOL
+    fprintf (stderr,
+      "  --pad            Pads trailing bits with zeros%s",
+        CRC_EOL
     )
   );
   out_err_check_int (
@@ -4000,20 +4003,23 @@ usage (progname, cb)
     )
   );
   out_err_check_int (
-    fprintf (stderr, "  --help, -h       Shows this help and usage text%s",
-      CRC_EOL
+    fprintf (stderr,
+      "  --help, -h       Shows this help and usage text%s",
+        CRC_EOL
     )
   );
 
 #ifdef CRC_CPM
   out_err_check_int (
-    fprintf (stderr, "%sNOTE: On CP/M 3 or later (CP/M-Plus)",
-      CRC_EOL
+    fprintf (stderr,
+      "%sNOTE: On CP/M 3 or later (CP/M-Plus)",
+        CRC_EOL
     )
   );
   out_err_check_int (
-    fprintf (stderr, ", '--auto' also enables '--lrbc'.%s",
-      CRC_EOL
+    fprintf (stderr,
+      ", '--auto' also enables '--lrbc'.%s",
+        CRC_EOL
     )
   );
 #endif
@@ -4401,7 +4407,7 @@ bits_error:
               match_found = 1;
               process_file (dir_get_entry_name (),
                 crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
-                batch_limit);
+                  batch_limit);
 
               if (0 == g_fileerr)
                 processed++;
@@ -4443,7 +4449,7 @@ bits_error:
         match_found = 1;
         process_file (htc_names [htc_i],
           crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
-          batch_limit);
+            batch_limit);
 
         if (0 == g_fileerr)
           processed++;
@@ -4460,7 +4466,7 @@ bits_error:
     {
       process_file (filename,
         crc_table, cb, ub, use_cb, mask32, inmask, pad, & lim_bits,
-        batch_limit);
+          batch_limit);
 
 #ifdef CPM_WILDCARD
       if (0 == g_fileerr)
