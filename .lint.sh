@@ -103,7 +103,7 @@ export FIND_COMMAND_FATAL=0
 # shellcheck disable=SC2310
 if out=$(
   find_command \
-    bear ch "${CLANG_CMD:-clang}" codespell cppcheck cppi diff \
+    bear ch "${CLANG_CMD:-clang}" codespell cppcheck cppi diff "${MAKE:-make}" \
     editorconfig-checker flawfinder "${GCC_CMD:-gcc}" git markdown-toc \
     plog-converter pvs-studio-analyzer reuse "${SCAN_BUILD_CMD:-scan-build}" \
     shellcheck shfmt 2>&1
@@ -561,41 +561,20 @@ command -v cppcheck > /dev/null 2>&1 && {
 
 :
 :
-: Cppcheck avr8
-: :::::::::::::
-command -v cppcheck > /dev/null 2>&1 && {
-  cppcheck --check-level=exhaustive 2>&1 \
-    | grep -q 'unrecognized command line option' \
-    || {
-      CHECK_LEVEL="--check-level=exhaustive"
-    }
-  CPPCHECK_FLAGS="--enable=warning,style,performance"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?},portability,unusedFunction"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --force ${CHECK_LEVEL:-}"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --std=c89"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inline-suppr"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --inconclusive"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --quiet"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} --error-exitcode=99"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__CPPCHECK__"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -D__LINT__"
-  CPPCHECK_FLAGS="${CPPCHECK_FLAGS:?} -j 1"
-  rm -rf ./.cppcheck-build-dir > /dev/null 2>&1 || :
-  mkdir -p ./.cppcheck-build-dir
-  # shellcheck disable=2086
-  cppcheck ${CPPCHECK_FLAGS} --platform=avr8 \
-    --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
-  rm -rf ./.cppcheck-build-dir || :
+: markdown-toc
+: ::::::::::::
+command -v markdown-toc > /dev/null 2>&1 && {
+  markdown-toc -i README.md
 }
 
 ################################################################################
 
 :
 :
-: markdown-toc
+: make scc
 : ::::::::::::
-command -v markdown-toc > /dev/null 2>&1 && {
-  markdown-toc -i README.md
+command -v "${MAKE:-make}" > /dev/null 2>&1 && {
+  "${MAKE:-make}" scc
 }
 
 ################################################################################
