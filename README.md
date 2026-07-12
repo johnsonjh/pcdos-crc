@@ -445,7 +445,7 @@ NOTE: This system has a character size of 9‑bits.
 Use '--bits=8' to process 8‑bit input data on this system.
 ```
 
-As explained above the `--bits` option specifies how many bits to extract from
+As explained above, the `--bits` option specifies how many bits to extract from
 each native storage character.  On Multics, the native character size is 9
 bits.  If a file was transferred “bit‑for‑bit” from an 8‑bit system, you
 should use `--bits=9` on Multics (which is the default on Multics if `--bits`
