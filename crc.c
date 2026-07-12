@@ -4053,12 +4053,26 @@ cdecl
 #endif
 #ifdef ANSI_COMPILER
 main (
-  const int argc,
-  char * const argv [])
+#ifndef __POCC__
+  const
+#endif
+  int argc,
+  char *
+#ifndef __POCC__
+const
+#endif
+  argv [])
 #else
 main (argc, argv)
-  const int argc;
-  char * const argv [];
+#ifndef __POCC__
+  const
+#endif
+  int argc;
+  char *
+#ifndef __POCC__
+  const
+#endif
+  argv [];
 #endif
 {
   static crc_t crc_table [256];
