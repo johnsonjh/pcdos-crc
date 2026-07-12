@@ -106,7 +106,7 @@ if out=$(
     bear ch "${CLANG_CMD:-clang}" codespell cppcheck cppi diff "${MAKE:-make}" \
     editorconfig-checker flawfinder "${GCC_CMD:-gcc}" git markdown-toc \
     plog-converter pvs-studio-analyzer reuse "${SCAN_BUILD_CMD:-scan-build}" \
-    shellcheck shfmt 2>&1
+    shellcheck shfmt scc 2>&1
 ); then
   status=0
 else
@@ -574,7 +574,9 @@ command -v markdown-toc > /dev/null 2>&1 && {
 : make scc
 : ::::::::::::
 command -v "${MAKE:-make}" > /dev/null 2>&1 && {
-  "${MAKE:-make}" scc
+  command -v scc > /dev/null 2>&1 && {
+    "${MAKE:-make}" scc
+  }
 }
 
 ################################################################################
