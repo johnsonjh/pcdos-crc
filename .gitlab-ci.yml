@@ -40,7 +40,7 @@ pages:
     - apk update || true
     - apk add '!usr-merge-nag' 2> /dev/null || true
     - apk upgrade --prune || true
-    - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl ncurses-dev pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo wine wayland-libs-egl xwayland
+    - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl ncurses-dev pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo wine wayland-libs-egl xwayland
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
@@ -289,7 +289,7 @@ pages:
       # Start of HI-TECH C Z80 CP/M 4.11 build ...
       echo -e "section_start:`date +%s`:HTCZ80_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH C Z80 CP/M 4.11 build ...\033[0m" || true
     - mkdir -p public/HI-TECH-Z80_4.11
-    - ( set -x; cd /tmp/old_c/HI-TECH-Z80_4.11 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|if HAS_INCLUDE.*$|if 0|' crc.c.bak > crc.c && emu2 zc.exe -CPM -V -O -Mcrc.map crc.c && cp -f crc.com $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && rm -f crc.* && cd $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && ls -la crc.com && chmod ugo+r crc.com && sudo -u nobody tnylpo crc.com --auto crc.com )
+    - ( set -x; cd /tmp/old_c/HI-TECH-Z80_4.11 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|if HAS_INCLUDE.*$|if 0|' crc.c.bak > crc.c && emu2 zc.exe -CPM -V -O -Mcrc.map crc.c && cp -f crc.com $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && rm -f crc.* && cd $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && ls -la crc.com && chmod ugo+r crc.com && sudo -u nobody tnylpo crc.com --auto crc.com --limit="$(du -sb crc.com | awk '{ print $1*8 }')" )
     - |
       # End of HI-TECH C Z80 CP/M 4.11 build ...
       echo -e "section_end:`date +%s`:HTCZ80_section\r\e[0K" || true
