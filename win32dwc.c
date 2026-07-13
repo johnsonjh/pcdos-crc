@@ -215,7 +215,7 @@ expand_pattern (pattern)
     }
   while (FindNextFileA (hFind, &fd));
 
-  FindClose (hFind);
+  (void)FindClose (hFind);
 
   if (0 == any)
     (void)add_arg (pattern);
