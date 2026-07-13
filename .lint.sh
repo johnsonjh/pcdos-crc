@@ -210,7 +210,7 @@ command -v codespell > /dev/null 2>&1 && {
         | sed 's/["\\]/\\&/g' \
         | paste -sd',' -
     } | sed 's/^/"/; s/$/"/')
-    codespell --ignore-words-list "Ot" --skip "${CODESPELL_EXCLUDE:-}" .
+    codespell --ignore-words-list "NOE,Ot" --skip "${CODESPELL_EXCLUDE:-}" .
   }
 }
 
