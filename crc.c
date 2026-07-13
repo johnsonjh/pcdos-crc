@@ -147,6 +147,7 @@ typedef unsigned long crc_t;
 
 #ifdef __FreeBSD__
 # ifdef DEBUG
+#  include <sys/param.h>
 #  if !(__FreeBSD_version < 1000011)
 const char * malloc_conf = "abort:true,confirm_conf:true,junk:true";
 #  else
