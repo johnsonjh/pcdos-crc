@@ -11,6 +11,31 @@
 
 /******************************************************************************/
 
+/*
+ * If you are NOT using an ANSI C89 compiler (e.g., K&R, "C86"),
+ * COMMENT OUT "#define ANSI_COMPILER" below (or define NOANSI).
+ */
+
+#define ANSI_COMPILER
+
+/******************************************************************************/
+
+#ifdef __BCC__
+# ifdef ANSI_COMPILER
+#  undef ANSI_COMPILER
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef NOANSI
+# ifdef ANSI_COMPILER
+#  undef ANSI_COMPILER
+# endif
+#endif
+
+/******************************************************************************/
+
 #include <bios.h>
 #include <string.h>
 
