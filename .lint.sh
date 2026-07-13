@@ -262,7 +262,7 @@ command -v shfmt > /dev/null 2>&1 && {
 : ::::::::::
 command -v flawfinder > /dev/null 2>&1 && {
   flawfinder --quiet --dataonly --omittime --error-level=3 --context \
-    --minlevel=3 crc.c
+    --minlevel=3 ./*.c
 }
 
 ################################################################################
@@ -271,7 +271,7 @@ command -v flawfinder > /dev/null 2>&1 && {
 :
 : Banned operations
 : :::::::::::::::::
-grep -n -E '( / | /= | % | %= |#.*elif )' crc.c && {
+grep -n -E '( / | /= | % | %= |#.*elif )' ./*.c && {
   : ERROR: Banned operations found
   exit 1
 }
@@ -282,7 +282,7 @@ grep -n -E '( / | /= | % | %= |#.*elif )' crc.c && {
 :
 : Banned strings
 : ::::::::::::::
-grep '[[:alnum:]]const[[:alnum:]]' crc.c && {
+grep '[[:alnum:]]const[[:alnum:]]' ./*.c && {
   : ERROR: Banned strings found
   exit 1
 }
@@ -522,7 +522,7 @@ command -v cppcheck > /dev/null 2>&1 && {
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
   cppcheck ${CPPCHECK_FLAGS} --platform=unix64 \
-    --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+    --cppcheck-build-dir="./.cppcheck-build-dir" ./*.c
   rm -rf ./.cppcheck-build-dir || :
 }
 
@@ -553,7 +553,7 @@ command -v cppcheck > /dev/null 2>&1 && {
   mkdir -p ./.cppcheck-build-dir
   # shellcheck disable=2086
   cppcheck ${CPPCHECK_FLAGS} --platform=unix32 \
-    --cppcheck-build-dir="./.cppcheck-build-dir" crc.c
+    --cppcheck-build-dir="./.cppcheck-build-dir" ./*.c
   rm -rf ./.cppcheck-build-dir || :
 }
 
@@ -606,7 +606,7 @@ command -v ch > /dev/null 2>&1 && {
 : Cppi
 : ::::
 command -v cppi > /dev/null 2>&1 && {
-  cppi -ac crc.c
+  cppi -ac ./*.c
 }
 
 ################################################################################
@@ -640,7 +640,7 @@ command -v "${CC:-cc}" > /dev/null 2>&1 && {
 case "$(uname -s 2> /dev/null || :)" in
 NetBSD)
   if command -p -v lint > /dev/null 2>&1; then
-    lint -a -aa -b -c -e -g -h -P -r -u -w -z crc.c
+    lint -a -aa -b -c -e -g -h -P -r -u -w -z ./*.c
   fi
   ;;
 *) : ;;

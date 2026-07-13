@@ -1925,7 +1925,8 @@ test_crc_table (tbl, mask32)
 
 static int
 #ifdef ANSI_COMPILER
-char_bits (void)
+char_bits (
+  void)
 #else
 char_bits ()
 #endif
@@ -1945,7 +1946,8 @@ char_bits ()
 
 static int
 #ifdef ANSI_COMPILER
-unsigned_int_bits (void)
+unsigned_int_bits (
+  void)
 #else
 unsigned_int_bits ()
 #endif
@@ -1965,7 +1967,8 @@ unsigned_int_bits ()
 
 static int
 #ifdef ANSI_COMPILER
-crc_t_bits (void)
+crc_t_bits (
+  void)
 #else
 crc_t_bits ()
 #endif
@@ -1985,7 +1988,8 @@ crc_t_bits ()
 
 static unsigned int
 #ifdef ANSI_COMPILER
-safe_batch_limit (void)
+safe_batch_limit (
+  void)
 #else
 safe_batch_limit ()
 #endif
@@ -4043,6 +4047,25 @@ usage (progname, cb)
 
 /******************************************************************************/
 
+#ifdef __MSDOS__
+# ifdef __AZTEC_C_52T__
+#  ifndef NOMAINCONST
+#   define NOMAINCONST
+#  endif
+void aztec_expand_wildcards (int * argc, char * * * argv);
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __POCC__
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
 int
 #ifdef _MSC_VER
 # ifndef _WIN32
@@ -4053,25 +4076,25 @@ cdecl
 #endif
 #ifdef ANSI_COMPILER
 main (
-#ifndef __POCC__
+# ifndef NOMAINCONST
   const
-#endif
+# endif
   int argc,
   char *
-#ifndef __POCC__
+# ifndef NOMAINCONST
 const
-#endif
+# endif
   argv [])
 #else
 main (argc, argv)
-#ifndef __POCC__
+# ifndef NOMAINCONST
   const
-#endif
+# endif
   int argc;
   char *
-#ifndef __POCC__
+# ifndef NOMAINCONST
   const
-#endif
+# endif
   argv [];
 #endif
 {
@@ -4104,6 +4127,12 @@ main (argc, argv)
 #else
     (((char **)0 != argv && (char *)0 != argv [0] && '\0' != * argv [0])
       ? ('\0' == argv [0] [1] ? CRC_NAME : argv [0]) : CRC_NAME);
+#endif
+
+#ifdef __MSDOS__
+# ifdef __AZTEC_C_52T__
+  aztec_expand_wildcards (& argc, & argv);
+# endif
 #endif
 
   cb_zero (& lim_bits);
