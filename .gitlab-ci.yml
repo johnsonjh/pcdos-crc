@@ -220,7 +220,7 @@ pages:
     - rm -f OUT.TXT > /dev/null 2>&1 || true
     - test -f CRC.COM
     - mv -f CRC.COM crc.com && rm -f CRC.*
-    - cp -f crc.com $CI_PROJECT_DIR/public/TCPP3
+    - cp -f crc.com $CI_PROJECT_DIR/public/TCPP4J
     - ls -la $CI_PROJECT_DIR/public/TCPP4J/crc.com
     - emu2 $CI_PROJECT_DIR/public/TCPP4J/crc.com --auto crc.com crc.c
     - rm -f crc.*
