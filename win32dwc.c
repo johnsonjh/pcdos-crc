@@ -147,6 +147,26 @@ expand_pattern (pattern)
   HANDLE hFind;
   int any = 0;
 
+  if (isalpha ((unsigned char)pattern [0]) &&
+      ':' == pattern[1] && '\\' != pattern[2] && '/' != pattern[2])
+    {
+      static char fixedpat [MAX_PATH_LEN];
+      size_t mlen = strlen(pattern + 2);
+
+      if (4 + mlen >= MAX_PATH_LEN)
+        mlen = MAX_PATH_LEN - 5;
+
+      fixedpat [0] = pattern [0];
+      fixedpat [1] = ':';
+      fixedpat [2] = '.';
+      fixedpat [3] = '\\';
+
+      (void)memcpy (fixedpat + 4, pattern + 2, mlen);
+      fixedpat [4 + mlen] = '\0';
+
+      pattern = fixedpat;
+    }
+
   split_prefix (pattern, prefix, &mask);
 
   hFind = FindFirstFileA (pattern, &fd);
