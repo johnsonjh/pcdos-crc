@@ -131,7 +131,7 @@ pages:
       echo -e "section_start:`date +%s`:MSC51_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 5.10 build ...\033[0m" || true
     - mkdir -p public/MSC51
     - true -- NOTE -- 'warning C4051 - data conversion' messages are expected for MSC51 /W3 builds!
-    - ( set -x; cd /tmp/old_c/MSC51 && cp -f $CI_PROJECT_DIR/crc.c . && emu2 cl.exe /W3 /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Fecrc.exe /Dconst= crc.c -- INCLUDE=include LIB=lib && cp -f crc.exe $CI_PROJECT_DIR/public/MSC51 && ls -la $CI_PROJECT_DIR/public/MSC51/crc.exe && emu2 $CI_PROJECT_DIR/public/MSC51/crc.exe --auto crc.exe crc.c && rm -f crc.* )
+    - ( set -x; cd /tmp/old_c/MSC51 && cp -f $CI_PROJECT_DIR/crc.c . && emu2 cl.exe /W3 /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Fecrc.exe /Dconst= crc.c "lib\setargv.obj" /link /NOE -- INCLUDE=include LIB=lib && cp -f crc.exe $CI_PROJECT_DIR/public/MSC51 && ls -la $CI_PROJECT_DIR/public/MSC51/crc.exe && emu2 $CI_PROJECT_DIR/public/MSC51/crc.exe --auto crc.exe crc.c && rm -f crc.* )
     - |
       # End of Microsoft C 5.10 build ...
       echo -e "section_end:`date +%s`:MSC51_section\r\e[0K" || true
@@ -140,7 +140,7 @@ pages:
       echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A build ...\033[0m" || true
     - mkdir -p public/MSC600A
     - true -- NOTE -- 'warning C4135 - conversion between different integral types' messages are expected for MSC600A /W4 builds!
-    - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c -- INCLUDE=include LIB=lib PATH='bin;binb' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && ls -la $CI_PROJECT_DIR/public/MSC600A/crc.com && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
+    - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c "lib\setargv.obj" /link /NOE -- INCLUDE=include LIB=lib PATH='bin;binb' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && ls -la $CI_PROJECT_DIR/public/MSC600A/crc.com && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
     - |
       # End of Microsoft C 6.00A build ...
       echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
@@ -162,7 +162,7 @@ pages:
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
     - cp -f $CI_PROJECT_DIR/crc.c .
     - cp -f $CI_PROJECT_DIR/suppress.h .
-    - cat vars.bat > build.bat && printf '%s\n' "cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c" >> build.bat
+    - cat vars.bat > build.bat && printf '%s\n' "cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c lib\setargv.obj /link /NOE" >> build.bat
     - unix2dos build.bat 2> /dev/null
     - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true
@@ -212,7 +212,7 @@ pages:
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
     - cp -f $CI_PROJECT_DIR/crc.c .
     - printf '%s\n' 'path=%path%;\bin' "set include=include" "set lib=lib" > build.bat
-    - printf '%s\n' "tcc -G -O -Z -f- -g0 -mt -lt -w-pro -d -3- -2- -1- crc.c lib\wildargs.obj" >> build.bat
+    - printf '%s\n' "tcc -G -O -Z -f- -g0 -mt -lt -w-pro -d -3- -2- -1- crc.c lib\16bit\wildargs.obj" >> build.bat
     - unix2dos build.bat 2> /dev/null
     - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true

@@ -799,19 +799,19 @@ To build the program for CP/M‑68K we are using
 * To build a binary for MS‑DOS using **Microsoft C 5.10** (1988):
 
   ```sh
-  cl /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Dconst= /Fecrc.exe crc.c
+  cl /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Dconst= /Fecrc.exe crc.c lib\setargv.obj /link /NOE
   ```
 
 * To build a binary for MS‑DOS using **Microsoft C 6.00A** (1990):
 
   ```sh
-  cl /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c
+  cl /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c lib\setargv.obj /link /NOE
   ```
 
 * To build a binary for MS‑DOS using **Microsoft C/C++ 8.00c** (1993):
 
   ```sh
-  cl /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c
+  cl /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c lib\setargv.obj /link /NOE
   ```
 
 * To build a binary for MS‑DOS using
@@ -821,7 +821,7 @@ To build the program for CP/M‑68K we are using
   sed 's|const||g' crc.c | \
     { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
   cc -c -AS -Za -G0 -Oa -Ox crc.c
-  carole crc.obj lib/cwildsnd.obj -s2000
+  carole crc.obj lib\cwildsnd.obj -s2000
   ```
 
 * To build a binary for MS‑DOS using **HI‑TECH Pacific C 7.51**:
@@ -905,9 +905,10 @@ To build the program for CP/M‑68K we are using
 
 #### MS-DOS notes
 
-* MS‑DOS builds using DJGPP, C86PLUS, HI‑TECH Pacific&nbsp;C, Turbo C 2.01,
-  and Turbo C++ support internal wildcard expansion (*i.e.*, `*` and `?`).
-  Wildcard support for other MS‑DOS compilers may be added in a future release.
+* MS‑DOS builds using DJGPP, C86PLUS, HI‑TECH Pacific&nbsp;C, Microsoft&nbsp;C,
+  Turbo&nbsp;C&nbsp;2.01, and Turbo&nbsp;C++ support internal wildcard
+  expansion (*i.e.*, `*` and `?`).  Wildcard support for other MS‑DOS compilers
+  may be added in a future release.
 
 * The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
   [UPX](https://upx.github.io/) utilities can be used to compress the generated
