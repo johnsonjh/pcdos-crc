@@ -154,10 +154,10 @@ Options:
 
 When using `--bits=auto`, the program performs two passes on each file:
 
-1.  The first pass will scan the file to determine the number of significant
-    bits actually used in the storage characters.
+1. The first pass will scan the file to determine the number of significant
+   bits actually used in the storage characters.
 
-2.  The second pass actually calculates the CRC (using the detected bit‑width).
+2. The second pass actually calculates the CRC (using the detected bit‑width).
 
 If a file contains **only** 7‑bit ASCII data, `--bits=auto` will automatically
 process it using 7 bits per character, ensuring a consistent CRC regardless
@@ -290,6 +290,7 @@ In this mode:
 | [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)             | Microsoft&nbsp;C&nbsp;6.00A                      |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)               | Microsoft&nbsp;C&nbsp;5.10                       |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/BCPP31/crc.com)              | Borland&nbsp;C++&nbsp;3.1                        |
+| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP4J/crc.com)              | Turbo&nbsp;C++&nbsp;4.02J                        |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP3/crc.com)               | Turbo&nbsp;C++&nbsp;3.00                         |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP101/crc.com)             | Turbo&nbsp;C++&nbsp;1.01                         |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/TC201/crc.com)               | Turbo&nbsp;C&nbsp;2.01                           |
@@ -867,7 +868,7 @@ To build the program for CP/M‑68K we are using
   **Turbo C 1.5** (1988):
 
   ```sh
-  tcc -G -O -Z -f- -mt crc.c
+  tcc -G -O -Z -f- -mt -d crc.c
   exe2bin crc.exe crc.com
   ```
 
@@ -875,19 +876,25 @@ To build the program for CP/M‑68K we are using
   **Turbo C++ 1.01** (1990):
 
   ```sh
-  tcc -G -O -Z -f- -mt -lt crc.c
+  tcc -G -O -Z -f- -mt -lt -d crc.c lib\wildargs.obj
   ```
 
 * To build a binary for MS‑DOS using **Turbo C++ 3.00** (1991):
 
   ```sh
-  tcc -G -Z -f- -mt -lt crc.c
+  tcc -G -Z -f- -mt -lt -d crc.c lib\wildargs.obj
   ```
 
 * To build a binary for MS‑DOS using **Borland C++ 3.1** (1992):
 
   ```sh
-  bcc -O2 -f- -mt -lt crc.c
+  bcc -O2 -f- -mt -lt -d crc.c lib\wildargs.obj
+  ```
+
+* To build a binary for MS‑DOS using **Turbo C++ 4.02(J)** (1994):
+
+  ```sh
+  tcc -G -O -Z -f- -g0 -mt -lt -w-pro -d -3- -2- -1- -d crc.c lib\16bit\wildargs.obj
   ```
 
 * To build a binary for MS‑DOS (386+) using **DJGPP**:
@@ -898,9 +905,9 @@ To build the program for CP/M‑68K we are using
 
 #### MS-DOS notes
 
-* MS‑DOS builds using DJGPP, C86PLUS, and HI‑TECH Pacific&nbsp;C support
-  internal wildcard expansion (*i.e.*, `*` and `?`).  Wildcard support for
-  other MS‑DOS compilers may be added in a future release.
+* MS‑DOS builds using DJGPP, C86PLUS, HI‑TECH Pacific&nbsp;C, Turbo C 2.01,
+  and Turbo C++ support internal wildcard expansion (*i.e.*, `*` and `?`).
+  Wildcard support for other MS‑DOS compilers may be added in a future release.
 
 * The [aPACK](https://www.ibsensoftware.com/products_aPACK.html) or
   [UPX](https://upx.github.io/) utilities can be used to compress the generated

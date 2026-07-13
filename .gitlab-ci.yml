@@ -95,7 +95,7 @@ pages:
       # Start of Turbo C++ 1.01 build ...
       echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 build ...\033[0m" || true
     - mkdir -p public/TCPP101
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && mv -f crc.com public/TCPP101 && ls -la public/TCPP101/crc.com && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\lib\wildargs.obj" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && mv -f crc.com public/TCPP101 && ls -la public/TCPP101/crc.com && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
     - |
       # End of Turbo C++ 1.01 build ...
       echo -e "section_end:`date +%s`:TCPP101_section\r\e[0K" || true
@@ -105,7 +105,7 @@ pages:
     - mkdir -p public/TC201
     - cp -f crc.c crc.c.bak
     - unix2dos -f crc.c
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt "D:\crc.c" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && ls -la public/TC201/crc.com && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\wildargs.obj" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && ls -la public/TC201/crc.com && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
     - mv -f crc.c.bak crc.c
     - |
       # End of Turbo C 2.01 build ...
@@ -114,7 +114,7 @@ pages:
       # Start of Turbo C 1.5 build ...
       echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
     - mkdir -p public/TC15
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt -d "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
     - |
       # End of Turbo C 1.5 build ...
       echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
@@ -122,7 +122,7 @@ pages:
       # Start of Turbo C 1.0 build ...
       echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
     - mkdir -p public/TC10
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt -d "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
     - |
       # End of Turbo C 1.0 build ...
       echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
@@ -187,7 +187,7 @@ pages:
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
     - cp -f $CI_PROJECT_DIR/crc.c .
     - printf '%s\n' 'path=%path%;\bin' "set include=include" "set lib=lib" > build.bat
-    - printf '%s\n' "tcc -G -Z -f- -mt -lt crc.c" >> build.bat
+    - printf '%s\n' "tcc -G -Z -f- -mt -lt -d crc.c lib\wildargs.obj" >> build.bat
     - unix2dos build.bat 2> /dev/null
     - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true
@@ -204,6 +204,31 @@ pages:
       # End of Turbo C++ 3.00 build ...
       echo -e "section_end:`date +%s`:TCPP3_section\r\e[0K" || true
     - |
+      # Start of Turbo C++ 4.02J build ...
+      echo -e "section_start:`date +%s`:TCPP4J_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 4.02J build ...\033[0m" || true
+    - mkdir -p public/TCPP4J
+    - cd /tmp/old_c/TCPP4J
+    - cp -f ../UTILS/REDIR.COM .
+    - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
+    - cp -f $CI_PROJECT_DIR/crc.c .
+    - printf '%s\n' 'path=%path%;\bin' "set include=include" "set lib=lib" > build.bat
+    - printf '%s\n' "tcc -G -O -Z -f- -g0 -mt -lt -w-pro -d -3- -2- -1- crc.c lib\wildargs.obj" >> build.bat
+    - unix2dos build.bat 2> /dev/null
+    - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
+    - rm -f build.bat > /dev/null 2>&1 || true
+    - cat OUT.TXT
+    - rm -f OUT.TXT > /dev/null 2>&1 || true
+    - test -f CRC.COM
+    - mv -f CRC.COM crc.com && rm -f CRC.*
+    - cp -f crc.com $CI_PROJECT_DIR/public/TCPP3
+    - ls -la $CI_PROJECT_DIR/public/TCPP4J/crc.com
+    - emu2 $CI_PROJECT_DIR/public/TCPP4J/crc.com --auto crc.com crc.c
+    - rm -f crc.*
+    - cd $CI_PROJECT_DIR
+    - |
+      # End of Turbo C++ 4.02J build ...
+      echo -e "section_end:`date +%s`:TCPP4J_section\r\e[0K" || true
+    - |
       # Start of Borland C++ 3.1 build ...
       echo -e "section_start:`date +%s`:BCPP31_section[collapsed=true]\r\e[0K\033[0;36mBorland C++ 3.10 build ...\033[0m" || true
     - mkdir -p public/BCPP31
@@ -212,7 +237,7 @@ pages:
     - rm -f build.bat OUT.TXT > /dev/null 2>&1 || true
     - cp -f $CI_PROJECT_DIR/crc.c .
     - printf '%s\n' 'path=%path%;\bin' "set include=include" "set lib=lib" > build.bat
-    - printf '%s\n' "bcc -O2 -f- -mt -lt crc.c" >> build.bat
+    - printf '%s\n' "bcc -O2 -f- -mt -lt -d crc.c lib\wildargs.obj" >> build.bat
     - unix2dos build.bat 2> /dev/null
     - env SDL_VIDEODRIVER=wayland dosbox . --exit -c "redir command.com /c build.bat > out.txt" -set "cpu core=dynamic" -set "cpu cycles=max" > /dev/null 2>&1
     - rm -f build.bat > /dev/null 2>&1 || true
