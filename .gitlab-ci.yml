@@ -79,7 +79,7 @@ pages:
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 build ...\033[0m" || true
     - mkdir -p public/dev86
-    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -v -o crc.com crc.c && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
+    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -v -o crc.com crc.c dev86dwc.c && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
     - |
       # End of dev86 build ...
       echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
@@ -114,7 +114,7 @@ pages:
       # Start of Turbo C 1.5 build ...
       echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
     - mkdir -p public/TC15
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt -d "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
     - |
       # End of Turbo C 1.5 build ...
       echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
@@ -122,7 +122,7 @@ pages:
       # Start of Turbo C 1.0 build ...
       echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
     - mkdir -p public/TC10
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt -d "D:\crc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
+    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
     - |
       # End of Turbo C 1.0 build ...
       echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
@@ -282,7 +282,7 @@ pages:
       # Start of Aztec C86/DOS 5.2a build ...
       echo -e "section_start:`date +%s`:C86DOS52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C86/DOS 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C86_DOS_5.2a
-    - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c $CI_PROJECT_DIR/aztecdwc.c . && emu2 bin/cc.exe "+FA" crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/cc.exe "+FA" aztecdwc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe aztecdwc.o && emu2 bin/ln.exe -o crc.com crc.o aztecdwc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* aztecdwc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
+    - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c $CI_PROJECT_DIR/aztecdwc.c . && emu2 bin/cc.exe "+FA" -D__AZTEC_C_52T__ -D__MSDOS__ crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/cc.exe "+FA" aztecdwc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe aztecdwc.o && emu2 bin/ln.exe -o crc.com crc.o aztecdwc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* aztecdwc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - |
       # End of Aztec C86/DOS 5.2a build ...
       echo -e "section_end:`date +%s`:C86DOS52a_section\r\e[0K" || true
@@ -306,7 +306,7 @@ pages:
       # Start of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_start:`date +%s`:DMCPPDOS_section[collapsed=true]\r\e[0K\033[0;36mDigital Mars C/C++ DOS 8.57 build ...\033[0m" || true
     - mkdir -p public/Digital_Mars_C_8.57
-    - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c . && env WINEDEBUG=-all wine bin/dmc.exe -0 -o -mt crc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
+    - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c . && env WINEDEBUG=-all wine bin/dmc.exe -0 -o -mt crc.c dosdwc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - |
       # End of Digital Mars C/C++ DOS 8.57 build ...
       echo -e "section_end:`date +%s`:DMCPPDOS_section\r\e[0K" || true

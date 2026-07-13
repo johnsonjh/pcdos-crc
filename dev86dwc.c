@@ -1,17 +1,17 @@
 /*
- * IBM PC-DOS CRC.EXE-compatible CRC calculator - aztecdwc.c
+ * IBM PC-DOS CRC.EXE-compatible CRC calculator - dev86dwc.c
  * Copyright (c) 2026 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
  * SPDX-License-Identifier: MIT-0
- * scspell-id: 09200394-7ee1-11f1-9acc-80ee73e9b8e7
+ * scspell-id: 908e2d74-7ee1-11f1-a25b-80ee73e9b8e7
  */
 
 /******************************************************************************/
 
-/* Expands wildcards and modifies argc and argv for Aztec C86 5.2 for MS-DOS. */
+/* Expands wildcards and modifies argc and argv for dev86/bcc for MS-DOS. */
 
 /******************************************************************************/
 
-#include <dos.h>
+#include <bios.h>
 #include <string.h>
 
 /******************************************************************************/
@@ -21,23 +21,17 @@
 
 /******************************************************************************/
 
-#define ATTR_MASK (0x01 | 0x20)
-
-/******************************************************************************/
-
-static char argbuf [MAX_ARGS] [MAX_PATH];
-static char * newargv [MAX_ARGS];
-static int newargc;
+#define ATTR_MASK 0x21
 
 /******************************************************************************/
 
 struct dta
 {
-  char reserved [21]; /*cppcheck-suppress unusedStructMember*/
-  unsigned char attr; /*cppcheck-suppress unusedStructMember*/
-  unsigned int time;  /*cppcheck-suppress unusedStructMember*/
-  unsigned int date;  /*cppcheck-suppress unusedStructMember*/
-  unsigned long size; /*cppcheck-suppress unusedStructMember*/
+  unsigned char reserved [21]; /*cppcheck-suppress unusedStructMember*/
+  unsigned char attr;          /*cppcheck-suppress unusedStructMember*/
+  unsigned short time;         /*cppcheck-suppress unusedStructMember*/
+  unsigned short date;         /*cppcheck-suppress unusedStructMember*/
+  unsigned long size;          /*cppcheck-suppress unusedStructMember*/
   char name [13];
 };
 
@@ -47,15 +41,29 @@ static struct dta dtabuf;
 
 /******************************************************************************/
 
+static char argbuf [MAX_ARGS] [MAX_PATH];
+static char * newargv [MAX_ARGS];
+static int newargc;
+
+/******************************************************************************/
+
 static void
 #ifdef ANSI_COMPILER
 set_dta (
-  void)
+  struct const dta * buf)
 #else
-set_dta ()
+set_dta (buf)
+  struct const dta * buf;
 #endif
 {
-  (void)bdosx (0x1A, (void far *)& dtabuf, 0);
+  union REGS r;
+  struct SREGS s;
+
+  r.h.ah = 0x1A;
+  s.ds = __get_ds ();
+  r.x.dx = (unsigned short)buf;
+
+  int86x (0x21, &r, &r, &s);
 }
 
 /******************************************************************************/
@@ -63,15 +71,26 @@ set_dta ()
 static int
 #ifdef ANSI_COMPILER
 find_first (
- const char * pattern,
- int attr)
+  const char * pattern,
+  unsigned attr)
 #else
 find_first (pattern, attr)
- const char * pattern;
- int attr;
+  const char * pattern;
+  unsigned attr;
 #endif
 {
-  return bdosx (0x4E, (void far *)pattern, attr);
+  union REGS r;
+  struct SREGS s;
+
+  r.h.ah = 0x4E;
+  r.x.cx = attr;
+
+  s.ds = __get_ds ();
+  r.x.dx = (unsigned short)pattern;
+
+  int86x (0x21, &r, &r, &s);
+
+  return r.x.ax;
 }
 
 /******************************************************************************/
@@ -79,12 +98,17 @@ find_first (pattern, attr)
 static int
 #ifdef ANSI_COMPILER
 find_next (
- void)
+  void)
 #else
 find_next ()
 #endif
 {
-  return bdos (0x4F, 0, 0);
+  union REGS r;
+
+  r.h.ah = 0x4F;
+  int86 (0x21, &r, &r);
+
+  return r.x.ax;
 }
 
 /******************************************************************************/
@@ -134,7 +158,7 @@ split_prefix (pattern, prefix, mask)
   const char * last_sep = NULL;
   const char * p = pattern;
 
-  while (* p)
+  while ('\0' != * p)
     {
       if ('\\' == * p || '/' == * p || ':' == * p)
         last_sep = p;
@@ -183,9 +207,9 @@ expand_pattern (pattern)
   const char * mask;
   int rc;
 
-  split_prefix (pattern, prefix, & mask);
+  split_prefix (pattern, prefix, &mask);
 
-  set_dta ();
+  set_dta (&dtabuf);
 
   rc = find_first (pattern, ATTR_MASK);
 
@@ -202,7 +226,6 @@ expand_pattern (pattern)
             if (MAX_PATH <= plen)
               {
                 rc = find_next ();
-
                 continue;
               }
 
@@ -228,11 +251,11 @@ expand_pattern (pattern)
 
 void
 #ifdef ANSI_COMPILER
-aztec_expand_wildcards ( /*cppcheck-suppress unusedFunction*/
+dev86_expand_wildcards ( /*cppcheck-suppress unusedFunction*/
   int * argc,
   char * * * argv)
 #else
-aztec_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
+dev86_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
   int * argc;
   char * * * argv;
 #endif
@@ -249,27 +272,28 @@ aztec_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
   else
     i = 0;
 
-  for (; i < * argc; i++)
+  while (i < * argc)
     {
       const char * p = (* argv)[i];
       int has_wc = 0;
 
-      while (* p)
+      while ('\0' != * p)
         {
           if ('*' == * p || '?' == * p)
             {
               has_wc = 1;
-
               break;
             }
 
           p++;
         }
 
-      if (has_wc)
+      if (1 == has_wc)
         expand_pattern ((* argv)[i]);
       else
         (void)add_arg ((* argv)[i]);
+
+      i++;
     }
 
   * argc = newargc;

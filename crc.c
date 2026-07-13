@@ -4058,9 +4058,101 @@ void aztec_expand_wildcards (int * argc, char * * * argv);
 
 /******************************************************************************/
 
+#ifdef __DMC__
+# ifdef __MSDOS__
+void dos_expand_wildcards (int * argc, char * * * argv);
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __WATCOMC__
+# ifdef __MSDOS__
+void dos_expand_wildcards (int * argc, char * * * argv);
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef TCDWC
+void tc_expand_wildcards (int * argc, char * * * argv);
+#endif
+
+/******************************************************************************/
+
+#ifdef __BCC__
+void dev86_expand_wildcards (argc, argv);
+#endif
+
+/******************************************************************************/
+
+#ifdef __IA16_SYS_MSDOS
+# ifdef __GNUC__
+void ia16_expand_wildcards (int * argc, char * * * argv);
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef _WIN32
+void win32_expand_wildcards (int * argc, char * * * argv);
+#endif
+
+/******************************************************************************/
+
 #ifdef __POCC__
 # ifndef NOMAINCONST
 #  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __DMC__
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __WATCOMC__
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __BCC__
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef TCDWC
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef _WIN32
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef __IA16_SYS_MSDOS
+# ifdef __GNUC__
+#  ifndef NOMAINCONST
+#   define NOMAINCONST
+#  endif
 # endif
 #endif
 
@@ -4133,6 +4225,26 @@ main (argc, argv)
 # ifdef __AZTEC_C_52T__
   aztec_expand_wildcards (& argc, & argv);
 # endif
+# ifdef __DMC__
+  dos_expand_wildcards (& argc, & argv);
+# endif
+# ifdef __WATCOMC__
+  dos_expand_wildcards (& argc, & argv);
+# endif
+# ifdef __IA16_SYS_MSDOS
+#  ifdef __GNUC__
+  ia16_expand_wildcards (& argc, & argv);
+#  endif
+# endif
+# ifdef __BCC__
+  dev86_expand_wildcards (& argc, & argv);
+# endif
+#endif
+#ifdef TCDWC
+  tc_expand_wildcards (& argc, & argv);
+#endif
+#ifdef _WIN32
+  win32_expand_wildcards (& argc, & argv);
 #endif
 
   cb_zero (& lim_bits);
