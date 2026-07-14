@@ -286,6 +286,10 @@ grep '[[:alnum:]]const[[:alnum:]]' ./*.c && {
   : ERROR: Banned strings found
   exit 1
 }
+grep '[[:alnum:]]const' ./*.c && {
+  : ERROR: Banned strings found
+  exit 1
+}
 
 ################################################################################
 
