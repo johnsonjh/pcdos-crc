@@ -40,7 +40,7 @@ pages:
     - apk update || true
     - apk add '!usr-merge-nag' 2> /dev/null || true
     - apk upgrade --prune || true
-    - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl ncurses-dev pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo wine wayland-libs-egl xwayland i686-mingw-w64-gcc mingw-w64-gcc tar curl xz
+    - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl ncurses-dev pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo wine wayland-libs-egl xwayland i686-mingw-w64-gcc mingw-w64-gcc tar curl xz go npm
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
@@ -62,6 +62,9 @@ pages:
     - mkdir -p /opt/watcom
     - ( cd /opt/watcom && curl -fsSL https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | xz -dc | tar xf - )
     - export WATCOM=/opt/watcom
+    - env GOTOOLCHAIN=auto go install github.com/boyter/scc/v3@master || true
+    - export PATH="$HOME/go/bin:$PATH"
+    - npm install -g --save markdown-toc || true
     - |
       # End of Setup ...
       echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
@@ -72,6 +75,20 @@ pages:
     - |
       # End of lint ...
       echo -e "section_end:`date +%s`:Lint_section\r\e[0K" || true
+    - |
+      # Start of scc ...
+      echo -e "section_start:`date +%s`:SCC_section[collapsed=true]\r\e[0K\033[0;36mscc ...\033[0m" || true
+    - make scc
+    - |
+      # End of scc ...
+      echo -e "section_end:`date +%s`:SCC_section\r\e[0K" || true
+    - |
+      # Start of git diff ...
+      echo -e "section_start:`date +%s`:GDIFF_section[collapsed=true]\r\e[0K\033[0;36mgit diff ...\033[0m" || true
+    - git diff
+    - |
+      # End of git diff ...
+      echo -e "section_end:`date +%s`:GDIFF_section\r\e[0K" || true
     - |
       # Start of test ...
       echo -e "section_start:`date +%s`:Test_section[collapsed=true]\r\e[0K\033[0;36mmake test ...\033[0m" || true
@@ -376,7 +393,7 @@ pages:
       echo -e "section_end:`date +%s`:WCDOS_section\r\e[0K" || true
     - |
       # Start of Open Watcom Windows x86 build ...
-      echo -e "section_start:`date +%s`:WCw32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
+      echo -e "section_start:`date +%s`:WCW32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
     - mkdir -p public/OWC2_32
     - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -v -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
     - mv -f crc.exe public/OWC2_32
