@@ -49,6 +49,7 @@ pages:
     - python3 -m venv $HOME/.local/venvs/vamos
     - $HOME/.local/venvs/vamos/bin/pip install --upgrade pip || true
     - $HOME/.local/venvs/vamos/bin/pip install --upgrade amitools[vamos]
+    - export VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error"
     - mkdir -p $HOME/.local/bin
     - printf '%s\n' '#!/bin/sh' 'exec "$HOME/.local/venvs/vamos/bin/vamos" "$@"' > "$HOME/.local/bin/vamos"
     - chmod a+x "$HOME/.local/bin/vamos"
@@ -320,7 +321,7 @@ pages:
       # Start of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_Amiga_5.2a
-    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && file crc && ls -la crc && cp -f $CI_PROJECT_DIR/crc.c . && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c && rm -f crc.c )
+    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && file crc && ls -la crc && cp -f $CI_PROJECT_DIR/crc.c . && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c && rm -f crc.c )
     - |
       # End of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_end:`date +%s`:C68Amiga52a_section\r\e[0K" || true
@@ -405,6 +406,46 @@ pages:
     - |
       # End of Open Watcom Windows x86 build ...
       echo -e "section_end:`date +%s`:WCW32_section\r\e[0K" || true
+    - |
+      # Start of Vbcc AmigaOS 68K build ...
+      echo -e "section_start:`date +%s`:AOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS 68K build ...\033[0m" || true
+    - mkdir -p public/Vbcc_AOS68K
+    - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -o crc crc.c && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
+    - mv -f crc public/Vbcc_AOS68K
+    - make clean
+    - |
+      # End of Vbcc AmigaOS 68K build ...
+      echo -e "section_end:`date +%s`:AOS68K_section\r\e[0K" || true
+    - |
+      # Start of Vbcc AmigaOS PPC build ...
+      echo -e "section_start:`date +%s`:AOSPPC_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PPC build ...\033[0m" || true
+    - mkdir -p public/Vbcc_AOSPPC
+    - ( set -x; vc "+aosppc" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c && ls -la crc && file crc )
+    - mv -f crc public/Vbcc_AOSPPC
+    - make clean
+    - |
+      # End of Vbcc AmigaOS PPC build ...
+      echo -e "section_end:`date +%s`:AOSPPC_section\r\e[0K" || true
+    - |
+      # Start of Vbcc Atari ST TOS build ...
+      echo -e "section_start:`date +%s`:TOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc Atari ST TOS build ...\033[0m" || true
+    - mkdir -p public/Vbcc_TOS68K
+    - ( set -x; vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -o crc.ttp crc.c && ls -la crc.ttp && file crc.ttp )
+    - mv -f crc public/Vbcc_TOS68K
+    - make clean
+    - |
+      # End of Vbcc Atari ST TOS build ...
+      echo -e "section_end:`date +%s`:TOS68K_section\r\e[0K" || true
+    - |
+      # Start of Vbcc Linux x86 build ...
+      echo -e "section_start:`date +%s`:LINX86_section[collapsed=true]\r\e[0K\033[0;36mVbcc Linux x86 build ...\033[0m" || true
+    - mkdir -p public/Vbcc_LINX86
+    - ( set -x; vc "+i386-linux" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c && ls -la crc && file crc && ./crc --auto crc crc.c )
+    - mv -f crc public/Vbcc_LINX86
+    - make clean
+    - |
+      # End of Vbcc Linux x86 build ...
+      echo -e "section_end:`date +%s`:LINX86_section\r\e[0K" || true
   artifacts:
     expire_in: 1 day
     paths:
