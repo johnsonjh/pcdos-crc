@@ -272,45 +272,52 @@ In this mode:
 
 ## Binary builds
 
+> These are not necessarily *the best* builds overall, but they are the
+> “best” builds (for each platform) currently produced by
+> [GitLab CI/CD](https://gitlab.com/dps8m/crc/-/pipelines/latest).
+
 |                                                                         Platform | Toolchain                         |
 |---------------------------------------------------------------------------------:|:----------------------------------|
 | [**AmigaOS**/**68K**](https://dps8m.gitlab.io/crc/Vbcc_AOS68K/crc)               | Vbcc                              |
 | [**AmigaOS**/**PPC**](https://dps8m.gitlab.io/crc/Vbcc_AOSPPC/crc)               | Vbcc                              |
 | [**Atari&nbsp;ST**](https://dps8m.gitlab.io/crc/Vbcc_TOS68K/crc.ttp)             | Vbcc                              |
 | [**CP/M‑68K**](https://dps8m.gitlab.io/crc/Aztec_C68K_CPM68K_3.6b/CRC.68K)       | Aztec&nbsp;C68K/ROM&nbsp;3.6b     |
-| [**CP/M‑80**](https://dps8m.gitlab.io/crc/HI-TECH-Z80_4.11/crc.com)              | HI‑TECH&nbsp;C&nbsp;Z80&nbsp;4.11 |
+| [**CP/M‑80**&nbsp;**8080**](https://dps8m.gitlab.io/crc/Ack_CPM/crc.com)         | Ack                               |
+| [**CP/M‑80**&nbsp;**Z80**](https://dps8m.gitlab.io/crc/HI-TECH-Z80_4.11/crc.com) | HI‑TECH&nbsp;C&nbsp;Z80&nbsp;4.11 |
 | [**Linux**/**PPC**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Ack_LINPPC/crc)  | Ack                               |
 | [**Linux**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/linux32/crc)     | Open&nbsp;Watcom&nbsp;V2          |
 | [**Linux**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/linux64/crc)     | GCC&nbsp;(musl)                   |
-| [**MS‑DOS**](https://dps8m.gitlab.io/crc/MSC800c/crc.com)                        | Microsoft&nbsp;C&nbsp;8.00c       |
+| [**MS‑DOS**&nbsp;**16‑bit**](https://dps8m.gitlab.io/crc/MSC800c/crc.com)        | Microsoft&nbsp;C&nbsp;8.00c       |
 | [**UNIX&nbsp;V7**/**PDP‑11**](https://dps8m.gitlab.io/crc/Ack_V7/crc.com)        | Ack                               |
 | [**Windows**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Win32/crc.exe) | GCC&nbsp;(MinGW)                  |
 | [**Windows**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/Win64/crc.exe) | GCC&nbsp;(MinGW)                  |
 
 ### Extra builds
 
-|                                                                Platform | Toolchain                                        |
-|------------------------------------------------------------------------:|:-------------------------------------------------|
-| [AmigaOS/68K](https://dps8m.gitlab.io/crc/Aztec_C68K_Amiga_5.2a/crc)    | Aztec&nbsp;C68K/Amiga&nbsp;5.2a                  |
-| [CP/M‑80](https://dps8m.gitlab.io/crc/Ack_CPM/crc.com)                  | Ack                                              |
-| [Linux/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Ack_LINX86/crc)     | Ack                                              |
-| [Linux/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Vbcc_LINX86/crc)    | Vbcc                                             |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com)        | Aztec&nbsp;C86&nbsp;5.2a                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/C86PLUS_1.10/crc.exe)              | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/dev86/crc.com)                     | dev86                                            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/Digital_Mars_C_8.57/crc.com)       | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57           |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC51/crc.exe)                     | Microsoft&nbsp;C&nbsp;5.10                       |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/MSC600A/crc.com)                   | Microsoft&nbsp;C&nbsp;6.00A                      |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/OWC2/crc.com)                      | Open&nbsp;Watcom&nbsp;V2                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/Pacific_C_7.51/crc.exe)            | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC10/crc.com)                      | Turbo&nbsp;C&nbsp;1.0                            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC15/crc.com)                      | Turbo&nbsp;C&nbsp;1.5                            |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TC201/crc.com)                     | Turbo&nbsp;C&nbsp;2.01                           |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP101/crc.com)                   | Turbo&nbsp;C++&nbsp;1.01                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP3/crc.com)                     | Turbo&nbsp;C++&nbsp;3.00                         |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/BCPP31/crc.com)                    | Borland&nbsp;C++&nbsp;3.1                        |
-| [MS‑DOS](https://dps8m.gitlab.io/crc/TCPP4J/crc.com)                    | Turbo&nbsp;C++&nbsp;4.02J                        |
-| [Windows/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/OWC2_W32/crc.exe) | Open&nbsp;Watcom&nbsp;V2                         |
+> The following are additional
+> [GitLab CI/CD](https://gitlab.com/dps8m/crc/-/pipelines/latest) builds.
+
+|                                                                      Platform | Toolchain                                        |
+|------------------------------------------------------------------------------:|:-------------------------------------------------|
+| [AmigaOS/68K](https://dps8m.gitlab.io/crc/Aztec_C68K_Amiga_5.2a/crc)          | Aztec&nbsp;C68K/Amiga&nbsp;5.2a                  |
+| [Linux/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Ack_LINX86/crc)           | Ack                                              |
+| [Linux/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Vbcc_LINX86/crc)          | Vbcc                                             |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com)  | Aztec&nbsp;C86&nbsp;5.2a                         |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/C86PLUS_1.10/crc.exe)        | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/dev86/crc.com)               | dev86                                            |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/Digital_Mars_C_8.57/crc.com) | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57           |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/MSC51/crc.exe)               | Microsoft&nbsp;C&nbsp;5.10                       |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/MSC600A/crc.com)             | Microsoft&nbsp;C&nbsp;6.00A                      |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/OWC2/crc.com)                | Open&nbsp;Watcom&nbsp;V2                         |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/Pacific_C_7.51/crc.exe)      | HI‑TECH&nbsp;Pacific&nbsp;C&nbsp;7.51            |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TC10/crc.com)                | Turbo&nbsp;C&nbsp;1.0                            |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TC15/crc.com)                | Turbo&nbsp;C&nbsp;1.5                            |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TC201/crc.com)               | Turbo&nbsp;C&nbsp;2.01                           |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TCPP101/crc.com)             | Turbo&nbsp;C++&nbsp;1.01                         |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TCPP3/crc.com)               | Turbo&nbsp;C++&nbsp;3.00                         |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/BCPP31/crc.com)              | Borland&nbsp;C++&nbsp;3.1                        |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TCPP4J/crc.com)              | Turbo&nbsp;C++&nbsp;4.02J                        |
+| [Windows/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/OWC2_W32/crc.exe)       | Open&nbsp;Watcom&nbsp;V2                         |
 
 ## Building from source
 
