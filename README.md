@@ -417,7 +417,7 @@ NetBSD, and OpenBSD.
 
 * You can examine the output of the
   [latest GitLab CI/CD job](https://gitlab.com/dps8m/crc/-/pipelines/latest)
-  which includes build output from various legacy MS‑DOS compilers.
+  which includes build output from various legacy compilers.
 
 ## Platform specifics
 
