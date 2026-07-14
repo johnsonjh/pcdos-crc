@@ -80,9 +80,9 @@ The only current requirements are:
   as the 32‑bit CRC,
 * a character type with a width of at least 8 but no more than 32 bits, and
 * a minimal `stdio` implementation only needing to support 7 functions:
-  * ⑴ `fprintf` or `printf`, ⑵ `fopen`, ⑶ `fclose`, ⑷ `fgetc`, ⑸ `ferror`,
-    ⑹ `feof`, ⑺ `clearerr`,
-  * and optionally: `setbuf` and `fread`.
+  * ⑴&nbsp;`fprintf` or `printf`, ⑵&nbsp;`fopen`, ⑶&nbsp;`fclose`,
+    ⑷&nbsp;`fgetc`, ⑸&nbsp;`ferror`, ⑹&nbsp;`feof`, ⑺&nbsp;`clearerr`,
+  * and *optionally*: `setbuf` and `fread`.
 
 It has been tested on various exotic and retro platforms including
 **Multics** ([Multics&nbsp;C](https://www.bitsavers.org/pdf/honeywell/large_systems/multics/HH07-01_C_UsersGuide_Nov87.pdf)),
@@ -278,16 +278,16 @@ In this mode:
 | [**CP/M‑68K**](https://dps8m.gitlab.io/crc/Aztec_C68K_CPM68K_3.6b/CRC.68K) | Aztec&nbsp;C68K/ROM&nbsp;3.6b     |
 | [**AmigaOS**](https://dps8m.gitlab.io/crc/Aztec_C68K_Amiga_5.2a/crc)       | Aztec&nbsp;C68K/Amiga&nbsp;5.2a   |
 | [**CP/M‑80**](https://dps8m.gitlab.io/crc/HI-TECH-Z80_4.11/crc.com)        | HI‑TECH&nbsp;C&nbsp;Z80&nbsp;4.11 |
-| [**Linux&nbsp:32‑bit**](https://dps8m.gitlab.io/crc/linux32/crc)           | Open&nbsp;Watcom&nbsp;V2          |
-| [**Linux&nbsp:64‑bit**](https://dps8m.gitlab.io/crc/linux64/crc)           | GCC&nbsp;(musl)                   |
-| [**Windows&nbsp:32‑bit**](https://dps8m.gitlab.io/crc/Win32/crc.exe)       | GCC&nbsp;(MinGW)                  |
-| [**Windows&nbsp:64‑bit**](https://dps8m.gitlab.io/crc/Win64/crc.exe)       | GCC&nbsp;(MinGW)                  |
+| [**Linux&nbsp;32‑bit**](https://dps8m.gitlab.io/crc/linux32/crc)           | Open&nbsp;Watcom&nbsp;V2          |
+| [**Linux&nbsp;64‑bit**](https://dps8m.gitlab.io/crc/linux64/crc)           | GCC&nbsp;(musl)                   |
+| [**Windows&nbsp;32‑bit**](https://dps8m.gitlab.io/crc/Win32/crc.exe)       | GCC&nbsp;(MinGW)                  |
+| [**Windows&nbsp;64‑bit**](https://dps8m.gitlab.io/crc/Win64/crc.exe)       | GCC&nbsp;(MinGW)                  |
 
 ### Extra builds
 
 |                                                                Platform | Toolchain                                        |
 |------------------------------------------------------------------------:|:-------------------------------------------------|
-| [**Windows&nbsp:32‑bit**](https://dps8m.gitlab.io/crc/OWC2_W32/crc.exe) | Open&nbsp;Watcom&nbsp;V2                         |
+| [**Windows&nbsp;32‑bit**](https://dps8m.gitlab.io/crc/OWC2_W32/crc.exe) | Open&nbsp;Watcom&nbsp;V2                         |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/OWC2/crc.com)                      | Open&nbsp;Watcom&nbsp;V2                         |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/C86PLUS_1.10/crc.exe)              | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
 | [MS‑DOS](https://dps8m.gitlab.io/crc/Digital_Mars_C_8.57/crc.com)       | Digital&nbsp;Mars&nbsp;C/C++&nbsp;8.57           |
