@@ -288,7 +288,7 @@ In this mode:
 | [**Linux**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/linux32/crc)     | Open&nbsp;Watcom&nbsp;V2          |
 | [**Linux**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/linux64/crc)     | GCC&nbsp;(musl)                   |
 | [**MS‑DOS**&nbsp;**16‑bit**](https://dps8m.gitlab.io/crc/MSC800c/crc.com)        | Microsoft&nbsp;C&nbsp;8.00c       |
-| [**UNIX&nbsp;V7**/**PDP‑11**](https://dps8m.gitlab.io/crc/Ack_V7/crc.com)        | Ack                               |
+| [**UNIX&nbsp;V7**/**PDP‑11**](https://dps8m.gitlab.io/crc/Ack_V7/crc)            | Ack                               |
 | [**Windows**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Win32/crc.exe) | GCC&nbsp;(MinGW)                  |
 | [**Windows**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/Win64/crc.exe) | GCC&nbsp;(MinGW)                  |
 
