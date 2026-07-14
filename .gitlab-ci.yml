@@ -60,7 +60,7 @@ pages:
     - wine wineboot --init > /dev/null 2>&1 || true
     - mkdir -p public
     - mkdir -p /opt/watcom
-    - ( cd /opt/watcom && curl -fsSL https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | xz -dc | tar xvf - )
+    - ( cd /opt/watcom && curl -fsSL https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | xz -dc | tar xf - )
     - export WATCOM=/opt/watcom
     - |
       # End of Setup ...
@@ -347,7 +347,7 @@ pages:
       echo -e "section_end:`date +%s`:WIN64_section\r\e[0K" || true
     - |
       # Start of Linux x86_64 build ...
-      echo -e "section_start:`date +%s`:LIN64_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) x64 build ...\033[0m" || true
+      echo -e "section_start:`date +%s`:LIN64_section[collapsed=true]\r\e[0K\033[0;36mLinux x64 build ...\033[0m" || true
     - mkdir -p public/linux64
     - ( set -x; gcc -O3 -s -flto=auto -fweb -static -m64 -march=x86-64 -o crc crc.c && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/linux64
@@ -358,7 +358,7 @@ pages:
       # Start of Open Watcom Linux x86 build ...
       echo -e "section_start:`date +%s`:WCLIN32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Linux x86 build ...\033[0m" || true
     - mkdir -p public/linux32
-    - ( set -x; make clean && env INCLUDE=$WATCOM/h:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -v -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c && make clean )
+    - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -v -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c && make clean )
     - mv -f crc public/linux32
     - |
       # End of Open Watcom Linux x86 build ...
