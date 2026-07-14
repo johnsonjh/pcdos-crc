@@ -27,7 +27,7 @@ before_script:
 
 pages:
   stage: deploy
-  image: alpine:latest
+  image: alpine:edge
   tags:
     - saas-linux-2xlarge-amd64
   rules:
@@ -40,7 +40,7 @@ pages:
     - apk update || true
     - apk add '!usr-merge-nag' 2> /dev/null || true
     - apk upgrade --prune || true
-    - apk add bear cage clang clang-analyzer cppcheck ctags dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gtk+3.0 libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl ncurses-dev pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo wine wayland-libs-egl xwayland i686-mingw-w64-gcc mingw-w64-gcc tar curl xz go npm
+    - apk add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc ncurses-dev npm pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo tar wayland-libs-egl wine xwayland xz
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
