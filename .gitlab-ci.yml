@@ -40,7 +40,7 @@ pages:
     - apk update || true
     - apk add '!usr-merge-nag' 2> /dev/null || true
     - apk upgrade --prune || true
-    - apk add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc ncurses-dev npm pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo tar wayland-libs-egl wine xwayland xz
+    - apk add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv-dev gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses-dev npm pango py3-codespell python3-dev reuse seatd shellcheck shfmt sudo tar wayland-libs-egl wine xwayland xz
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
@@ -65,6 +65,7 @@ pages:
     - env GOTOOLCHAIN=auto go install github.com/boyter/scc/v3@master || true
     - export PATH="$HOME/go/bin:$PATH"
     - npm install -g --save markdown-toc || true
+    - ( cd /tmp && curl -fsSL https://ftpmirror.gnu.org/cppi/cppi-1.18.tar.xz | xz -dc | tar xf - && cd ./cppi-* && ./configure --prefix=/usr --disable-assert --disable-dependency-tracking && make -j $(nproc) && make install && cd .. && rm -rf ./cppi-* ) || true
     - |
       # End of Setup ...
       echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
