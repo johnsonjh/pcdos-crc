@@ -358,8 +358,9 @@ pages:
       # Start of Open Watcom Linux x86 build ...
       echo -e "section_start:`date +%s`:WCLIN32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Linux x86 build ...\033[0m" || true
     - mkdir -p public/linux32
-    - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -v -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c && make clean )
+    - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -v -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/linux32
+    - make clean
     - |
       # End of Open Watcom Linux x86 build ...
       echo -e "section_end:`date +%s`:WCLIN32_section\r\e[0K" || true
@@ -367,8 +368,9 @@ pages:
       # Start of Open Watcom DOS i86 build ...
       echo -e "section_start:`date +%s`:WCDOS_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom DOS i86 build ...\033[0m" || true
     - mkdir -p public/OWC2
-    - ( set -x; env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -v -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c && ls -la crc.com && file crc.com && emu2 crc.com --auto crc.com crc.c && make clean )
+    - ( set -x; env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -v -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c && ls -la crc.com && file crc.com && emu2 crc.com --auto crc.com crc.c )
     - mv -f crc.com public/OWC2
+    - make clean
     - |
       # End of Open Watcom DOS i86 build ...
       echo -e "section_end:`date +%s`:WCDOS_section\r\e[0K" || true
@@ -376,8 +378,9 @@ pages:
       # Start of Open Watcom Windows x86 build ...
       echo -e "section_start:`date +%s`:WCw32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
     - mkdir -p public/OWC2_32
-    - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -v -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && emu2 crc.exe --auto crc.exe crc.c && make clean )
+    - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -v -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && emu2 crc.exe --auto crc.exe crc.c )
     - mv -f crc.exe public/OWC2_32
+    - make clean
     - |
       # End of Open Watcom Windows x86 build ...
       echo -e "section_end:`date +%s`:WCW32_section\r\e[0K" || true
