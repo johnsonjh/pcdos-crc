@@ -15,8 +15,8 @@ before_script:
   - |
     # Start of Pre-setup ...
     echo -e "section_start:`date +%s`:Pre-setup_section[collapsed=true]\r\e[0K\033[0;36mPre-setup ...\033[0m" || true
-  - apk update || true
-  - apk add git
+  - apk -q update || true
+  - apk -q add git
   - git fetch origin
   - git checkout -B "$CI_COMMIT_REF_NAME" "origin/$CI_COMMIT_REF_NAME"
   - |
@@ -37,18 +37,18 @@ pages:
       # Start of Setup ...
       echo -e "section_start:`date +%s`:Setup_section[collapsed=true]\r\e[0K\033[0;36mSetup ...\033[0m" || true
     - export TZ=UTC
-    - apk update || true
-    - apk add '!usr-merge-nag' 2> /dev/null || true
-    - apk upgrade --prune || true
-    - apk add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv gnu-libiconv-dev gnu-libiconv-libs gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses ncurses-dev ncurses-libs npm pango pigz py3-codespell python3 python3-dev reuse seatd shellcheck shfmt sudo tar time wayland-libs-egl wine xwayland xz sed ninja-build lua lua-dev flex bison
+    - apk -q update || true
+    - apk -q add '!usr-merge-nag' 2> /dev/null || true
+    - apk -q upgrade --prune || true
+    - apk -q add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv gnu-libiconv-dev gnu-libiconv-libs gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses ncurses-dev ncurses-libs npm pango pigz py3-codespell python3 python3-dev reuse seatd shellcheck shfmt sudo tar time wayland-libs-egl wine xwayland xz sed ninja-build lua lua-dev flex bison
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
-    - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
-    - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
+    - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && { make -j $(nproc) > /tmp/emu2.log 2>&1 || { cat /tmp/emu2.log; exit 1; }; } && make install && cd .. && rm -rf ./emu2-cpm86 )
+    - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && { make -j $(nproc) > /tmp/tnylpo.log 2>&1 || { cat /tmp/tnylpo.log; exit 1; }; } && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p $HOME/.local/venvs
     - python3 -m venv $HOME/.local/venvs/vamos
-    - $HOME/.local/venvs/vamos/bin/pip install --upgrade pip || true
-    - $HOME/.local/venvs/vamos/bin/pip install --upgrade amitools[vamos]
+    - $HOME/.local/venvs/vamos/bin/pip install --upgrade pip > /dev/null 2>&1 || true
+    - $HOME/.local/venvs/vamos/bin/pip install --upgrade amitools[vamos] > /tmp/vamos.log 2>&1 || { cat /tmp/vamos.log; exit 1; }
     - export VAMOS_FLAGS="-l mem_alloc:error,lib:error,main:error"
     - mkdir -p $HOME/.local/bin
     - printf '%s\n' '#!/bin/sh' 'exec "$HOME/.local/venvs/vamos/bin/vamos" "$@"' > "$HOME/.local/bin/vamos"
@@ -66,13 +66,14 @@ pages:
     - ( cd /opt && curl -fsSL http://www.ibaug.de/vbcc/vbcc_linux_x64.tar.gz | pigz -dc | tar xf - )
     - export VBCC=/opt/vbcc
     - export PATH="$VBCC/bin:$PATH"
-    - env GOTOOLCHAIN=auto go install github.com/boyter/scc/v3@master || true
+    - env GOTOOLCHAIN=auto go install github.com/boyter/scc/v3@master > /tmp/scc.log 2>&1 || true
     - export PATH="$HOME/go/bin:$PATH"
-    - npm install -g --save markdown-toc || true
-    - ( cd /tmp && curl -fsSL https://ftpmirror.gnu.org/cppi/cppi-1.18.tar.xz | xz -dc | tar xf - && cd ./cppi-* && ./configure --prefix=/usr --disable-assert --disable-dependency-tracking && make -j $(nproc) && make install && cd .. && rm -rf ./cppi-* ) || true
-    - ( cd /tmp && git clone https://github.com/davidgiven/ack.git && cd ack && { sed -i 's|-DUSE_I80_RSTS||' plat/cpm/build.py || true; } && export PATH="/usr/lib/ninja-build/bin:$PATH" && { make install PREFIX=/opt/ack > /tmp/ack.log 2>&1 || cat /tmp/ack.log; } && cd .. && rm -rf ./ack )
+    - npm install -g --save markdown-toc > /tmp/markdown-toc.log 2>&1 || true
+    - ( ( cd /tmp && curl -fsSL https://ftpmirror.gnu.org/cppi/cppi-1.18.tar.xz | xz -dc | tar xf - && cd ./cppi-* && ./configure --prefix=/usr --disable-assert --disable-dependency-tracking && make -j $(nproc) && make install && cd .. && rm -rf ./cppi-* ) || true ) > /tmp/cppi.log 2>&1
+    - ( cd /tmp && git clone https://github.com/davidgiven/ack.git && cd ack && { sed -i 's|-DUSE_I80_RSTS||' plat/cpm/build.py || true; } && export PATH="/usr/lib/ninja-build/bin:$PATH" && { make install PREFIX=/opt/ack > /tmp/ack.log 2>&1 || { cat /tmp/ack.log; exit 1; }; } && cd .. && rm -rf ./ack )
     - test -x /opt/ack/bin/ack
     - export PATH="/opt/ack/bin:$PATH"
+    - rm -f /tmp/*.log 2> /dev/null || true
     - |
       # End of Setup ...
       echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
@@ -108,7 +109,7 @@ pages:
       # Start of dev86 build ...
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 build ...\033[0m" || true
     - mkdir -p public/dev86
-    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -v -o crc.com crc.c dev86dwc.c && file crc.com && ls -la crc.com && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
+    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -o crc.com crc.c dev86dwc.c && file crc.com && ls -la crc.com && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
     - |
       # End of dev86 build ...
       echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
@@ -383,7 +384,7 @@ pages:
       # Start of Open Watcom Linux x86 build ...
       echo -e "section_start:`date +%s`:WCLIN32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Linux x86 build ...\033[0m" || true
     - mkdir -p public/linux32
-    - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -v -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
+    - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/linux32
     - make clean
     - |
@@ -393,7 +394,7 @@ pages:
       # Start of Open Watcom DOS i86 build ...
       echo -e "section_start:`date +%s`:WCDOS_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom DOS i86 build ...\033[0m" || true
     - mkdir -p public/OWC2
-    - ( set -x; env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -v -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c && ls -la crc.com && file crc.com && emu2 crc.com --auto crc.com crc.c )
+    - ( set -x; env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c && ls -la crc.com && file crc.com && emu2 crc.com --auto crc.com crc.c )
     - mv -f crc.com public/OWC2
     - make clean
     - |
@@ -403,7 +404,7 @@ pages:
       # Start of Open Watcom Windows x86 build ...
       echo -e "section_start:`date +%s`:WCW32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
     - mkdir -p public/OWC2_32
-    - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -v -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
+    - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
     - mv -f crc.exe public/OWC2_32
     - make clean
     - |
