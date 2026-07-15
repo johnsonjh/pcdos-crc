@@ -13,6 +13,7 @@ variables:
 
 before_script:
   - |
+    #
     echo -e "section_start:`date +%s`:Pre-setup_section[collapsed=true]\r\e[0K\033[0;36mPre-setup ...\033[0m" || true
   - apk -q update || true
   - apk -q add git
