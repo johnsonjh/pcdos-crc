@@ -151,7 +151,7 @@ expand_pattern (pattern)
       ':' == pattern[1] && '\\' != pattern[2] && '/' != pattern[2])
     {
       static char fixedpat [MAX_PATH_LEN];
-      size_t mlen = strlen(pattern + 2);
+      size_t mlen = strlen (pattern + 2);
 
       if (4 + mlen >= MAX_PATH_LEN)
         mlen = MAX_PATH_LEN - 5;
@@ -264,9 +264,9 @@ win32_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
         }
 
       if (0 != has_wc)
-        expand_pattern((* argv)[i]);
+        expand_pattern ((* argv)[i]);
       else
-        (void)add_arg((* argv)[i]);
+        (void)add_arg ((* argv)[i]);
 
       i++;
     }

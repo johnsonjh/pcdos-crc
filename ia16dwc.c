@@ -122,7 +122,7 @@ static int
 find_next (
   void)
 #else
-find_next()
+find_next ()
 #endif
 {
   unsigned short ax;
@@ -143,7 +143,7 @@ find_next()
 
 static int
 #ifdef ANSI_COMPILER
-add_arg(
+add_arg (
   const char * s)
 #else
 add_arg (s)

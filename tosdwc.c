@@ -289,7 +289,7 @@ expand_pattern (pattern)
 
       if ((MAX_PATH - 4) <= plen)
         {
-          add_arg (pattern);
+          (void)add_arg (pattern);
 
           return;
         }
@@ -341,7 +341,7 @@ expand_pattern (pattern)
       }
     while (0 == rc);
   else
-    add_arg (pattern);
+    (void)add_arg (pattern);
 }
 
 /******************************************************************************/
@@ -363,7 +363,7 @@ tos_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
 
   if (0 < * argc)
     {
-      add_arg ((* argv)[0]);
+      (void)add_arg ((* argv)[0]);
       i = 1;
     }
   else
@@ -376,7 +376,7 @@ tos_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
       if (has_wildcards (arg))
         expand_pattern (arg);
       else
-        add_arg (arg);
+        (void)add_arg (arg);
 
       i++;
     }
