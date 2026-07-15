@@ -42,6 +42,7 @@ pages:
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && { make -j $(nproc) > /tmp/emu2.log 2>&1 || { cat /tmp/emu2.log; exit 1; }; } && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && { make -j $(nproc) > /tmp/tnylpo.log 2>&1 || { cat /tmp/tnylpo.log; exit 1; }; } && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
+    - ( set -x; cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { sed -i -e 's|-O2 |-O3 -fweb -march=native -flto=auto |' Makefile || true; } && { make install -j $(nproc) > /tmp/apout.log || { cat /tmp/apout.log; exit 1; }; } && cd .. && rm -rf ./Apout )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p $HOME/.local/venvs
     - python3 -m venv $HOME/.local/venvs/vamos
@@ -426,7 +427,7 @@ pages:
       #
       echo -e "section_start:`date +%s`:V7_section[collapsed=true]\r\e[0K\033[0;36mAck PDP-11 UNIX V7 build ...\033[0m" || true
     - mkdir -p public/Ack_V7
-    - ( set -x; ack -mpdpv7 -O3 -D__ACK__ crc.c -o crc && ls -la crc && file crc )
+    - ( set -x; ack -mpdpv7 -O3 -D__ACK__ crc.c -o crc && ls -la crc && file crc && env APOUT_UNIX_VERSION=V7 ./apout crc --auto crc crc.c )
     - mv -f crc public/Ack_V7
     - make clean
     - echo -e "section_end:`date +%s`:V7_section\r\e[0K" || true
