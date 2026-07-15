@@ -42,7 +42,6 @@ pages:
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && { make -j $(nproc) > /tmp/emu2.log 2>&1 || { cat /tmp/emu2.log; exit 1; }; } && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && { make -j $(nproc) > /tmp/tnylpo.log 2>&1 || { cat /tmp/tnylpo.log; exit 1; }; } && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
-    - ( set -x; cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { sed -i -e 's|-O2 |-O3 -fweb -march=native -flto=auto |' Makefile || true; } && { make install -j $(nproc) > /tmp/apout.log || { cat /tmp/apout.log; exit 1; }; } && cd .. && rm -rf ./Apout )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
     - mkdir -p $HOME/.local/venvs
     - python3 -m venv $HOME/.local/venvs/vamos
@@ -98,7 +97,12 @@ pages:
       #
       echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 build ...\033[0m" || true
     - mkdir -p public/dev86
-    - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -o crc.com crc.c dev86dwc.c && file crc.com && ls -la crc.com && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
+    - bcc -v 2>&1 | head -1 || true
+    - bcc -Md -O -o crc.com crc.c dev86dwc.c
+    - file crc.com
+    - ls -la crc.com
+    - mv -f crc.com public/dev86
+    - emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c
     - echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
     - |
       #
@@ -110,7 +114,13 @@ pages:
       #
       echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 build ...\033[0m" || true
     - mkdir -p public/TCPP101
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\lib\wildargs.obj" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && mv -f crc.com public/TCPP101 && file public/TCPP101/crc.com && ls -la public/TCPP101/crc.com && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
+    - env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\lib\wildargs.obj" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE'
+    - cp -f /tmp/old_c/TCPP101/crc.com .
+    - rm -f /tmp/old_c/TCPP101/crc.*
+    - mv -f crc.com public/TCPP101
+    - file public/TCPP101/crc.com
+    - ls -la public/TCPP101/crc.com
+    - emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c
     - echo -e "section_end:`date +%s`:TCPP101_section\r\e[0K" || true
     - |
       #
@@ -118,20 +128,40 @@ pages:
     - mkdir -p public/TC201
     - cp -f crc.c crc.c.bak
     - unix2dos -f crc.c
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\wildargs.obj" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && file public/TC201/crc.com && ls -la public/TC201/crc.com && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
+    - env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\wildargs.obj" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE'
+    - cp -f /tmp/old_c/TC201/crc.com .
+    - rm -f /tmp/old_c/TC201/crc.*
+    - mv -f crc.com public/TC201
+    - file public/TC201/crc.com
+    - ls -la public/TC201/crc.com
+    - emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c
     - mv -f crc.c.bak crc.c
     - echo -e "section_end:`date +%s`:TC201_section\r\e[0K" || true
     - |
       #
       echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
     - mkdir -p public/TC15
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && file public/TC15/crc.com && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
+    - env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\'
+    - env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com
+    - cp -f /tmp/old_c/TC15/crc.com .
+    - rm -f /tmp/old_c/TC15/crc.*
+    - mv -f crc.com public/TC15
+    - file public/TC15/crc.com
+    - ls -la public/TC15/crc.com
+    - emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c
     - echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
     - |
       #
       echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
     - mkdir -p public/TC10
-    - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && file public/TC10/crc.com && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
+    - env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\'
+    - env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com
+    - cp -f /tmp/old_c/TC10/crc.com .
+    - rm -f /tmp/old_c/TC10/crc.*
+    - mv -f crc.com public/TC10
+    - file public/TC10/crc.com
+    - ls -la public/TC10/crc.com
+    - emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c
     - echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
     - |
       #
@@ -310,28 +340,43 @@ pages:
       #
       echo -e "section_start:`date +%s`:WIN32_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) i686 build ...\033[0m" || true
     - mkdir -p public/Win32
-    - ( set -x; i686-w64-mingw32-gcc -O3 -s -flto=auto -fweb -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
+    - i686-w64-mingw32-gcc -O3 -s -flto=auto -fweb -o crc.exe crc.c win32dwc.c
+    - ls -la crc.exe
+    - file crc.exe
+    - wine crc.exe --auto crc.exe crc.c
     - mv -f crc.exe public/Win32
     - echo -e "section_end:`date +%s`:WIN32_section\r\e[0K" || true
     - |
       #
       echo -e "section_start:`date +%s`:WIN64_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) x64 build ...\033[0m" || true
     - mkdir -p public/Win64
-    - ( set -x; x86_64-w64-mingw32-gcc -O3 -s -flto=auto -fweb -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
+    - x86_64-w64-mingw32-gcc -O3 -s -flto=auto -fweb -o crc.exe crc.c win32dwc.c
+    - ls -la crc.exe
+    - file crc.exe
+    - wine crc.exe --auto crc.exe crc.c
     - mv -f crc.exe public/Win64
     - echo -e "section_end:`date +%s`:WIN64_section\r\e[0K" || true
     - |
       #
       echo -e "section_start:`date +%s`:LIN64_section[collapsed=true]\r\e[0K\033[0;36mLinux x64 build ...\033[0m" || true
     - mkdir -p public/linux64
-    - ( set -x; gcc -O3 -s -flto=auto -fweb -static -m64 -march=x86-64 -o crc crc.c && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
+    - gcc -O3 -s -flto=auto -fweb -static -m64 -march=x86-64 -o crc crc.c
+    - strip --strip-all crc
+    - ls -la crc
+    - file crc
+    - ./crc --auto crc crc.c
     - mv -f crc public/linux64
     - echo -e "section_end:`date +%s`:LIN64_section\r\e[0K" || true
     - |
       #
       echo -e "section_start:`date +%s`:WCLIN32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Linux x86 build ...\033[0m" || true
     - mkdir -p public/linux32
-    - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
+    - make clean
+    - env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc
+    - strip --strip-all crc
+    - ls -la crc
+    - file crc
+    - ./crc --auto crc crc.c
     - mv -f crc public/linux32
     - make clean
     - echo -e "section_end:`date +%s`:WCLIN32_section\r\e[0K" || true
@@ -339,7 +384,10 @@ pages:
       #
       echo -e "section_start:`date +%s`:WCDOS_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom DOS i86 build ...\033[0m" || true
     - mkdir -p public/OWC2
-    - ( set -x; env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c && ls -la crc.com && file crc.com && emu2 crc.com --auto crc.com crc.c )
+    - env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c
+    - ls -la crc.com
+    - file crc.com
+    - emu2 crc.com --auto crc.com crc.c
     - mv -f crc.com public/OWC2
     - make clean
     - echo -e "section_end:`date +%s`:WCDOS_section\r\e[0K" || true
@@ -347,7 +395,10 @@ pages:
       #
       echo -e "section_start:`date +%s`:WCW32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
     - mkdir -p public/OWC2_32
-    - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
+    - env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c
+    - ls -la crc.exe
+    - file crc.exe
+    - wine crc.exe --auto crc.exe crc.c
     - mv -f crc.exe public/OWC2_32
     - make clean
     - echo -e "section_end:`date +%s`:WCW32_section\r\e[0K" || true
@@ -355,7 +406,10 @@ pages:
       #
       echo -e "section_start:`date +%s`:AOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS 68K build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOS68K
-    - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
+    - vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c -lamiga
+    - ls -la crc
+    - file crc
+    - vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c
     - mv -f crc public/Vbcc_AOS68K
     - make clean
     - echo -e "section_end:`date +%s`:AOS68K_section\r\e[0K" || true
@@ -363,7 +417,9 @@ pages:
       #
       echo -e "section_start:`date +%s`:AOSWAR_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS WarpOS build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSWAR
-    - ( set -x; vc "+warpos" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc )
+    - vc "+warpos" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga
+    - ls -la crc
+    - file crc
     - mv -f crc public/Vbcc_AOSWAR
     - make clean
     - echo -e "section_end:`date +%s`:AOSWAR_section\r\e[0K" || true
@@ -371,7 +427,9 @@ pages:
       #
       echo -e "section_start:`date +%s`:AOSPOW_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PowerUp build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSPOW
-    - ( set -x; vc "+powerup" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc )
+    - vc "+powerup" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga
+    - ls -la crc
+    - file crc
     - mv -f crc public/Vbcc_AOSPOW
     - make clean
     - echo -e "section_end:`date +%s`:AOSPOW_section\r\e[0K" || true
@@ -379,7 +437,9 @@ pages:
       #
       echo -e "section_start:`date +%s`:AOSPPC_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PPC build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSPPC
-    - ( set -x; vc "+aosppc" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c -lamiga && ls -la crc && file crc )
+    - vc "+aosppc" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c -lamiga
+    - ls -la crc
+    - file crc
     - mv -f crc public/Vbcc_AOSPPC
     - make clean
     - echo -e "section_end:`date +%s`:AOSPPC_section\r\e[0K" || true
@@ -387,7 +447,9 @@ pages:
       #
       echo -e "section_start:`date +%s`:TOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc Atari ST TOS build ...\033[0m" || true
     - mkdir -p public/Vbcc_TOS68K
-    - ( set -x; vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DTOSDWC -o crc.ttp crc.c tosdwc.c && ls -la crc.ttp && file crc.ttp )
+    - vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DTOSDWC -o crc.ttp crc.c tosdwc.c
+    - ls -la crc.ttp
+    - file crc.ttp
     - mv -f crc.ttp public/Vbcc_TOS68K
     - make clean
     - echo -e "section_end:`date +%s`:TOS68K_section\r\e[0K" || true
@@ -395,7 +457,10 @@ pages:
       #
       echo -e "section_start:`date +%s`:LINX86_section[collapsed=true]\r\e[0K\033[0;36mVbcc Linux x86 build ...\033[0m" || true
     - mkdir -p public/Vbcc_LINX86
-    - ( set -x; vc "+i386-linux" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c && ls -la crc && file crc && ./crc --auto crc crc.c )
+    - vc "+i386-linux" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c
+    - ls -la crc
+    - file crc
+    - ./crc --auto crc crc.c
     - mv -f crc public/Vbcc_LINX86
     - make clean
     - echo -e "section_end:`date +%s`:LINX86_section\r\e[0K" || true
@@ -403,7 +468,11 @@ pages:
       #
       echo -e "section_start:`date +%s`:ACKLINX86_section[collapsed=true]\r\e[0K\033[0;36mAck Linux x86 build ...\033[0m" || true
     - mkdir -p public/Ack_LINX86
-    - ( set -x; ack -mlinux386 -O3 -D__ACK__ crc.c -o crc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
+    - ack -mlinux386 -O3 -D__ACK__ crc.c -o crc
+    - strip --strip-all crc
+    - ls -la crc
+    - file crc
+    - ./crc --auto crc crc.c
     - mv -f crc public/Ack_LINX86
     - make clean
     - echo -e "section_end:`date +%s`:ACKLINX86_section\r\e[0K" || true
@@ -411,7 +480,9 @@ pages:
       #
       echo -e "section_start:`date +%s`:ACKLINPPC_section[collapsed=true]\r\e[0K\033[0;36mAck Linux PPC build ...\033[0m" || true
     - mkdir -p public/Ack_LINPPC
-    - ( set -x; ack -mlinuxppc -O3 -D__ACK__ crc.c -o crc && ls -la crc && file crc )
+    - ack -mlinuxppc -O3 -D__ACK__ crc.c -o crc
+    - ls -la crc
+    - file crc
     - mv -f crc public/Ack_LINPPC
     - make clean
     - echo -e "section_end:`date +%s`:ACKLINPPC_section\r\e[0K" || true
@@ -419,7 +490,13 @@ pages:
       #
       echo -e "section_start:`date +%s`:ACKCPM_section[collapsed=true]\r\e[0K\033[0;36mAck CP/M-80 build ...\033[0m" || true
     - mkdir -p public/Ack_CPM
-    - ( set -x; ack -mcpm -O4 -DCRC_CPM -D__ACK__ bdosack.s crc.c -o crc.com && ls -la crc.com && file crc.com && chmod ugo+r crc.com && sudo -u nobody tnylpo crc.com --auto crc.com --limit="$(du -sb crc.com | awk '{ print $1*8 }')" && ls -la crc.c && sudo -u nobody tnylpo crc.com --auto crc.c --limit="$(du -sb crc.c | awk '{ print $1*8-$1 }')" )
+    - ack -mcpm -O4 -DCRC_CPM -D__ACK__ bdosack.s crc.c -o crc.com
+    - ls -la crc.com
+    - file crc.com
+    - chmod ugo+r crc.com
+    - sudo -u nobody tnylpo crc.com --auto crc.com --limit="$(du -sb crc.com | awk '{ print $1*8 }')"
+    - ls -la crc.c
+    - sudo -u nobody tnylpo crc.com --auto crc.c --limit="$(du -sb crc.c | awk '{ print $1*8-$1 }')" )
     - mv -f crc.com public/Ack_CPM
     - make clean
     - echo -e "section_end:`date +%s`:ACKCPM_section\r\e[0K" || true
@@ -427,7 +504,9 @@ pages:
       #
       echo -e "section_start:`date +%s`:V7_section[collapsed=true]\r\e[0K\033[0;36mAck PDP-11 UNIX V7 build ...\033[0m" || true
     - mkdir -p public/Ack_V7
-    - ( set -x; ack -mpdpv7 -O3 -D__ACK__ crc.c -o crc && ls -la crc && file crc && env APOUT_UNIX_VERSION=V7 ./apout crc --auto crc crc.c )
+    - ack -mpdpv7 -O3 -D__ACK__ crc.c -o crc
+    - ls -la crc
+    - file crc
     - mv -f crc public/Ack_V7
     - make clean
     - echo -e "section_end:`date +%s`:V7_section\r\e[0K" || true
