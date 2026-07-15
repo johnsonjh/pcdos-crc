@@ -4050,10 +4050,11 @@ usage (progname, cb)
 
 #ifdef __MSDOS__
 # ifdef __AZTEC_C_52T__
-#  ifndef NOMAINCONST
-#   define NOMAINCONST
-#  endif
+#  ifdef ANSI_COMPILER
 void aztec_expand_wildcards (int * argc, char * * * argv);
+#  else
+void aztec_expand_wildcards ();
+#  endif
 # endif
 #endif
 
@@ -4061,7 +4062,11 @@ void aztec_expand_wildcards (int * argc, char * * * argv);
 
 #ifdef __DMC__
 # ifdef __MSDOS__
+#  ifdef ANSI_COMPILER
 void dos_expand_wildcards (int * argc, char * * * argv);
+#  else
+void dos_expand_wildcards ();
+#  endif
 # endif
 #endif
 
@@ -4069,14 +4074,22 @@ void dos_expand_wildcards (int * argc, char * * * argv);
 
 #ifdef __WATCOMC__
 # ifdef __MSDOS__
+#  ifdef ANSI_COMPILER
 void dos_expand_wildcards (int * argc, char * * * argv);
+#  else
+void dos_expand_wildcards ();
+#  endif
 # endif
 #endif
 
 /******************************************************************************/
 
 #ifdef TCDWC
+# ifdef ANSI_COMPILER
 void tc_expand_wildcards (int * argc, char * * * argv);
+# else
+void tc_expand_wildcards ();
+# endif
 #endif
 
 /******************************************************************************/
@@ -4089,85 +4102,41 @@ void dev86_expand_wildcards (argc, argv);
 
 #ifdef __IA16_SYS_MSDOS
 # ifdef __GNUC__
+#  ifdef ANSI_COMPILER
 void ia16_expand_wildcards (int * argc, char * * * argv);
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef _WIN32
-void win32_expand_wildcards (int * argc, char * * * argv);
-#endif
-
-/******************************************************************************/
-
-#ifdef TOSDWC
-void tos_expand_wildcards (int * argc, char * * * argv);
-#endif
-
-/******************************************************************************/
-
-#ifdef __POCC__
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef __DMC__
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef __WATCOMC__
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef __BCC__
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef TCDWC
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef _WIN32
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef TOSDWC
-# ifndef NOMAINCONST
-#  define NOMAINCONST
-# endif
-#endif
-
-/******************************************************************************/
-
-#ifdef __IA16_SYS_MSDOS
-# ifdef __GNUC__
-#  ifndef NOMAINCONST
-#   define NOMAINCONST
+#  else
+void ia16_expand_wildcards ();
 #  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef _WIN32
+# ifdef ANSI_COMPILER
+void win32_expand_wildcards (int * argc, char * * * argv);
+# else
+void win32_expand_wildcards ();
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef AOSDWC
+# ifdef ANSI_COMPILER
+void amiga_expand_wildcards (int * argc, char * * * argv);
+# else
+void amiga_expand_wildcards ();
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef TOSDWC
+# ifdef ANSI_COMPILER
+void tos_expand_wildcards (int * argc, char * * * argv);
+# else
+void tos_expand_wildcards ();
 # endif
 #endif
 
@@ -4183,26 +4152,12 @@ cdecl
 #endif
 #ifdef ANSI_COMPILER
 main (
-# ifndef NOMAINCONST
-  const
-# endif
   int argc,
-  char *
-# ifndef NOMAINCONST
-const
-# endif
-  argv [])
+  char * argv [])
 #else
 main (argc, argv)
-# ifndef NOMAINCONST
-  const
-# endif
   int argc;
-  char *
-# ifndef NOMAINCONST
-  const
-# endif
-  argv [];
+  char * argv [];
 #endif
 {
   static crc_t crc_table [256];
@@ -4255,14 +4210,21 @@ main (argc, argv)
   dev86_expand_wildcards (& argc, & argv);
 # endif
 #endif
+
 #ifdef TCDWC
   tc_expand_wildcards (& argc, & argv);
 #endif
+
 #ifdef _WIN32
   win32_expand_wildcards (& argc, & argv);
 #endif
+
 #ifdef TOSDWC
   tos_expand_wildcards (& argc, & argv);
+#endif
+
+#ifdef AOSDWC
+  amiga_expand_wildcards (& argc, & argv);
 #endif
 
   cb_zero (& lim_bits);
