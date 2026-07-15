@@ -34,9 +34,30 @@
 
 /******************************************************************************/
 
-#include <dos/dos.h>
-#include <dos/dosextens.h>
-#include <proto/dos.h>
+typedef long LONG;
+typedef char * STRPTR;
+typedef LONG BPTR;
+
+/******************************************************************************/
+
+struct FileInfoBlock {
+  LONG fib_DiskKey;
+  LONG fib_DirEntryType;
+  char fib_FileName [108];
+};
+
+/******************************************************************************/
+
+# ifndef ACCESS_READ
+#  define ACCESS_READ (-2L)
+# endif
+
+/******************************************************************************/
+
+extern BPTR Lock (STRPTR name, LONG type);
+extern LONG UnLock (BPTR lock);
+extern LONG Examine (BPTR lock, struct FileInfoBlock * fib);
+extern LONG ExNext (BPTR lock, struct FileInfoBlock * fib);
 
 /******************************************************************************/
 

@@ -324,7 +324,7 @@ pages:
       # Start of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_Amiga_5.2a
-    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o crc.r crc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -qv -t crc.r -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && file crc && ls -la crc && cp -f $CI_PROJECT_DIR/crc.c . && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c && rm -f crc.c )
+    - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/amigadwc.c $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -DAOSDWC -Iinclude -o crc.o crc.c && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o amigadwc.o amigadwc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -t crc.o amigadwc.o -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* ./*.o && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && file crc && ls -la crc && cp -f $CI_PROJECT_DIR/crc.c . && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c && rm -f crc.c )
     - |
       # End of Aztec C68K/Amiga 5.2a build ...
       echo -e "section_end:`date +%s`:C68Amiga52a_section\r\e[0K" || true
@@ -413,12 +413,32 @@ pages:
       # Start of Vbcc AmigaOS 68K build ...
       echo -e "section_start:`date +%s`:AOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS 68K build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOS68K
-    - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -o crc crc.c && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
+    - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
     - mv -f crc public/Vbcc_AOS68K
     - make clean
     - |
       # End of Vbcc AmigaOS 68K build ...
       echo -e "section_end:`date +%s`:AOS68K_section\r\e[0K" || true
+    - |
+      # Start of Vbcc AmigaOS WarpOS build ...
+      echo -e "section_start:`date +%s`:AOSWAR_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS WarpOS build ...\033[0m" || true
+    - mkdir -p public/Vbcc_AOSWAR
+    - ( set -x; vc "+warpos" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c && ls -la crc && file crc )
+    - mv -f crc public/Vbcc_AOSWAR
+    - make clean
+    - |
+      # End of Vbcc AmigaOS WarpOS build ...
+      echo -e "section_end:`date +%s`:AOSWAR_section\r\e[0K" || true
+    - |
+      # Start of Vbcc AmigaOS PowerUp build ...
+      echo -e "section_start:`date +%s`:AOSPOW_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PowerUp build ...\033[0m" || true
+    - mkdir -p public/Vbcc_AOSPOW
+    - ( set -x; vc "+powerup" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c && ls -la crc && file crc )
+    - mv -f crc public/Vbcc_AOSPOW
+    - make clean
+    - |
+      # End of Vbcc AmigaOS PowerUp build ...
+      echo -e "section_end:`date +%s`:AOSPOW_section\r\e[0K" || true
     - |
       # Start of Vbcc AmigaOS PPC build ...
       echo -e "section_start:`date +%s`:AOSPPC_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PPC build ...\033[0m" || true
