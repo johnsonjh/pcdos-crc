@@ -230,6 +230,7 @@ expand_pattern (pattern)
   if (0 == lock)
     {
       (void)add_arg (pattern);
+
       return;
     }
 
@@ -239,6 +240,7 @@ expand_pattern (pattern)
     {
       UnLock (lock);
       (void)add_arg (pattern);
+
       return;
     }
 
@@ -258,6 +260,7 @@ expand_pattern (pattern)
                   if (MAX_PATH <= plen)
                     {
                       ok = ExNext (lock, & fib);
+
                       continue;
                     }
 

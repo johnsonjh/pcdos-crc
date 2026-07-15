@@ -251,6 +251,7 @@ expand_pattern (pattern)
             if (MAX_PATH <= plen)
               {
                 rc = find_next ();
+
                 continue;
               }
 
@@ -307,6 +308,7 @@ dev86_expand_wildcards (argc, argv) /*cppcheck-suppress unusedFunction*/
           if ('*' == * p || '?' == * p)
             {
               has_wc = 1;
+
               break;
             }
 
