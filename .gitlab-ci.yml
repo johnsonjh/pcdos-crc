@@ -58,7 +58,9 @@ pages:
     - export WINEDEBUG=-all
     - wine wineboot --init > /dev/null 2>&1 || true
     - mkdir -p public
-    - ( cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { curl -fsSL https://patch-diff.githubusercontent.com/raw/DoctorWkt/Apout/pull/4.diff | patch -p1 -N > /dev/null 2>&1 || true; } && { sed -i 's|-O2 |-O3 -fweb -flto=auto |' Makefile || true; } && make -j $(nproc) && make install && cd .. && rm -rf ./Apout )
+    - mkdir -p /usr/local/bin
+    - mkdir -p /usr/local/man/man1
+    - ( cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { curl -fsSL https://patch-diff.githubusercontent.com/raw/DoctorWkt/Apout/pull/4.diff | patch -p1 -N > /dev/null 2>&1 || true; } && { sed -i 's|-O2 |-O3 -fweb -flto=auto |' Makefile || true; } && { make -j $(nproc) > /tmp/apout.log 2>&1 || cat /tmp/apout.log; exit 1; } && { make install >> /tmp/apout.log 2>&1 || cat /tmp/apout.log; exit 1; } && cd .. && rm -rf ./Apout )
     - mkdir -p /opt/watcom
     - ( cd /opt/watcom && curl -fsSL https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | xz -dc | tar xf - )
     - export WATCOM=/opt/watcom
