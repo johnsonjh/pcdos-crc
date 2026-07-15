@@ -12,7 +12,8 @@ variables:
 ###############################################################################
 
 before_script:
-  - echo -e "section_start:`date +%s`:Pre-setup_section[collapsed=true]\r\e[0K\033[0;36mPre-setup ...\033[0m" || true
+  - |
+    echo -e "section_start:`date +%s`:Pre-setup_section[collapsed=true]\r\e[0K\033[0;36mPre-setup ...\033[0m" || true
   - apk -q update || true
   - apk -q add git
   - git fetch origin
@@ -29,7 +30,8 @@ pages:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - echo -e "section_start:`date +%s`:Setup_section[collapsed=true]\r\e[0K\033[0;36mSetup ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:Setup_section[collapsed=true]\r\e[0K\033[0;36mSetup ...\033[0m" || true
     - export TZ=UTC
     - apk -q update || true
     - apk -q add '!usr-merge-nag' 2> /dev/null || true
@@ -69,56 +71,69 @@ pages:
     - export PATH="/opt/ack/bin:$PATH"
     - rm -f /tmp/*.log 2> /dev/null || true
     - echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:Lint_section[collapsed=true]\r\e[0K\033[0;36mmake lint ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:Lint_section[collapsed=true]\r\e[0K\033[0;36mmake lint ...\033[0m" || true
     - env OVERRIDE_PAUSE=1 make lint
     - echo -e "section_end:`date +%s`:Lint_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:SCC_section[collapsed=true]\r\e[0K\033[0;36mscc ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:SCC_section[collapsed=true]\r\e[0K\033[0;36mscc ...\033[0m" || true
     - make scc
     - echo -e "section_end:`date +%s`:SCC_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:GDIFF_section[collapsed=true]\r\e[0K\033[0;36mgit diff ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:GDIFF_section[collapsed=true]\r\e[0K\033[0;36mgit diff ...\033[0m" || true
     - git diff
     - echo -e "section_end:`date +%s`:GDIFF_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:Test_section[collapsed=true]\r\e[0K\033[0;36mmake test ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:Test_section[collapsed=true]\r\e[0K\033[0;36mmake test ...\033[0m" || true
     - make test
     - echo -e "section_end:`date +%s`:Test_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:dev86_section[collapsed=true]\r\e[0K\033[0;36mdev86 build ...\033[0m" || true
     - mkdir -p public/dev86
     - ( set -x; ( bcc -v 2>&1 | head -1 || true ); bcc -Md -O -o crc.com crc.c dev86dwc.c && file crc.com && ls -la crc.com && mv -f crc.com public/dev86 && emu2 public/dev86/crc.com --auto public/dev86/crc.com crc.c )
     - echo -e "section_end:`date +%s`:dev86_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:C86PLUS_section[collapsed=true]\r\e[0K\033[0;36mCI C86PLUS 1.10 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:C86PLUS_section[collapsed=true]\r\e[0K\033[0;36mCI C86PLUS 1.10 build ...\033[0m" || true
     - mkdir -p public/C86PLUS_1.10
     - ( set -x; cd /tmp/old_c/C86PLUS_1.10 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|const||g' crc.c.bak > crc.c && env emu2 bin/cc.exe -c -AS -Za -G0 -Oa -Ox crc.c -- NO87=TRUE C86LIB=LIB C86INCLUDE=INCLUDE C86TMP=TMP C86FLAGS= C86CAROLE= PATH=bin && emu2 bin/carole.exe -Llib crc.obj lib/cwildsnd.obj -s2000 && cp -f crc.exe $CI_PROJECT_DIR/public/C86PLUS_1.10 && file crc.exe && ls -la crc.exe && emu2 crc.exe --auto crc.exe crc.c crc.c.bak && rm -f crc.* )
     - echo -e "section_end:`date +%s`:C86PLUS_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TCPP101_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 1.01 build ...\033[0m" || true
     - mkdir -p public/TCPP101
     - ( set -x; env EMU2_APPEND=/tmp/old_c/TCPP101/bin EMU2_DRIVE_C=/tmp/old_c/TCPP101 EMU2_DRIVE_D=. emu2 /tmp/old_c/TCPP101/bin/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\lib\wildargs.obj" -- PATH='C:\BIN' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TCPP101/crc.com . && rm -f /tmp/old_c/TCPP101/crc.* && mv -f crc.com public/TCPP101 && file public/TCPP101/crc.com && ls -la public/TCPP101/crc.com && emu2 public/TCPP101/crc.com --auto public/TCPP101/crc.com crc.c )
     - echo -e "section_end:`date +%s`:TCPP101_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TC201_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 2.01 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TC201_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 2.01 build ...\033[0m" || true
     - mkdir -p public/TC201
     - cp -f crc.c crc.c.bak
     - unix2dos -f crc.c
     - ( set -x; env EMU2_APPEND=/tmp/old_c/TC201 EMU2_DRIVE_C=/tmp/old_c/TC201 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC201/tcc.exe -Iinclude -Llib -G -O -Z -f- -mt -lt -d "D:\crc.c" "C:\wildargs.obj" -- PATH='C:\' LIB='C:\LIB' INCLUDE='C:\INCLUDE' && cp -f /tmp/old_c/TC201/crc.com . && rm -f /tmp/old_c/TC201/crc.* && mv -f crc.com public/TC201 && file public/TC201/crc.com && ls -la public/TC201/crc.com && emu2 public/TC201/crc.com --auto public/TC201/crc.com crc.c.bak crc.c )
     - mv -f crc.c.bak crc.c
     - echo -e "section_end:`date +%s`:TC201_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TC15_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.5 build ...\033[0m" || true
     - mkdir -p public/TC15
     - ( set -x; env EMU2_APPEND=/tmp/old_c/TC15 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC15 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC15/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC15/crc.com . && rm -f /tmp/old_c/TC15/crc.* && mv -f crc.com public/TC15 && file public/TC15/crc.com && ls -la public/TC15/crc.com && emu2 public/TC15/crc.com --auto public/TC15/crc.com crc.c )
     - echo -e "section_end:`date +%s`:TC15_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TC10_section[collapsed=true]\r\e[0K\033[0;36mTurbo C 1.0 build ...\033[0m" || true
     - mkdir -p public/TC10
     - ( set -x; env EMU2_APPEND=/tmp/old_c/TC10 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/tcc.exe -I. -L. -G -O -Z -f- -mt -d -DTCDWC "D:\crc.c" "D:\tcdwc.c" -- PATH='C:\' LIB='C:\' INCLUDE='C:\' && env EMU2_DOSVER=3.20 EMU2_DRIVE_C=/tmp/old_c/TC10 EMU2_DRIVE_D=. emu2 /tmp/old_c/TC10/exe2bin.exe crc.exe crc.com && cp -f /tmp/old_c/TC10/crc.com . && rm -f /tmp/old_c/TC10/crc.* && mv -f crc.com public/TC10 && file public/TC10/crc.com && ls -la public/TC10/crc.com && emu2 public/TC10/crc.com --auto public/TC10/crc.com crc.c )
     - echo -e "section_end:`date +%s`:TC10_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:MSC51_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 5.10 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:MSC51_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 5.10 build ...\033[0m" || true
     - mkdir -p public/MSC51
     - true -- NOTE -- 'warning C4051 - data conversion' messages are expected for MSC51 /W3 builds!
     - ( set -x; cd /tmp/old_c/MSC51 && cp -f $CI_PROJECT_DIR/crc.c . && emu2 cl.exe /W3 /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Fecrc.exe /Dconst= crc.c "lib\setargv.obj" /link /NOE -- INCLUDE=include LIB=lib && cp -f crc.exe $CI_PROJECT_DIR/public/MSC51 && file $CI_PROJECT_DIR/public/MSC51/crc.exe && ls -la $CI_PROJECT_DIR/public/MSC51/crc.exe && emu2 $CI_PROJECT_DIR/public/MSC51/crc.exe --auto crc.exe crc.c && rm -f crc.* )
     - echo -e "section_end:`date +%s`:MSC51_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:MSC600A_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 6.00A build ...\033[0m" || true
     - mkdir -p public/MSC600A
     - true -- NOTE -- 'warning C4135 - conversion between different integral types' messages are expected for MSC600A /W4 builds!
     - ( set -x; cd /tmp/old_c/MSC600A && cp -f $CI_PROJECT_DIR/crc.c . && emu2 bin/cl.exe /W4 /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c "lib\setargv.obj" /link /NOE -- INCLUDE=include LIB=lib PATH='bin;binb' && cp -f crc.com $CI_PROJECT_DIR/public/MSC600A && file $CI_PROJECT_DIR/public/MSC600A/crc.com && ls -la $CI_PROJECT_DIR/public/MSC600A/crc.com && emu2 $CI_PROJECT_DIR/public/MSC600A/crc.com --auto crc.com crc.c && rm -f crc.* )
     - echo -e "section_end:`date +%s`:MSC600A_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:MSC800c_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:MSC800c_section[collapsed=true]\r\e[0K\033[0;36mMicrosoft C 8.00c build ...\033[0m" || true
     - mkdir -p public/MSC800c
     - mkdir -p /tmp/xdg && chmod 700 /tmp/xdg && export XDG_RUNTIME_DIR=/tmp/xdg
     - mkdir -p /root/.config/dosbox/
@@ -149,7 +164,8 @@ pages:
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
     - echo -e "section_end:`date +%s`:MSC800c_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TCPP3_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 3.00 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TCPP3_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 3.00 build ...\033[0m" || true
     - mkdir -p public/TCPP3
     - cd /tmp/old_c/TCPP3
     - cp -f ../UTILS/REDIR.COM .
@@ -171,7 +187,8 @@ pages:
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
     - echo -e "section_end:`date +%s`:TCPP3_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TCPP4J_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 4.02J build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TCPP4J_section[collapsed=true]\r\e[0K\033[0;36mTurbo C++ 4.02J build ...\033[0m" || true
     - mkdir -p public/TCPP4J
     - cd /tmp/old_c/TCPP4J
     - cp -f ../UTILS/REDIR.COM .
@@ -193,7 +210,8 @@ pages:
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
     - echo -e "section_end:`date +%s`:TCPP4J_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:BCPP31_section[collapsed=true]\r\e[0K\033[0;36mBorland C++ 3.10 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:BCPP31_section[collapsed=true]\r\e[0K\033[0;36mBorland C++ 3.10 build ...\033[0m" || true
     - mkdir -p public/BCPP31
     - cd /tmp/old_c/BCPP31
     - cp -f ../UTILS/REDIR.COM .
@@ -215,7 +233,8 @@ pages:
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
     - echo -e "section_end:`date +%s`:BCPP31_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:PACC751_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH Pacific C 7.51 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:PACC751_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH Pacific C 7.51 build ...\033[0m" || true
     - mkdir -p public/Pacific_C_7.51
     - cd /tmp/old_c/Pacific_C_7.51
     - cp -f ../UTILS/REDIR.COM .
@@ -237,114 +256,135 @@ pages:
     - rm -f crc.*
     - cd $CI_PROJECT_DIR
     - echo -e "section_end:`date +%s`:PACC751_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:C86DOS52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C86/DOS 5.2a build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:C86DOS52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C86/DOS 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C86_DOS_5.2a
     - ( set -x ; cd /tmp/old_c/Aztec_C86_DOS_5.2a && cp -f $CI_PROJECT_DIR/crc.c $CI_PROJECT_DIR/aztecdwc.c . && emu2 bin/cc.exe "+FA" -D__AZTEC_C_52T__ -D__MSDOS__ crc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe crc.o && emu2 bin/cc.exe "+FA" aztecdwc.c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && emu2 bin/sqz.exe aztecdwc.o && emu2 bin/ln.exe -o crc.com crc.o aztecdwc.o -llib/c -- CLIB=lib CBIN=bin INCLUDE=include PATH=bin && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && rm -f crc.com crc.* aztecdwc.* && cd $CI_PROJECT_DIR/public/Aztec_C86_DOS_5.2a && file crc.com && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c )
     - echo -e "section_end:`date +%s`:C86DOS52a_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:C68Amiga52a_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/Amiga 5.2a build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_Amiga_5.2a
     - ( set -x; export CCTEMP="/tmp" && export CLIB="$PWD/lib/libs" && export INCLUDE="$PWD/include:$PWD/asm" && cd /tmp/old_c/Aztec_C68K_Amiga_5.2a && cp -f $CI_PROJECT_DIR/amigadwc.c $CI_PROJECT_DIR/crc.c . && rm -f ./as && ln -f -s ./bin/as ./as && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -DAOSDWC -Iinclude -o crc.o crc.c && vamos $VAMOS_FLAGS -- ./bin/cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -Iinclude -o amigadwc.o amigadwc.c && rm -f ./as && vamos $VAMOS_FLAGS -- ./bin/ln -t crc.o amigadwc.o -T -O crc -llib/libs/c && cp -f crc $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && rm -f crc crc.* ./*.o && cd $CI_PROJECT_DIR/public/Aztec_C68K_Amiga_5.2a && file crc && ls -la crc && cp -f $CI_PROJECT_DIR/crc.c . && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c && rm -f crc.c )
     - echo -e "section_end:`date +%s`:C68Amiga52a_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:C68CPM36b_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/ROM CP/M-68K 3.6b build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:C68CPM36b_section[collapsed=true]\r\e[0K\033[0;36mAztec C68K/ROM CP/M-68K 3.6b build ...\033[0m" || true
     - mkdir -p public/Aztec_C68K_CPM68K_3.6b
     - ( set -x; cd /tmp/old_c/Aztec_C68K_ROM_3.6b && cp -f $CI_PROJECT_DIR/bdos68k.a68 $CI_PROJECT_DIR/crc.c . && sed 's|const||g' crc.c > crc.tmp && mv -f crc.tmp crc.c && sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' crc.c > crc.tmp && mv -f crc.tmp crc.c && emu2 bin/as68.exe -o bdos.r bdos68k.a68 -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/c68.exe -o crc.r crc.c -DNOANSI -DNOSTDLIB -DUSE_CONST -D__CPM68K__ -D__AZTEC_C_36T__ -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && emu2 bin/ln68.exe +C 8100 -t CPM68K/CPM.R BDOS.R CRC.R -lCPM68K/C68K -T -O CRC.68K -- CLIB68='c:\lib\libs' INCL68='c:\include' PATH='c:\bin' && cp -f crc.68k $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b/CRC.68K && rm -f bdos* crc.* && cd $CI_PROJECT_DIR/public/Aztec_C68K_CPM68K_3.6b && test -f CRC.68K && file CRC.68K && ls -la CRC.68K )
     - echo -e "section_end:`date +%s`:C68CPM36b_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:DMCPPDOS_section[collapsed=true]\r\e[0K\033[0;36mDigital Mars C/C++ DOS 8.57 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:DMCPPDOS_section[collapsed=true]\r\e[0K\033[0;36mDigital Mars C/C++ DOS 8.57 build ...\033[0m" || true
     - mkdir -p public/Digital_Mars_C_8.57
     - ( set -x; cd /tmp/old_c/Digital_Mars_C_8.57 && cp -f $CI_PROJECT_DIR/crc.c $CI_PROJECT_DIR/dosdwc.c . && wine bin/dmc.exe -0 -o -mt crc.c dosdwc.c && cp -f crc.c crc.com $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && rm -f crc.* && cd $CI_PROJECT_DIR/public/Digital_Mars_C_8.57 && file crc.com && ls -la crc.com && emu2 crc.com --auto crc.com crc.c && rm -f crc.c dosdwc.c )
     - echo -e "section_end:`date +%s`:DMCPPDOS_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:HTCZ80_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH C Z80 CP/M 4.11 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:HTCZ80_section[collapsed=true]\r\e[0K\033[0;36mHI-TECH C Z80 CP/M 4.11 build ...\033[0m" || true
     - mkdir -p public/HI-TECH-Z80_4.11
     - ( set -x; cd /tmp/old_c/HI-TECH-Z80_4.11 && cp -f $CI_PROJECT_DIR/crc.c ./crc.c.bak && sed 's|if HAS_INCLUDE.*$|if 0|' crc.c.bak > crc.c && emu2 zc.exe -CPM -V -O -Mcrc.map crc.c && cp -f crc.com $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && rm -f crc.* && cd $CI_PROJECT_DIR/public/HI-TECH-Z80_4.11 && file crc.com && ls -la crc.com && chmod ugo+r crc.com && sudo -u nobody tnylpo crc.com --auto crc.com --limit="$(du -sb crc.com | awk '{ print $1*8 }')" && cp -f $CI_PROJECT_DIR/crc.c . && ls -la crc.c && sudo -u nobody tnylpo crc.com --auto crc.c --limit="$(du -sb crc.c | awk '{ print $1*8-$1 }')" && rm -f crc.c )
     - echo -e "section_end:`date +%s`:HTCZ80_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:WIN32_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) i686 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:WIN32_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) i686 build ...\033[0m" || true
     - mkdir -p public/Win32
     - ( set -x; i686-w64-mingw32-gcc -O3 -s -flto=auto -fweb -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
     - mv -f crc.exe public/Win32
     - echo -e "section_end:`date +%s`:WIN32_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:WIN64_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) x64 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:WIN64_section[collapsed=true]\r\e[0K\033[0;36mWindows (mingw-w64) x64 build ...\033[0m" || true
     - mkdir -p public/Win64
     - ( set -x; x86_64-w64-mingw32-gcc -O3 -s -flto=auto -fweb -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
     - mv -f crc.exe public/Win64
     - echo -e "section_end:`date +%s`:WIN64_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:LIN64_section[collapsed=true]\r\e[0K\033[0;36mLinux x64 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:LIN64_section[collapsed=true]\r\e[0K\033[0;36mLinux x64 build ...\033[0m" || true
     - mkdir -p public/linux64
     - ( set -x; gcc -O3 -s -flto=auto -fweb -static -m64 -march=x86-64 -o crc crc.c && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/linux64
     - echo -e "section_end:`date +%s`:LIN64_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:WCLIN32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Linux x86 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:WCLIN32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Linux x86 build ...\033[0m" || true
     - mkdir -p public/linux32
     - ( set -x; make clean && env INCLUDE=$WATCOM/lh:/usr/include PATH=$WATCOM/binl64:$PATH CFLAGS="-Wall -fno-stack-check -blinux -march=i386 -frerun-optimizer -O3" make CC=$WATCOM/binl64/owcc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/linux32
     - make clean
     - echo -e "section_end:`date +%s`:WCLIN32_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:WCDOS_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom DOS i86 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:WCDOS_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom DOS i86 build ...\033[0m" || true
     - mkdir -p public/OWC2
     - ( set -x; env INCLUDE=$WATCOM/h PATH=$WATCOM/binl64:$PATH $WATCOM/binl64/owcc -Wall -fno-stack-check -bcom -march=i86 -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c && ls -la crc.com && file crc.com && emu2 crc.com --auto crc.com crc.c )
     - mv -f crc.com public/OWC2
     - make clean
     - echo -e "section_end:`date +%s`:WCDOS_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:WCW32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:WCW32_section[collapsed=true]\r\e[0K\033[0;36mOpen Watcom Windows x86 build ...\033[0m" || true
     - mkdir -p public/OWC2_32
     - ( set -x; env INCLUDE=/opt/watcom/h:/opt/watcom/h/nt PATH=/opt/watcom/binl64:$PATH /opt/watcom/binl64/owcc -Wall -fno-stack-check -bnt -march=i386 -frerun-optimizer -O3 -s -o crc.exe crc.c win32dwc.c && ls -la crc.exe && file crc.exe && wine crc.exe --auto crc.exe crc.c )
     - mv -f crc.exe public/OWC2_32
     - make clean
     - echo -e "section_end:`date +%s`:WCW32_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:AOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS 68K build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:AOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS 68K build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOS68K
     - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
     - mv -f crc public/Vbcc_AOS68K
     - make clean
     - echo -e "section_end:`date +%s`:AOS68K_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:AOSWAR_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS WarpOS build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:AOSWAR_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS WarpOS build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSWAR
     - ( set -x; vc "+warpos" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc )
     - mv -f crc public/Vbcc_AOSWAR
     - make clean
     - echo -e "section_end:`date +%s`:AOSWAR_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:AOSPOW_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PowerUp build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:AOSPOW_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PowerUp build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSPOW
     - ( set -x; vc "+powerup" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc )
     - mv -f crc public/Vbcc_AOSPOW
     - make clean
     - echo -e "section_end:`date +%s`:AOSPOW_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:AOSPPC_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PPC build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:AOSPPC_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PPC build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSPPC
     - ( set -x; vc "+aosppc" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c -lamiga && ls -la crc && file crc )
     - mv -f crc public/Vbcc_AOSPPC
     - make clean
     - echo -e "section_end:`date +%s`:AOSPPC_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:TOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc Atari ST TOS build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:TOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc Atari ST TOS build ...\033[0m" || true
     - mkdir -p public/Vbcc_TOS68K
     - ( set -x; vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DTOSDWC -o crc.ttp crc.c tosdwc.c && ls -la crc.ttp && file crc.ttp )
     - mv -f crc.ttp public/Vbcc_TOS68K
     - make clean
     - echo -e "section_end:`date +%s`:TOS68K_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:LINX86_section[collapsed=true]\r\e[0K\033[0;36mVbcc Linux x86 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:LINX86_section[collapsed=true]\r\e[0K\033[0;36mVbcc Linux x86 build ...\033[0m" || true
     - mkdir -p public/Vbcc_LINX86
     - ( set -x; vc "+i386-linux" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/Vbcc_LINX86
     - make clean
     - echo -e "section_end:`date +%s`:LINX86_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:ACKLINX86_section[collapsed=true]\r\e[0K\033[0;36mAck Linux x86 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:ACKLINX86_section[collapsed=true]\r\e[0K\033[0;36mAck Linux x86 build ...\033[0m" || true
     - mkdir -p public/Ack_LINX86
     - ( set -x; ack -mlinux386 -O3 -D__ACK__ crc.c -o crc && strip --strip-all crc && ls -la crc && file crc && ./crc --auto crc crc.c )
     - mv -f crc public/Ack_LINX86
     - make clean
     - echo -e "section_end:`date +%s`:ACKLINX86_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:ACKLINPPC_section[collapsed=true]\r\e[0K\033[0;36mAck Linux PPC build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:ACKLINPPC_section[collapsed=true]\r\e[0K\033[0;36mAck Linux PPC build ...\033[0m" || true
     - mkdir -p public/Ack_LINPPC
     - ( set -x; ack -mlinuxppc -O3 -D__ACK__ crc.c -o crc && ls -la crc && file crc )
     - mv -f crc public/Ack_LINPPC
     - make clean
     - echo -e "section_end:`date +%s`:ACKLINPPC_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:ACKCPM_section[collapsed=true]\r\e[0K\033[0;36mAck CP/M-80 build ...\033[0m" || true
+    - |
+      echo -e "section_start:`date +%s`:ACKCPM_section[collapsed=true]\r\e[0K\033[0;36mAck CP/M-80 build ...\033[0m" || true
     - mkdir -p public/Ack_CPM
     - ( set -x; ack -mcpm -O4 -DCRC_CPM -D__ACK__ bdosack.s crc.c -o crc.com && ls -la crc.com && file crc.com && chmod ugo+r crc.com && sudo -u nobody tnylpo crc.com --auto crc.com --limit="$(du -sb crc.com | awk '{ print $1*8 }')" && ls -la crc.c && sudo -u nobody tnylpo crc.com --auto crc.c --limit="$(du -sb crc.c | awk '{ print $1*8-$1 }')" )
     - mv -f crc.com public/Ack_CPM
     - make clean
-    - echo -e "section_end:`date +%s`:ACKCP_section\r\e[0K" || true
-    - echo -e "section_start:`date +%s`:V7_section[collapsed=true]\r\e[0K\033[0;36mAck PDP-11 UNIX V7 build ...\033[0m" || true
+    - echo -e "section_end:`date +%s`:ACKCPM_section\r\e[0K" || true
+    - |
+      echo -e "section_start:`date +%s`:V7_section[collapsed=true]\r\e[0K\033[0;36mAck PDP-11 UNIX V7 build ...\033[0m" || true
     - mkdir -p public/Ack_V7
     - ( set -x; ack -mpdpv7 -O3 -D__ACK__ crc.c -o crc && ls -la crc && file crc )
     - mv -f crc public/Ack_V7
