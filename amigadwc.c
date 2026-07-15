@@ -41,9 +41,16 @@ typedef LONG BPTR;
 /******************************************************************************/
 
 struct FileInfoBlock {
-  LONG fib_DiskKey;      /*cppcheck-suppress unusedStructMember*/
+  LONG fib_DiskKey;        /*cppcheck-suppress unusedStructMember*/
   LONG fib_DirEntryType;
   char fib_FileName [108];
+  LONG fib_Protection;     /*cppcheck-suppress unusedStructMember*/
+  LONG fib_EntryType;      /*cppcheck-suppress unusedStructMember*/
+  LONG fib_Size;           /*cppcheck-suppress unusedStructMember*/
+  LONG fib_NumBlocks;      /*cppcheck-suppress unusedStructMember*/
+  LONG fib_Date [3];       /*cppcheck-suppress unusedStructMember*/
+  char fib_Comment [80];   /*cppcheck-suppress unusedStructMember*/
+  char fib_Reserved [36];  /*cppcheck-suppress unusedStructMember*/
 };
 
 /******************************************************************************/
