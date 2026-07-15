@@ -223,7 +223,7 @@ expand_pattern (pattern)
   struct FileInfoBlock fib;
   LONG ok;
 
-  split_prefix (pattern, prefix, &mask);
+  split_prefix (pattern, prefix, & mask);
 
   lock = Lock ((STRPTR)(prefix [0] ? prefix : ""), ACCESS_READ);
 
@@ -233,7 +233,7 @@ expand_pattern (pattern)
       return;
     }
 
-  ok = Examine (lock, &fib);
+  ok = Examine (lock, & fib);
 
   if (0 == ok)
     {
@@ -257,7 +257,7 @@ expand_pattern (pattern)
                 {
                   if (MAX_PATH <= plen)
                     {
-                      ok = ExNext (lock, &fib);
+                      ok = ExNext (lock, & fib);
                       continue;
                     }
 
@@ -274,7 +274,7 @@ expand_pattern (pattern)
             }
         }
 
-      ok = ExNext (lock, &fib);
+      ok = ExNext (lock, & fib);
     }
 
   UnLock (lock);

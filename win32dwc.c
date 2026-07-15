@@ -167,9 +167,9 @@ expand_pattern (pattern)
       pattern = fixedpat;
     }
 
-  split_prefix (pattern, prefix, &mask);
+  split_prefix (pattern, prefix, & mask);
 
-  hFind = FindFirstFileA (pattern, &fd);
+  hFind = FindFirstFileA (pattern, & fd);
 
   if (INVALID_HANDLE_VALUE == hFind)
     {
@@ -213,7 +213,7 @@ expand_pattern (pattern)
         any = 1;
       }
     }
-  while (FindNextFileA (hFind, &fd));
+  while (FindNextFileA (hFind, & fd));
 
   (void)FindClose (hFind);
 

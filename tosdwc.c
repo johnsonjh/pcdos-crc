@@ -281,7 +281,7 @@ expand_pattern (pattern)
   char broad [MAX_PATH];
   int rc;
 
-  split_prefix (pattern, prefix, &mask);
+  split_prefix (pattern, prefix, & mask);
 
   if ('\0' != prefix[0])
     {

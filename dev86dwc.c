@@ -88,7 +88,7 @@ set_dta (buf)
   s.ds = __get_ds ();
   r.x.dx = (unsigned short)buf;
 
-  int86x (0x21, &r, &r, &s);
+  int86x (0x21, & r, & r, & s);
 }
 
 /******************************************************************************/
@@ -113,7 +113,7 @@ find_first (pattern, attr)
   s.ds = __get_ds ();
   r.x.dx = (unsigned short)pattern;
 
-  int86x (0x21, &r, &r, &s);
+  int86x (0x21, & r, & r, & s);
 
   return r.x.ax;
 }
@@ -131,7 +131,7 @@ find_next ()
   union REGS r;
 
   r.h.ah = 0x4F;
-  int86 (0x21, &r, &r);
+  int86 (0x21, & r, & r);
 
   return r.x.ax;
 }
@@ -232,9 +232,9 @@ expand_pattern (pattern)
   const char * mask;
   int rc;
 
-  split_prefix (pattern, prefix, &mask);
+  split_prefix (pattern, prefix, & mask);
 
-  set_dta (&dtabuf);
+  set_dta (& dtabuf);
 
   rc = find_first (pattern, ATTR_MASK);
 
