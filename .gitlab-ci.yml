@@ -413,7 +413,7 @@ pages:
       # Start of Vbcc AmigaOS 68K build ...
       echo -e "section_start:`date +%s`:AOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS 68K build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOS68K
-    - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
+    - ( set -x; vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc && vamos $VAMOS_FLAGS -- ./crc --auto crc crc.c )
     - mv -f crc public/Vbcc_AOS68K
     - make clean
     - |
@@ -423,7 +423,7 @@ pages:
       # Start of Vbcc AmigaOS WarpOS build ...
       echo -e "section_start:`date +%s`:AOSWAR_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS WarpOS build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSWAR
-    - ( set -x; vc "+warpos" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c && ls -la crc && file crc )
+    - ( set -x; vc "+warpos" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc )
     - mv -f crc public/Vbcc_AOSWAR
     - make clean
     - |
@@ -433,7 +433,7 @@ pages:
       # Start of Vbcc AmigaOS PowerUp build ...
       echo -e "section_start:`date +%s`:AOSPOW_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PowerUp build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSPOW
-    - ( set -x; vc "+powerup" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c && ls -la crc && file crc )
+    - ( set -x; vc "+powerup" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -DAOSDWC -o crc crc.c amigadwc.c -lamiga && ls -la crc && file crc )
     - mv -f crc public/Vbcc_AOSPOW
     - make clean
     - |
@@ -443,7 +443,7 @@ pages:
       # Start of Vbcc AmigaOS PPC build ...
       echo -e "section_start:`date +%s`:AOSPPC_section[collapsed=true]\r\e[0K\033[0;36mVbcc AmigaOS PPC build ...\033[0m" || true
     - mkdir -p public/Vbcc_AOSPPC
-    - ( set -x; vc "+aosppc" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c && ls -la crc && file crc )
+    - ( set -x; vc "+aosppc" -c89 -speed -O4 -maxoptpasses=40 -unroll-all -o crc crc.c -lamiga && ls -la crc && file crc )
     - mv -f crc public/Vbcc_AOSPPC
     - make clean
     - |
