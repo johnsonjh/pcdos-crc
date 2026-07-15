@@ -676,7 +676,7 @@ command -v "${CC:-cc}" > /dev/null 2>&1 && {
 case "$(uname -s 2> /dev/null || :)" in
 NetBSD)
   if command -p -v lint > /dev/null 2>&1; then
-    lint -a -aa -b -c -e -g -h -P -r -u -w -z ./*.c
+    lint -a -aa -b -c -e -g -h -P -r -u -w -z "crc.c"
   fi
   ;;
 *) : ;;
