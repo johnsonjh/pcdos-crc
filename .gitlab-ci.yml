@@ -496,7 +496,7 @@ pages:
     - chmod ugo+r crc.com
     - sudo -u nobody tnylpo crc.com --auto crc.com --limit="$(du -sb crc.com | awk '{ print $1*8 }')"
     - ls -la crc.c
-    - sudo -u nobody tnylpo crc.com --auto crc.c --limit="$(du -sb crc.c | awk '{ print $1*8-$1 }')" )
+    - sudo -u nobody tnylpo crc.com --auto crc.c --limit="$(du -sb crc.c | awk '{ print $1*8-$1 }')"
     - mv -f crc.com public/Ack_CPM
     - make clean
     - echo -e "section_end:`date +%s`:ACKCPM_section\r\e[0K" || true
