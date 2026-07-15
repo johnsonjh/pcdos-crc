@@ -38,7 +38,7 @@ pages:
     - apk -q update || true
     - apk -q add '!usr-merge-nag' 2> /dev/null || true
     - apk -q upgrade --prune || true
-    - apk -q add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv gnu-libiconv-dev gnu-libiconv-libs gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses ncurses-dev ncurses-libs npm pango pigz py3-codespell python3 python3-dev reuse seatd shellcheck shfmt sudo tar time wayland-libs-egl wine xwayland xz sed ninja-build lua lua-dev flex bison linux-headers
+    - apk -q add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv gnu-libiconv-dev gnu-libiconv-libs gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses ncurses-dev ncurses-libs npm pango pigz py3-codespell python3 python3-dev reuse seatd shellcheck shfmt sudo tar time wayland-libs-egl wine xwayland xz sed ninja-build lua lua-dev flex bison linux-headers patch
     - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && { make -j $(nproc) > /tmp/emu2.log 2>&1 || { cat /tmp/emu2.log; exit 1; }; } && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && { make -j $(nproc) > /tmp/tnylpo.log 2>&1 || { cat /tmp/tnylpo.log; exit 1; }; } && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
@@ -71,6 +71,7 @@ pages:
     - ( cd /tmp && git clone https://github.com/davidgiven/ack.git && cd ack && { sed -i 's|-DUSE_I80_RSTS||' plat/cpm/build.py || true; } && export PATH="/usr/lib/ninja-build/bin:$PATH" && { make install PREFIX=/opt/ack > /tmp/ack.log 2>&1 || { cat /tmp/ack.log; exit 1; }; } && cd .. && rm -rf ./ack )
     - test -x /opt/ack/bin/ack
     - export PATH="/opt/ack/bin:$PATH"
+    - ( cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { curl -fsSL https://patch-diff.githubusercontent.com/raw/DoctorWkt/Apout/pull/4.diff | patch -p1 -N > /dev/null 2>&1 || true; } && { sed -i 's|-O2 |-O3 -fweb -flto=auto |' Makefile || true; } && { make -j $(nproc) > /tmp/apout.log 2>&1 || { cat /tmp/apout.log; exit 1; }; } && make install >> /tmp/apout.log 2>&1 && cd .. && rm -rf ./Apout )
     - rm -f /tmp/*.log 2> /dev/null || true
     - echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
     - |
@@ -507,9 +508,31 @@ pages:
     - ack -mpdpv7 -O3 -D__ACK__ crc.c -o crc
     - ls -la crc
     - file crc
+    - env APOUT_UNIX_VERSION=V7 apout ./crc --auto crc crc.c
     - mv -f crc public/Ack_V7
     - make clean
     - echo -e "section_end:`date +%s`:V7_section\r\e[0K" || true
+    - |
+      #
+      echo -e "section_start:`date +%s`:ACKDOS86_section[collapsed=true]\r\e[0K\033[0;36mAck PDP-11 UNIX V7 build ...\033[0m" || true
+    - mkdir -p public/Ack_DOS86
+    - ack -mmsdos86 -O3 -D__ACK__ crc.c -o crc.com
+    - ls -la crc.com
+    - file crc.com
+    - emu2 crc.com --auto crc.com crc.c
+    - mv -f crc.com public/Ack_DOS86
+    - make clean
+    - echo -e "section_end:`date +%s`:ACKDOS86_section\r\e[0K" || true
+    - |
+      #
+      echo -e "section_start:`date +%s`:ACKDOS386_section[collapsed=true]\r\e[0K\033[0;36mAck PDP-11 UNIX V7 build ...\033[0m" || true
+    - mkdir -p public/Ack_DOS386
+    - ack -mmsdos386 -O3 -D__ACK__ crc.c -o crc.exe
+    - ls -la crc.exe
+    - file crc.exe
+    - mv -f crc.exe public/Ack_DOS386
+    - make clean
+    - echo -e "section_end:`date +%s`:ACKDOS386_section\r\e[0K" || true
   artifacts:
     expire_in: 1 day
     paths:

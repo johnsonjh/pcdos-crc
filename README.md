@@ -306,6 +306,7 @@ In this mode:
 | [AmigaOS/68K](https://dps8m.gitlab.io/crc/Aztec_C68K_Amiga_5.2a/crc)          | Aztec&nbsp;C68K/Amiga&nbsp;5.2a                  |
 | [Linux/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Ack_LINX86/crc)           | Ack                                              |
 | [Linux/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Vbcc_LINX86/crc)          | Vbcc                                             |
+| [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/Ack_DOS86/crc.com)           | Ack                                              |
 | [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/Aztec_C86_DOS_5.2a/crc.com)  | Aztec&nbsp;C86&nbsp;5.2a                         |
 | [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/C86PLUS_1.10/crc.exe)        | Computer&nbsp;Innovations&nbsp;C86PLUS&nbsp;1.10 |
 | [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/dev86/crc.com)               | dev86                                            |
@@ -321,6 +322,7 @@ In this mode:
 | [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TCPP3/crc.com)               | Turbo&nbsp;C++&nbsp;3.00                         |
 | [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/BCPP31/crc.com)              | Borland&nbsp;C++&nbsp;3.1                        |
 | [MS‑DOS&nbsp;16‑bit](https://dps8m.gitlab.io/crc/TCPP4J/crc.com)              | Turbo&nbsp;C++&nbsp;4.02J                        |
+| [MS‑DOS&nbsp;32‑bit](https://dps8m.gitlab.io/crc/Ack_DOS386/crc.exe)          | Ack                                              |
 | [Windows/x86&nbsp;32‑bit](https://dps8m.gitlab.io/crc/OWC2_W32/crc.exe)       | Open&nbsp;Watcom&nbsp;V2                         |
 
 ## Building from source
@@ -943,6 +945,18 @@ To build the program for CP/M‑68K we are using
   tcc -G -O -Z -f- -g0 -mt -lt -w-pro -d -3- -2- -1- -d crc.c "lib\16bit\wildargs.obj"
   ```
 
+* To build a binary for MS‑DOS using **Ack**:
+
+  ```sh
+  ack -mmsdos86 -O3 -D__ACK__ crc.c -o crc.com
+  ```
+
+* To build a binary for MS‑DOS (386+) using **Ack**:
+
+  ```sh
+  ack -mmsdos386 -O3 -D__ACK__ crc.c -o crc.exe
+  ```
+
 * To build a binary for MS‑DOS (386+) using **DJGPP**:
 
   ```sh
@@ -969,6 +983,12 @@ To build the program for CP/M‑68K we are using
   standard libraries.  It should be possible to rebuild the runtime libraries
   from source if 8086/8088 compatibility is required when using
   these compilers.
+
+* **Ack** versions before 2026‑07‑16 have a
+  [bug](https://github.com/davidgiven/ack/issues/365) that prevents binary
+  file I/O from working on MS‑DOS targets.  The problem was identified and a
+  [patch](https://github.com/davidgiven/ack/pull/366/changes) fixing the bug
+  was submitted upstream.
 
 ## Security
 
