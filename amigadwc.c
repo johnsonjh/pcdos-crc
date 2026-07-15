@@ -48,9 +48,9 @@ struct FileInfoBlock {
 
 /******************************************************************************/
 
-# ifndef ACCESS_READ
-#  define ACCESS_READ (-2L)
-# endif
+#ifndef ACCESS_READ
+# define ACCESS_READ (-2L)
+#endif
 
 /******************************************************************************/
 
