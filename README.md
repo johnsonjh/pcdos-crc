@@ -809,6 +809,14 @@ To build the program for CP/M‑68K we are using
   m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -DTOSDWC -s -o crc.ttp crc.c tosdwc.c
   ```
 
+#### Atari ST notes
+
+* Atari ST builds using supported compilers perform internal wildcard expansion
+  (*i.e.*, `*` and `?`).  Builds using other Atari ST toolchains may need
+  some adjustments.
+
+* Only the Vbcc and CrossMINT (GCC) toolchains are currently supported.
+
 ### Building for MS-DOS
 
 * To build a binary for MS‑DOS using **IA16‑GCC**:
