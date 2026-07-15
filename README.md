@@ -791,7 +791,7 @@ To build the program for CP/M‑68K we are using
   [**Amiga‑GCC**](https://franke.ms/amiga/amiga-gcc.wiki):
 
   ```sh
-  m68k-amigaos-gcc -m68000 -mcrt=nix13 -O3 -std=gnu90 crc.c -o crc
+  m68k-amigaos-gcc -m68000 -mcrt=nix13 -O3 -std=gnu90 crc.c -s -o crc
   ```
 
 ### Building for Atari ST
@@ -806,7 +806,7 @@ To build the program for CP/M‑68K we are using
   [**CrossMINT**](https://tho-otto.de/crossmint.php):
 
   ```sh
-  m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -DTOSDWC -o crc.ttp crc.c tosdwc.c
+  m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -DTOSDWC -s -o crc.ttp crc.c tosdwc.c
   ```
 
 ### Building for MS-DOS
