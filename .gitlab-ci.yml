@@ -71,7 +71,7 @@ pages:
     - export PATH="$HOME/go/bin:$PATH"
     - npm install -g --save markdown-toc > /tmp/markdown-toc.log 2>&1 || true
     - ( ( cd /tmp && curl -fsSL https://ftpmirror.gnu.org/cppi/cppi-1.18.tar.xz | xz -dc | tar xf - && cd ./cppi-* && ./configure --prefix=/usr --disable-assert --disable-dependency-tracking && make -j $(nproc) && make install && cd .. && rm -rf ./cppi-* ) || true ) > /tmp/cppi.log 2>&1
-    - ( cd /tmp && git clone https://github.com/davidgiven/ack.git && cd ack && { sed -i 's|-DUSE_I80_RSTS||' plat/cpm/build.py || true; } && export PATH="/usr/lib/ninja-build/bin:$PATH" && { make install PREFIX=/opt/ack > /tmp/ack.log 2>&1 || { cat /tmp/ack.log; exit 1; }; } && cd .. && rm -rf ./ack && wc -l /tmp/ack.log || true )
+    - ( cd /tmp && git clone https://github.com/davidgiven/ack.git && cd ack && { sed -i 's|-DUSE_I80_RSTS||' plat/cpm/build.py || true; } && export PATH="/usr/lib/ninja-build/bin:$PATH" && { make install PREFIX=/opt/ack > /tmp/ack.log 2>&1 || { cat /tmp/ack.log; exit 1; }; } && cd .. && rm -rf ./ack )
     - test -x /opt/ack/bin/ack
     - export PATH="/opt/ack/bin:$PATH"
     - rm -f /tmp/*.log 2> /dev/null || true
