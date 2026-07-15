@@ -433,7 +433,7 @@ pages:
       # Start of Vbcc Atari ST TOS build ...
       echo -e "section_start:`date +%s`:TOS68K_section[collapsed=true]\r\e[0K\033[0;36mVbcc Atari ST TOS build ...\033[0m" || true
     - mkdir -p public/Vbcc_TOS68K
-    - ( set -x; vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -o crc.ttp crc.c && ls -la crc.ttp && file crc.ttp )
+    - ( set -x; vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -unroll-all -short-push -sd -DTOSDWC -o crc.ttp crc.c tosdwc.c && ls -la crc.ttp && file crc.ttp )
     - mv -f crc.ttp public/Vbcc_TOS68K
     - make clean
     - |

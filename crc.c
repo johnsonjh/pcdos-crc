@@ -4101,6 +4101,12 @@ void win32_expand_wildcards (int * argc, char * * * argv);
 
 /******************************************************************************/
 
+#ifdef TOSDWC
+void tos_expand_wildcards (int * argc, char * * * argv);
+#endif
+
+/******************************************************************************/
+
 #ifdef __POCC__
 # ifndef NOMAINCONST
 #  define NOMAINCONST
@@ -4142,6 +4148,14 @@ void win32_expand_wildcards (int * argc, char * * * argv);
 /******************************************************************************/
 
 #ifdef _WIN32
+# ifndef NOMAINCONST
+#  define NOMAINCONST
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef TOSDWC
 # ifndef NOMAINCONST
 #  define NOMAINCONST
 # endif
@@ -4246,6 +4260,9 @@ main (argc, argv)
 #endif
 #ifdef _WIN32
   win32_expand_wildcards (& argc, & argv);
+#endif
+#ifdef TOSDWC
+  tos_expand_wildcards (& argc, & argv);
 #endif
 
   cb_zero (& lim_bits);
