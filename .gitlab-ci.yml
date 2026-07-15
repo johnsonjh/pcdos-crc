@@ -71,7 +71,7 @@ pages:
     - ( cd /tmp && git clone https://github.com/davidgiven/ack.git && cd ack && { sed -i 's|-DUSE_I80_RSTS||' plat/cpm/build.py || true; } && export PATH="/usr/lib/ninja-build/bin:$PATH" && { make install PREFIX=/opt/ack > /tmp/ack.log 2>&1 || { cat /tmp/ack.log; exit 1; }; } && cd .. && rm -rf ./ack )
     - test -x /opt/ack/bin/ack
     - export PATH="/opt/ack/bin:$PATH"
-    - ( cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { curl -fsSL https://patch-diff.githubusercontent.com/raw/DoctorWkt/Apout/pull/4.diff | patch -p1 -N > /dev/null 2>&1 || true; } && { sed -i 's|-O2 |-O3 -fweb -flto=auto |' Makefile || true; } && { make -j $(nproc) > /tmp/apout.log 2>&1 || { cat /tmp/apout.log; exit 1; }; } && make install >> /tmp/apout.log 2>&1 && cd .. && rm -rf ./Apout )
+    - ( cd /tmp && git clone https://github.com/DoctorWkt/Apout.git && cd Apout && { curl -fsSL https://patch-diff.githubusercontent.com/raw/DoctorWkt/Apout/pull/4.diff | patch -p1 -N > /dev/null 2>&1 || true; } && { sed -i 's|-O2 |-O3 -fweb -flto=auto |' Makefile || true; } && make -j $(nproc) && make install && cd .. && rm -rf ./Apout )
     - rm -f /tmp/*.log 2> /dev/null || true
     - echo -e "section_end:`date +%s`:Setup_section\r\e[0K" || true
     - |
