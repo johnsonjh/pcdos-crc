@@ -1332,6 +1332,27 @@ done:
 
 /******************************************************************************/
 
+#ifndef CPMDWC
+# ifdef CRC_CPM
+#  ifndef CPM_WILDCARD
+#   define CPMDWC
+#  endif
+# endif
+#endif
+
+/******************************************************************************/
+
+#ifdef CPMDWC
+# ifdef CPM_WILDCARD
+#  undef CPM_WILDCARD
+# endif
+# ifdef CPM_BDOS_WILDCARD
+#  undef CPM_BDOS_WILDCARD
+# endif
+#endif
+
+/******************************************************************************/
+
 #ifdef CPM_WILDCARD
 static int
 # ifdef ANSI_COMPILER
@@ -4142,6 +4163,16 @@ void tos_expand_wildcards ();
 
 /******************************************************************************/
 
+#ifdef CPMDWC
+# ifdef ANSI_COMPILER
+void cpm_expand_wildcards (int * argc, char * * * argv);
+# else
+void cpm_expand_wildcards ();
+# endif
+#endif
+
+/******************************************************************************/
+
 int
 #ifdef _MSC_VER
 # ifndef _WIN32
@@ -4225,6 +4256,10 @@ main (argc, argv)
 
 #ifdef AOSDWC
   amiga_expand_wildcards (& argc, & argv);
+#endif
+
+#ifdef CPMDWC
+  cpm_expand_wildcards (& argc, & argv);
 #endif
 
   cb_zero (& lim_bits);
