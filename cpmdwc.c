@@ -9,7 +9,7 @@
 
 /*
  * Expands wildcards and modifies argc and argv for CP/M-80, CP/M-86, and
- * CP/M-68K builds, using direct BDOS Search First / Search Next calls.
+ * CP/M-68K builds, using direct BDOS Search First and Search Next calls.
  */
 
 /******************************************************************************/
@@ -208,7 +208,7 @@ add_arg (s)
 
 /*
  * Build a CP/M FCB from a wildcard pattern.  Expands '*' into runs of '?' so
- * BDOS Search First / Search Next match correctly.  Optional "d:" drive
+ * BDOS Search First and Search Next match correctly.  Optional "d:" drive
  * prefixes set FCB[0]; the caller keeps the drive letter for expanded names.
  */
 
@@ -395,7 +395,7 @@ expand_pattern (pattern)
   while (0xff != r)
     {
       /*
-       * Search First / Next return the directory-entry index (0..3) within
+       * Search First and Next return the directory-entry index (0..3) within
        * the 128-byte DMA buffer.  Ignore non-file entries (user number
        * 0xE5 = deleted; entries with the directory attribute bit set are
        * uncommon on classic CP/M but skip anything that is not a normal
