@@ -280,23 +280,25 @@ In this mode:
 > “best” builds (for each platform) currently produced by
 > [GitLab CI/CD](https://gitlab.com/dps8m/crc/-/pipelines/latest).
 
-|                                                                         Platform | Toolchain                         |
-|---------------------------------------------------------------------------------:|:----------------------------------|
-| [**AmigaOS**/**68K**](https://dps8m.gitlab.io/crc/Vbcc_AOS68K/crc)               | Vbcc                              |
-| [**AmigaOS**/**PowerUp**](https://dps8m.gitlab.io/crc/Vbcc_AOSPOW/crc)           | Vbcc                              |
-| [**AmigaOS**/**WarpOS**](https://dps8m.gitlab.io/crc/Vbcc_AOSWAR/crc)            | Vbcc                              |
-| [**AmigaOS&nbsp;4**](https://dps8m.gitlab.io/crc/Vbcc_AOSPPC/crc)                | Vbcc                              |
-| [**Atari&nbsp;ST**](https://dps8m.gitlab.io/crc/Vbcc_TOS68K/crc.ttp)             | Vbcc                              |
-| [**CP/M‑68K**](https://dps8m.gitlab.io/crc/Aztec_C68K_CPM68K_3.6b/CRC.68K)       | Aztec&nbsp;C68K/ROM&nbsp;3.6b     |
-| [**CP/M‑80**&nbsp;**8080**](https://dps8m.gitlab.io/crc/Ack_CPM/crc.com)         | Ack                               |
-| [**CP/M‑80**&nbsp;**Z80**](https://dps8m.gitlab.io/crc/HI-TECH-Z80_4.11/crc.com) | HI‑TECH&nbsp;C&nbsp;Z80&nbsp;4.11 |
-| [**Linux**/**PPC**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Ack_LINPPC/crc)  | Ack                               |
-| [**Linux**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/linux32/crc)     | Open&nbsp;Watcom&nbsp;V2          |
-| [**Linux**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/linux64/crc)     | GCC&nbsp;(musl)                   |
-| [**MS‑DOS**&nbsp;**16‑bit**](https://dps8m.gitlab.io/crc/MSC800c/crc.com)        | Microsoft&nbsp;C&nbsp;8.00c       |
-| [**UNIX&nbsp;V7**/**PDP‑11**](https://dps8m.gitlab.io/crc/Ack_V7/crc)            | Ack                               |
-| [**Windows**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Win32/crc.exe) | GCC&nbsp;(MinGW)                  |
-| [**Windows**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/Win64/crc.exe) | GCC&nbsp;(MinGW)                  |
+|                                                                          Platform | Toolchain                         |
+|----------------------------------------------------------------------------------:|:----------------------------------|
+| [**AmigaOS**/**68K**](https://dps8m.gitlab.io/crc/Vbcc_AOS68K/crc)                | Vbcc                              |
+| [**AmigaOS**/**PowerUp**](https://dps8m.gitlab.io/crc/Vbcc_AOSPOW/crc)            | Vbcc                              |
+| [**AmigaOS**/**WarpOS**](https://dps8m.gitlab.io/crc/Vbcc_AOSWAR/crc)             | Vbcc                              |
+| [**AmigaOS&nbsp;4**](https://dps8m.gitlab.io/crc/Vbcc_AOSPPC/crc)                 | Vbcc                              |
+| [**Atari&nbsp;ST**](https://dps8m.gitlab.io/crc/Vbcc_TOS68K/crc.ttp)              | Vbcc                              |
+| [**CP/M‑68K**](https://dps8m.gitlab.io/crc/Aztec_C68K_CPM68K_3.6b/CRC.68K)        | Aztec&nbsp;C68K/ROM&nbsp;3.6b     |
+| [**CP/M‑80**&nbsp;**8080**](https://dps8m.gitlab.io/crc/Ack_CPM/crc.com)          | Ack                               |
+| [**CP/M‑80**&nbsp;**Z80**](https://dps8m.gitlab.io/crc/HI-TECH-Z80_4.11/crc.com)  | HI‑TECH&nbsp;C&nbsp;Z80&nbsp;4.11 |
+| [**Linux**/**m68k**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Ack_LINM68K/crc) | Ack                               |
+| [**Linux**/**MIPS**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Ack_LINMIPS/crc) | Ack                               |
+| [**Linux**/**PPC**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Ack_LINPPC/crc)   | Ack                               |
+| [**Linux**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/linux32/crc)      | Open&nbsp;Watcom&nbsp;V2          |
+| [**Linux**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/linux64/crc)      | GCC&nbsp;(musl)                   |
+| [**MS‑DOS**&nbsp;**16‑bit**](https://dps8m.gitlab.io/crc/MSC800c/crc.com)         | Microsoft&nbsp;C&nbsp;8.00c       |
+| [**UNIX&nbsp;V7**/**PDP‑11**](https://dps8m.gitlab.io/crc/Ack_V7/crc)             | Ack                               |
+| [**Windows**/**x86**&nbsp;**32‑bit**](https://dps8m.gitlab.io/crc/Win32/crc.exe)  | GCC&nbsp;(MinGW)                  |
+| [**Windows**/**x86**&nbsp;**64‑bit**](https://dps8m.gitlab.io/crc/Win64/crc.exe)  | GCC&nbsp;(MinGW)                  |
 
 ### Extra builds
 
@@ -990,7 +992,14 @@ To build the program for CP/M‑68K we are using
   [bug](https://github.com/davidgiven/ack/issues/365) that prevents binary
   file I/O from working on MS‑DOS targets.  The problem was identified and a
   [patch](https://github.com/davidgiven/ack/pull/366/changes) fixing the bug
-  was submitted upstream.
+  was accepted.
+
+  * It is highly recommended to always use the very latest version of Ack due
+  to [other](https://github.com/davidgiven/ack/issues/369)
+  [bugs](https://github.com/davidgiven/ack/issues/367) that have
+  been [recently](https://github.com/davidgiven/ack/pull/370)
+  [fixed](https://github.com/davidgiven/ack/pull/368) upstream.
+
 
 ### Building for 2.11BSD
 
@@ -1089,13 +1098,13 @@ Code statistics 📈 generated by [`scc`](https://github.com/boyter/scc):
         </tr><tr>
                 <th>YAML</th>
                 <th>1</th>
-                <th>546</th>
+                <th>566</th>
                 <th>6</th>
-                <th>51</th>
-                <th>489</th>
+                <th>53</th>
+                <th>507</th>
                 <th>0</th>
-                <th>31957</th>
-                <th>356</th>
+                <th>32732</th>
+                <th>366</th>
         </tr><tr>
                 <th>Makefile</th>
                 <th>1</th>
@@ -1140,13 +1149,13 @@ Code statistics 📈 generated by [`scc`](https://github.com/boyter/scc):
         <tfoot><tr>
                 <th>Total</th>
                 <th>18</th>
-                <th>9443</th>
+                <th>9463</th>
                 <th>1733</th>
-                <th>911</th>
-                <th>6799</th>
+                <th>913</th>
+                <th>6817</th>
                 <th>1153</th>
-                <th>232445</th>
-                <th>3497</th>
+                <th>233220</th>
+                <th>3507</th>
         </tr></tfoot></table>
 <!-- scc-end -->
 

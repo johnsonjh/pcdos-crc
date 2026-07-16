@@ -535,6 +535,26 @@ pages:
     - mv -f crc.exe public/Ack_DOS386
     - make clean
     - echo -e "section_end:`date +%s`:ACKDOS386_section\r\e[0K" || true
+    - |
+      #
+      echo -e "section_start:`date +%s`:ACKLINMIPS_section[collapsed=true]\r\e[0K\033[0;36mAck Linux MIPS build ...\033[0m" || true
+    - mkdir -p public/Ack_LINMIPS
+    - ack -mlinuxmips -O3 -D__ACK__ crc.c -o crc
+    - ls -la crc
+    - file crc
+    - mv -f crc public/Ack_LINMIPS
+    - make clean
+    - echo -e "section_end:`date +%s`:ACKLINMIPS_section\r\e[0K" || true
+    - |
+      #
+      echo -e "section_start:`date +%s`:ACKLINM68K_section[collapsed=true]\r\e[0K\033[0;36mAck Linux m68k build ...\033[0m" || true
+    - mkdir -p public/Ack_LINM68K
+    - ack -mlinux68k -O3 -D__ACK__ crc.c -o crc
+    - ls -la crc
+    - file crc
+    - mv -f crc public/Ack_LINM68K
+    - make clean
+    - echo -e "section_end:`date +%s`:ACKLINM68K_section\r\e[0K" || true
   artifacts:
     expire_in: 1 day
     paths:
