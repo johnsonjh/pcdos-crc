@@ -110,7 +110,8 @@ Digital&nbsp;Mars&nbsp;C/C++, GCC, Clang,
 **Atari&nbsp;ST** (Vbcc, [CrossMINT](https://tho-otto.de/crossmint.php)),
 **AmigaOS** (Vbcc, Aztec&nbsp;C68K,
 [Amiga‑GCC](https://franke.ms/amiga/amiga-gcc.wiki)),
-**UNIX**, and systems supported
+**UNIX** (any POSIX‑like system, 2.11BSD with the native toolchain, UNIX V7
+cross-compiled with Ack), and systems supported
 by [SoftIntegration&nbsp;**Ch**](https://www.softintegration.com/),
 but should be able to be built anywhere else with little to no porting
 effort required.
