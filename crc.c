@@ -3103,8 +3103,17 @@ cpm_setfcb (fcb, fn)
   for (i = 1; 11 >= i; i++)
     fcb [i] = ' ';
 
-  if ('\0' != p [0] && ':' == p [1])
+  if ('\0' != p [0] && ':' == p [1]) {
+    int d = (int)(unsigned char)p[0];
+
+    if ('a' <= d && 'z' >= d)
+      d -= 32;
+
+    if ('A' <= d && 'Z' >= d)
+      fcb[0] = (unsigned char)(d - 'A' + 1);
+
     p += 2;
+  }
 
   i = 1;
 
@@ -3265,8 +3274,17 @@ cpm_setfcb_wild (fcb, fn)
   for (i = 1; 11 >= i; i++)
     fcb [i] = ' ';
 
-  if ('\0' != p [0] && ':' == p [1])
+  if ('\0' != p [0] && ':' == p [1]) {
+    int d = (int)(unsigned char)p[0];
+
+    if ('a' <= d && 'z' >= d)
+      d -= 32;
+
+    if ('A' <= d && 'Z' >= d)
+      fcb[0] = (unsigned char)(d - 'A' + 1);
+
     p += 2;
+  }
 
   i = 1;
 
