@@ -415,7 +415,7 @@ Most users wonʼt need to do any of these things.
 ### Developer notes
 
 **NB**: Submission of AI (artificial intelligence) generated code by
-contributors is **NOT permitted**.  There will be ***zero*** **crankerslop**
+contributors is **NOT permitted**.  There will be ***zero*** **clankerslop**
 in this project!
 
 The `Makefile` provides three convenience targets for developers:
