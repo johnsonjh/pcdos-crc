@@ -312,12 +312,14 @@ static void
 cpm_dir_to_name (
   char * buf,
   /*cppcheck-suppress constParameterPointer*/
+  /*cppcheck-suppress constParameter*/
   unsigned char * entry,
   char drive_letter)
 #else
 cpm_dir_to_name (buf, entry, drive_letter)
   char * buf;
   /*cppcheck-suppress constParameterPointer*/
+  /*cppcheck-suppress constParameter*/
   unsigned char * entry;
   char drive_letter;
 #endif
