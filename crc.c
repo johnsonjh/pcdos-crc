@@ -2021,7 +2021,7 @@ safe_batch_limit ()
   unsigned int limit;
   unsigned int max_inc;
 
-  if (u_bits > 32)
+  if (u_bits > 32) /* //-V547 */
     u_bits = 32;
 
   max_inc = ((8 < t_bits) ? (unsigned int)t_bits : 8);
@@ -4289,7 +4289,7 @@ main (argc, argv)
 # endif
 #endif
 
-  if (16 > uib) {
+  if (16 > uib) { /* //-V547 */
     out_err_check_int (
       fprintf (stderr,
         "FATAL: Non-conforming %d-bit unsigned int (must be >= 16).%s",
