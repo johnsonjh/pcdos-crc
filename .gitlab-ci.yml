@@ -38,8 +38,10 @@ pages:
     - apk -q update || true
     - apk -q add '!usr-merge-nag' 2> /dev/null || true
     - apk -q upgrade --prune || true
-    - apk -q add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging editorconfig-checker emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv gnu-libiconv-dev gnu-libiconv-libs gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses ncurses-dev ncurses-libs npm pango pigz py3-codespell python3 python3-dev reuse seatd shellcheck shfmt sudo tar time wayland-libs-egl wine xwayland xz sed ninja-build lua lua-dev flex bison linux-headers patch
-    - ln -s /usr/bin/ec /usr/bin/editorconfig-checker 2> /dev/null || true
+    - apk -q add bear cage clang clang-analyzer cppcheck ctags curl dev86 dos2unix dosbox-staging emacs file file-dev flawfinder gawk gcc gcompat go gnu-libiconv gnu-libiconv-dev gnu-libiconv-libs gtk+3.0 i686-mingw-w64-gcc libc-dev libepoxy libinput libintl libtool libxkbcommon make mesa-dri-gallium mesa-egl mesa-gbm mesa-gl mingw-w64-gcc musl-libintl musl-utils ncurses ncurses-dev ncurses-libs npm pango pigz py3-codespell python3 python3-dev reuse seatd shellcheck shfmt sudo tar time wayland-libs-egl wine xwayland xz sed ninja-build lua lua-dev flex bison linux-headers patch
+    - go install github.com/editorconfig-checker/editorconfig-checker/v4/cmd/editorconfig-checker@latest
+    - go clean -modcache -testcache -cache 2> /dev/null || true
+    - export PATH="${HOME:?}/go/bin:${PATH:?}"
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/emu2-cpm86.git || git clone https://github.com/johnsonjh/emu2-cpm86.git; } && cd emu2-cpm86 && make -j $(nproc) && make install && cd .. && rm -rf ./emu2-cpm86 )
     - ( set -x; cd /tmp && git clone https://gitlab.com/gbrein/tnylpo.git && cd tnylpo && { sed -i -e 's|CFLAGS=|CFLAGS=-O3 -fweb -flto=auto -march=native |g' -e 's|LIBS=|LIBS=-O3 -fweb -flto=auto -march=native |g' makefile || true; } && make -j $(nproc) && cp -f tnylpo /usr/bin && cd .. && rm -rf ./tnylpo )
     - ( set -x; cd /tmp && { git clone https://gitlab.com/johnsonjh/old_c.git || git clone https://github.com/johnsonjh/old_c.git; } )
