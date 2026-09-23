@@ -52,7 +52,7 @@ This program computes the same 32-bit CRC values as those produced by
 the IBM PC-DOS CRC.EXE utility.
 
 It was carefully constructed to be portable and correct on every
-platform with a C compiler, such as ...
+platform with a C compiler, such as:
 
 - ancient pre-ANSI / "C86" / K&R C compilers,
 - environments providing deficient stdio implementations,
@@ -68,13 +68,13 @@ platform with a C compiler, such as ...
   MCP), or even
 - systems using non-EBCDIC character sets.
 
-The only current requirements are ...
+The only current requirements are:
 
 - the C compiler must provide some storage type with a width at least as
   wide as the 32-bit CRC,
 - a character type with a width of at least 8 but no more than 32 bits,
   and
-- a minimal stdio implementation only needing to support 7 functions ...
+- a minimal stdio implementation only needing to support 7 functions:
   - (1) fprintf or printf, (2) fopen, (3) fclose, (4) fgetc, (5) ferror, (6) feof,
     (7) clearerr,
   - and optionally: setbuf and fread.
@@ -104,7 +104,7 @@ practical utility and as a template for writing ultra-portable C code.
 # Usage
 
     Usage: CRC [option(s)...] <file> [file(s)...]
-    Options ...
+    Options:
       --limit=N        Stops processing after N bits
       --lrbc           Limits to the CP/M Last Record Byte Count
       --lrbc=isx       Use the ISX LRBC convention (unused bytes)
@@ -129,7 +129,7 @@ practical utility and as a template for writing ultra-portable C code.
 
 # Automatic bit-width detection
 
-When using --bits=auto, the program performs two passes on each file ...
+When using --bits=auto, the program performs two passes on each file:
 
 1.  The first pass will scan the file to determine the number of
     significant bits actually used in the storage characters.
@@ -157,7 +157,7 @@ option, (and both options are enabled when the program is invoked with
 # Automatic padding
 
 When using --pad=auto, the program automatically applies zero-padding to
-the bitstream in the following scenarios ...
+the bitstream in the following scenarios:
 
 1.  Dangling bits: If the file ends mid-character (e.g., a file with 11
     bits when reading 8 bits per character), the final partial character
@@ -176,7 +176,7 @@ details.
 # Verbose output
 
 When using the --verbose (or -v) option, the program appends detailed
-processing information to the output (after a # character) ...
+processing information to the output (after a # character):
 
     DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
 
@@ -198,7 +198,7 @@ native character sizes, the CRC will match if you use the native
 character size of the current host.
 
 For example, consider a file that contains 72-bits of data stored
-sequentially ...
+sequentially:
 
 - On an 8-bit system (like modern machines), the file has 9 characters.
 
@@ -212,12 +212,12 @@ resulting in an 81-bit stream (and a different CRC).
 
 # Interaction of --limit and --pad
 
-The behavior of these options depends on the CRC processing mode ...
+The behavior of these options depends on the CRC processing mode:
 
 # 8-bit mode (default)
 
 When processing 8-bit characters on a system with an 8-bit native
-character size, the --pad option affects behavior in two ways ...
+character size, the --pad option affects behavior in two ways:
 
 1.  Synthesizing data: If the specified --limit exceeds the file size,
     the program will synthesize zero-filled full 8-bit characters to
@@ -236,7 +236,7 @@ When using a non-8-bit character size via --bits or when running on a
 system with a non-8-bit native character size, the program operates in a
 bit-by-bit "fallback" mode.
 
-In this mode ...
+In this mode:
 
 - The --limit is effectively rounded down to the nearest multiple of the
   requested character processing size (--bits) unless the --pad option
@@ -306,20 +306,20 @@ In this mode ...
 # Building from source
 
 The crc.c source code should build easily anywhere with no changes
-needed ...
+needed:
 
 - Build using make (the CC, CFLAGS, and LDFLAGS variables are
-  respected) ...
+  respected):
 
       make
 
-- Build using cc (or c89, gcc, clang, etc.) ...
+- Build using cc (or c89, gcc, clang, etc.):
 
       cc -O3 -o crc crc.c
 
 - To build a native binary on Windows using the Microsoft Visual Studio
   C/C++ compiler, from a Developer Command Prompt for Visual Studio
-  window, run ...
+  window, run:
 
       msvcbuild.bat
 
@@ -360,7 +360,7 @@ needed ...
 
 - If you are trying to build in an environment providing a C
   preprocessor that does not deal with indentation, you can "flatten"
-  the source code using POSIX sed ...
+  the source code using POSIX sed:
 
       sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
@@ -370,7 +370,7 @@ needed ...
   Aztec C, you should remove const from the source code using a global
   search and replace operation (and somewhat unintuitively, you may need
   to define USE_CONST when compiling). The required transformation is
-  easily performed using POSIX sed ...
+  easily performed using POSIX sed:
 
       sed 's|const||g' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
@@ -383,7 +383,7 @@ NB: Submission of AI (artificial intelligence) generated code by
 contributors is NOT permitted. There will be zero clankerslop in this
 project!
 
-The Makefile provides three convenience targets for developers ...
+The Makefile provides three convenience targets for developers:
 
 1.  make tags generates source code tags using etags, ctags, gtags, and
     cscope, if those programs are available.
@@ -419,7 +419,7 @@ to detect.
 
 # Building for Multics
 
-- To build a binary for Multics using Multics C ...
+- To build a binary for Multics using Multics C:
 
       >sl3p>cc>e>cc -lg -of crc crc.c
 
@@ -431,7 +431,7 @@ bits per character, where most systems use 8 bits per character.
 
 When run on Multics or any other environment not using an 8-bit
 character size, some instructional text will be appended to the --help
-output ...
+output:
 
     NOTE: This system has a character size of 9-bits.
     Use '--bits=8' to process 8-bit input data on this system.
@@ -474,7 +474,7 @@ bugs that result in short reads are detected and can be recovered.
 1.  To build a binary for TOPS-20 for PDP-10 systems using the KCC
     compiler, you need to transform the source code appropriately. This
     is easy to do on any system with a POSIX-conforming sed
-    implementation available ...
+    implementation available:
 
         sed -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
             -e 's|cb_printf[^(]*(std[oe][ur][tr],[[:space:]]*|cb_printf (NULL, |g' \
@@ -488,7 +488,7 @@ bugs that result in short reads are detected and can be recovered.
     transfer. If you plan to transfer the file via other means, you
     might need to convert the line endings first. You can do this easily
     with the unix2dos utility or any POSIX-conforming awk
-    implementation ...
+    implementation:
 
         awk '{ sub(/\r?$/, "\r"); print }' crc.c | \
           { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
@@ -500,7 +500,7 @@ bugs that result in short reads are detected and can be recovered.
 
 3.  Once you have the source code on the PDP-10 in the appropriate
     format, it can be compiled with the KCC compiler (usually installed
-    as CC) ...
+    as CC):
 
         CC -o CRC CRC.C
 
@@ -519,13 +519,13 @@ for most foreign data (depending on how its stored) on the system.
 
 - To build a binary for CP/M-80 for Z80 systems, using a version of
   z88dk from 2026-07-10 or later (earlier versions have a bug which
-  causes the character count to be miscalculated when using -SO3) ...
+  causes the character count to be miscalculated when using -SO3):
 
       zcc +cpm -compiler=sdcc -SO3 -O3 -vn crc.c -clib=ixiy -o crc.com
 
 - To build a binary for CP/M-80 for 8080 systems, using a version of
   z88dk from 2026-05-01 or later (earlier versions have a bug which
-  causes the CRC to be miscalculated on 8080 processors) ...
+  causes the CRC to be miscalculated on 8080 processors):
 
       zcc +cpm -SO3 -O3 -vn crc.c -clib=8080 -o crc.com
 
@@ -533,34 +533,34 @@ If you are using a Linux system with Docker you can use the z88dk/z88dk
 Docker container to build without needing to locally compile and install
 the current z88dk.
 
-- To build for Z80 CP/M-80 using z88dk via Docker ...
+- To build for Z80 CP/M-80 using z88dk via Docker:
 
       docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
         zcc +cpm -compiler=sdcc -SO3 -O3 -vn crc.c -clib=ixiy -o crc.com
 
-- To build for 8080 CP/M-80 using z88dk via Docker ...
+- To build for 8080 CP/M-80 using z88dk via Docker:
 
       docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
         zcc +cpm -SO3 -O3 -vn crc.c -clib=8080 -o crc.com
 
 # Building with Ack
 
-- To build for 8080 CP/M-80 using Ack ...
+- To build for 8080 CP/M-80 using Ack:
 
       ack -mcpm -O3 -DCRC_CPM -D__ACK__ -DCPMDWC bdosack.s crc.c cpmdwc.c -o crc.com
 
 # Building with HI-TECH C Z80
 
-- To build for Z80 CP/M-80 using (MS-DOS hosted) HI-TECH C Z80 4.11 ...
+- To build for Z80 CP/M-80 using (MS-DOS hosted) HI-TECH C Z80 4.11:
 
   First, transform the source appropriately using POSIX sed or a similar
   tool (adjusting the #if HAS_INCLUDE(...) lines to #if 0) to work around
-  a bug in the HI-TECH C preprocessor ...
+  a bug in the HI-TECH C preprocessor:
 
       sed 's|if HAS_INCLUDE.*$|if 0|' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
 
-  Then cross-compile the source using zc ...
+  Then cross-compile the source using zc:
 
       zc -CPM -O crc.c
 
@@ -650,7 +650,7 @@ calls, so this feature is only enabled when compiling for CP/M targets.
 To build the program for CP/M-86 we are using the most recent versions
 of the Aztec C cross-compiler from tsupplis.
 
-- To build a binary for CP/M-86 using cross-Aztec C 4.2 (recommended) ...
+- To build a binary for CP/M-86 using cross-Aztec C 4.2 (recommended):
 
       aztec42_cc "+FA" -D__AZTEC_C_42T__ crc.c
       aztec42_cc "+FA" cpmdwc.c
@@ -659,7 +659,7 @@ of the Aztec C cross-compiler from tsupplis.
       aztec42_link -o crc.cmd crc.o cpmdwc.o -lc86
       pcdev_cmdinfo crc.cmd
 
-- To build a binary for CP/M-86 using cross-Aztec C 3.4 ...
+- To build a binary for CP/M-86 using cross-Aztec C 3.4:
 
       sed 's|const||g' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
@@ -690,7 +690,7 @@ of the Aztec C cross-compiler from tsupplis.
 To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 (which includes basic CP/M-68K support by David Lee).
 
-- To build a binary for CP/M-68K using cross-Aztec C68K/ROM 3.6b ...
+- To build a binary for CP/M-68K using cross-Aztec C68K/ROM 3.6b:
 
       sed -e 's|const||g' \
           -e 's|fprintf[^(]*(std[oe][ur][tr],[[:space:]]*|printf (|g' \
@@ -714,23 +714,23 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 # Building for ELKS
 
-- To build a binary for ELKS using IA16-GCC ...
+- To build a binary for ELKS using IA16-GCC:
 
       ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
 
 # Building for AmigaOS
 
-- To build a binary for AmigaOS using Aztec C68K/Amiga 5.2a ...
+- To build a binary for AmigaOS using Aztec C68K/Amiga 5.2a:
 
       cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -DAOSDWC -o crc.o crc.c
       cc -sf -sn -sp -sr -ss -pa -pl -sa -sb -mc -md -o amigadwc.o amigadwc.c
       ln -t crc.o amigadwc.o -T -O crc -lc
 
-- To build a binary for AmigaOS using Vbcc ...
+- To build a binary for AmigaOS using Vbcc:
 
       vc "+aos68k" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -DAOSDWC -o crc crc.c amigadwc.c -lamiga
 
-- To build a binary for AmigaOS using Amiga-GCC ...
+- To build a binary for AmigaOS using Amiga-GCC:
 
       m68k-amigaos-gcc -m68000 -mcrt=nix13 -O3 -std=gnu90 -DAOSDWC crc.c amigadwc.c -s -o crc
 
@@ -745,11 +745,11 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 # Building for Atari ST
 
-- To build a binary for Atari ST (TOS) using Vbcc ...
+- To build a binary for Atari ST (TOS) using Vbcc:
 
       vc "+tos" -cpu=68000 -c89 -speed -O4 -maxoptpasses=40 -short-push -sd -DTOSDWC -o crc.ttp crc.c tosdwc.c
 
-- To build a binary for Atari ST (TOS) using CrossMINT ...
+- To build a binary for Atari ST (TOS) using CrossMINT:
 
       m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -DTOSDWC -s -o crc.ttp crc.c tosdwc.c
 
@@ -763,53 +763,53 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 # Building for MS-DOS
 
-- To build a binary for MS-DOS using IA16-GCC ...
+- To build a binary for MS-DOS using IA16-GCC:
 
       ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -mcmodel=small -o crc.exe crc.c ia16dwc.c
 
-- To build a binary for MS-DOS using Microsoft C 5.10 (1988) ...
+- To build a binary for MS-DOS using Microsoft C 5.10 (1988):
 
       cl /AS /O /Ot /Ol /Oi /Oa /Gs /G0 /Dconst= /Fecrc.exe crc.c "lib\setargv.obj" /link /NOE
 
-- To build a binary for MS-DOS using Microsoft C 6.00A (1990) ...
+- To build a binary for MS-DOS using Microsoft C 6.00A (1990):
 
       cl /AT /O /Ot /Ol /Og /Oi /Oa /Gr /Gs /G0 /Fecrc.com crc.c "lib\setargv.obj" /link /NOE
 
-- To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993) ...
+- To build a binary for MS-DOS using Microsoft C/C++ 8.00c (1993):
 
       cl /AT /O /Ot /Ol /Og /Oi /Oa /Oc /Oe /Gr /Gs /Ob2 /Oz /G0 /Fecrc.com crc.c "lib\setargv.obj" /link /NOE
 
 - To build a binary for MS-DOS using Computer Innovations C86PLUS 1.10
-  (1987) ...
+  (1987):
 
       sed 's|const||g' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
       cc -c -AS -Za -G0 -Oa -Ox crc.c
       carole crc.obj "lib\cwildsnd.obj" -s2000
 
-- To build a binary for MS-DOS using HI-TECH Pacific C 7.51 ...
+- To build a binary for MS-DOS using HI-TECH Pacific C 7.51:
 
       pacc -R -O crc.c
 
-- To build a binary for MS-DOS using Open Watcom V2 ...
+- To build a binary for MS-DOS using Open Watcom V2:
 
       owcc -bcom -march=i86 -mcmodel=t -frerun-optimizer -O3 -o crc.com crc.c dosdwc.c
 
-- To build a binary for MS-DOS using Watcom C ...
+- To build a binary for MS-DOS using Watcom C:
 
       wcc -bt=dos -ms -oh -onatxl+ -0 -fo=crc.obj -fr crc.c
       wcc -bt=dos -ms -oh -onatxl+ -0 -fo=dosdwc.obj -fr dosdwc.c
       wlink system com file crc.obj file dosdwc.obj name crc.com
 
-- To build a binary for MS-DOS using Digital Mars C/C++ 8.57 ...
+- To build a binary for MS-DOS using Digital Mars C/C++ 8.57:
 
       dmc -0 -o -mt crc.c dosdwc.c
 
-- To build a binary for MS-DOS using dev86 0.16.21+ ...
+- To build a binary for MS-DOS using dev86 0.16.21+:
 
       bcc -Md -O -o crc.com crc.c
 
-- To build a binary for MS-DOS using Aztec C86 5.2a ...
+- To build a binary for MS-DOS using Aztec C86 5.2a:
 
       cc +FA -D__AZTEC_C_52T__ -D__MSDOS__ crc.c
       cc +FA aztecdwc.c
@@ -818,37 +818,37 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
       ln -o crc.com crc.o aztecdwc.c -lc
 
 - To build a binary for MS-DOS using Turbo C 1.0 (1987) or Turbo C 1.5
-  (1988) ...
+  (1988):
 
       tcc -G -O -Z -f- -mt -d -DTCDWC crc.c tcdwc.c
       exe2bin crc.exe crc.com
 
 - To build a binary for MS-DOS using Turbo C 2.01 (1989) or Turbo C++
-  1.01 (1990) ...
+  1.01 (1990):
 
       tcc -G -O -Z -f- -mt -lt -d crc.c "lib\wildargs.obj"
 
-- To build a binary for MS-DOS using Turbo C++ 3.00 (1991) ...
+- To build a binary for MS-DOS using Turbo C++ 3.00 (1991):
 
       tcc -G -Z -f- -mt -lt -d crc.c "lib\wildargs.obj"
 
-- To build a binary for MS-DOS using Borland C++ 3.1 (1992) ...
+- To build a binary for MS-DOS using Borland C++ 3.1 (1992):
 
       bcc -O2 -f- -mt -lt -d crc.c "lib\wildargs.obj"
 
-- To build a binary for MS-DOS using Turbo C++ 4.02(J) (1994) ...
+- To build a binary for MS-DOS using Turbo C++ 4.02(J) (1994):
 
       tcc -G -O -Z -f- -g0 -mt -lt -w-pro -d -3- -2- -1- -d crc.c "lib\16bit\wildargs.obj"
 
-- To build a binary for MS-DOS using Ack ...
+- To build a binary for MS-DOS using Ack:
 
       ack -mmsdos86 -O3 -D__ACK__ crc.c -o crc.com
 
-- To build a binary for MS-DOS (386+) using Ack ...
+- To build a binary for MS-DOS (386+) using Ack:
 
       ack -mmsdos386 -O3 -D__ACK__ crc.c -o crc.exe
 
-- To build a binary for MS-DOS (386+) using DJGPP ...
+- To build a binary for MS-DOS (386+) using DJGPP:
 
       ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
 
@@ -881,7 +881,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 # Building for 2.11BSD
 
-- To build a binary for 2.11BSD ...
+- To build a binary for 2.11BSD:
 
       cc -O -o crc crc.c
 
@@ -903,7 +903,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 The following static analysis and dynamic verification tools are used as
 part of the comprehensive testing process (with many invoked
-automatically via the .lint.sh script) ...
+automatically via the .lint.sh script):
 
                            Tool Usage
   ----------------------------- --------------------------------------------------------------------------

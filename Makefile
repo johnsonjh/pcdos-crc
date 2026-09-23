@@ -72,7 +72,7 @@ update-docs update-readme: README.md
 ################################################################################
 
 README.info.txt: README.txt
-	sed 's/^# \(.*\)/\1:/' README.txt | \
+	sed -e 's|:$$| ...|' -e 's/^# \(.*\)/\1:/' README.txt | \
 	awk '{ print } NF { count++ } !NF { count=0 } count == 15 \
 		{ \
 			print ""; \
@@ -105,8 +105,7 @@ README.txt: README.md
 		{ \
 			print; \
 			blank=0 \
-		}' | \
-		sed 's|:$$| ...|' > README.txt
+		}' > README.txt
 
 ################################################################################
 
