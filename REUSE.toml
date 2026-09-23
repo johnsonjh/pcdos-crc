@@ -1,0 +1,16 @@
+###############################################################################
+# SPDX-License-Identifier: MIT-0
+# Copyright (c) 2026 Jeffrey H. Johnson
+# scspell-id: 65acbf12-b703-11f1-830a-80ee73e9b8e7
+###############################################################################
+
+version = 1
+SPDX-PackageName = "crc"
+SPDX-PackageSupplier = "Jeffrey H. Johnson <johnsonjh.dev@gmail.com>"
+SPDX-PackageDownloadLocation = "https://gitlab.com/dps8m/crc"
+
+[[annotations]]
+path = ["README.txt", "README.info.txt"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Jeffrey H. Johnson"
+SPDX-License-Identifier = "MIT-0"
