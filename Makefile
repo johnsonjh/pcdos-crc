@@ -48,6 +48,7 @@ scc: README.md
 	awk '/<!-- scc-start -->/ { \
 		print; system("scc --count-as a68:asm \
 			--exclude-file LICENSE,README.md \
+			--exclude-file README.txt,README.info.txt \
 			--exclude-file log.pvs,.ref_results.log \
 			--exclude-file compile_commands.json \
 			--exclude-dir LICENSES,.git,pvsreport \
