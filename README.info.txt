@@ -1,53 +1,3 @@
-# CRC
-
-- Overview
-- Usage
-  - Automatic bit-width detection
-  - Automatic padding
-  - Verbose output
-  - Cross-platform consistency and bitstreams
-    - Bit-for-bit transfers
-    - Interaction of --limit and --pad
-    - 8-bit mode (default)
-    - Fallback mode
-- Binary builds
-  - Extra builds
-- Building from source
-  - Porting tips
-  - Developer notes
-  - GitLab CI/CD
-- Platform specifics
-  - Building for Multics
-    - Multics notes
-  - Building for TOPS-20
-    - TOPS-20 notes
-  - Building for CP/M-80
-    - Building with z88dk
-    - Building with Ack
-    - Building with HI-TECH C Z80
-    - CP/M-80 notes
-      - CP/M-80 memory usage
-      - CP/M-80 performance
-      - CP/M-80 LRBC (Last Record Byte Count)
-  - Building for CP/M-86
-    - CP/M-86 notes
-  - Building for CP/M-68K
-    - CP/M-68K notes
-  - Building for ELKS
-  - Building for AmigaOS
-    - AmigaOS notes
-  - Building for Atari ST
-    - Atari ST notes
-  - Building for MS-DOS
-    - MS-DOS notes
-  - Building for 2.11BSD
-    - 2.11BSD notes
-- Security
-- SAST and linters
-- License
-
-# Overview
-
 This program computes the same 32-bit CRC values as those produced by
 the IBM PC-DOS CRC.EXE utility.
 
@@ -101,7 +51,7 @@ little to no porting effort required.
 It is hoped that this 'AI-slop-free' program will serve both as a
 practical utility and as a template for writing ultra-portable C code.
 
-# Usage
+Usage:
 
     Usage: CRC [option(s)...] <file> [file(s)...]
     Options ...
@@ -127,7 +77,7 @@ practical utility and as a template for writing ultra-portable C code.
   a warning is displayed at startup to indicate that each character read
   from the file will be zero-filled to the requested size.
 
-# Automatic bit-width detection
+Automatic bit-width detection:
 
 When using --bits=auto, the program performs two passes on each file ...
 
@@ -154,7 +104,7 @@ This option is especially useful when combined with the --pad=auto
 option, (and both options are enabled when the program is invoked with
 --auto).
 
-# Automatic padding
+Automatic padding:
 
 When using --pad=auto, the program automatically applies zero-padding to
 the bitstream in the following scenarios ...
@@ -173,14 +123,14 @@ If automatic padding is applied the program automatically enables the
 verbose output option for that file and adds a padded note to the
 details.
 
-# Verbose output
+Verbose output:
 
 When using the --verbose (or -v) option, the program appends detailed
 processing information to the output (after a # character) ...
 
     DATA.DAT        CRC=0D03ABFA    # 174344 bits (21793 8-bit characters)
 
-# Cross-platform consistency and bitstreams
+Cross-platform consistency and bitstreams:
 
 This program calculates a CRC based on a continuous bitstream. To ensure
 the same CRC value is obtained for the same data across different
@@ -191,7 +141,7 @@ The --bits=N option specifies how many bits to extract from each
 "storage character" (which is the native size of the "byte" or character
 type of the C compiler on that system).
 
-# Bit-for-bit transfers
+Bit-for-bit transfers:
 
 If a file is transferred bit-for-bit between systems with different
 native character sizes, the CRC will match if you use the native
@@ -210,11 +160,11 @@ file stored locally results in pulling 9 bits from each native 8-bit
 character (thus injecting a zeroed 9th bit into every 8-bit byte read)
 resulting in an 81-bit stream (and a different CRC).
 
-# Interaction of --limit and --pad
+Interaction of --limit and --pad:
 
 The behavior of these options depends on the CRC processing mode ...
 
-# 8-bit mode (default)
+8-bit mode (default):
 
 When processing 8-bit characters on a system with an 8-bit native
 character size, the --pad option affects behavior in two ways ...
@@ -230,7 +180,7 @@ character size, the --pad option affects behavior in two ways ...
     Without --pad, the program warns and truncates to the last full
     octet.
 
-# Fallback mode
+Fallback mode:
 
 When using a non-8-bit character size via --bits or when running on a
 system with a non-8-bit native character size, the program operates in a
@@ -250,7 +200,7 @@ In this mode ...
   specified --limit if the --pad option is specified. Without --pad, if
   the file ends before the limit is reached, a warning is displayed.
 
-# Binary builds
+Binary builds:
 
   These are not necessarily the best builds overall, but they are the
   "best" builds (for each platform) currently produced by GitLab CI/CD.
@@ -270,12 +220,13 @@ In this mode ...
       Linux/PPC 32-bit Ack
       Linux/x86 32-bit Open Watcom V2
       Linux/x86 64-bit GCC (musl)
+
          MS-DOS 16-bit Microsoft C 8.00c
         UNIX V7/PDP-11 Ack
     Windows/x86 32-bit GCC (MinGW)
     Windows/x86 64-bit GCC (MinGW)
 
-# Extra builds
+Extra builds:
 
   The following are additional GitLab CI/CD builds.
 
@@ -294,6 +245,7 @@ In this mode ...
          MS-DOS 16-bit Open Watcom V2
          MS-DOS 16-bit HI-TECH Pacific C 7.51
          MS-DOS 16-bit Turbo C 1.0
+
          MS-DOS 16-bit Turbo C 1.5
          MS-DOS 16-bit Turbo C 2.01
          MS-DOS 16-bit Turbo C++ 1.01
@@ -303,7 +255,7 @@ In this mode ...
          MS-DOS 32-bit Ack
     Windows/x86 32-bit Open Watcom V2
 
-# Building from source
+Building from source:
 
 The crc.c source code should build easily anywhere with no changes
 needed ...
@@ -323,7 +275,7 @@ needed ...
 
       msvcbuild.bat
 
-# Porting tips
+Porting tips:
 
 - If you are using a non-ANSI C compiler, you may need to define NOANSI
   (i.e., -DNOANSI) or modify the source code to comment out the
@@ -377,7 +329,7 @@ needed ...
 
 Most users won't need to do any of these things.
 
-# Developer notes
+Developer notes:
 
 NB: Submission of AI (artificial intelligence) generated code by
 contributors is NOT permitted. There will be zero clankerslop in this
@@ -400,12 +352,12 @@ The linting script and test suite are designed to run on any
 POSIX-conforming shell environment and are regularly tested on AIX,
 FreeBSD, Haiku, Linux, NetBSD, and OpenBSD.
 
-# GitLab CI/CD
+GitLab CI/CD:
 
 - You can examine the output of the latest GitLab CI/CD job which
   includes build output from various legacy compilers.
 
-# Platform specifics
+Platform specifics:
 
 The following sections document platform specific differences, as well
 as thoroughly validated and supported compilation recipes for various
@@ -417,13 +369,13 @@ using different flags or more aggressive optimizations triggers nasty
 compiler bugs that result in subtle miscompilations that are very tricky
 to detect.
 
-# Building for Multics
+Building for Multics:
 
 - To build a binary for Multics using Multics C ...
 
       >sl3p>cc>e>cc -lg -of crc crc.c
 
-# Multics notes
+Multics notes:
 
 Multics can be considered to run on an exotic platform, the Honeywell
 6000-series of 36-bit "large systems" mainframes. This system uses 9
@@ -469,7 +421,7 @@ determined during the initial pass is compared with the actual number of
 bits processed during the CRC calculation, ensuring that system library
 bugs that result in short reads are detected and can be recovered.
 
-# Building for TOPS-20
+Building for TOPS-20:
 
 1.  To build a binary for TOPS-20 for PDP-10 systems using the KCC
     compiler, you need to transform the source code appropriately. This
@@ -504,7 +456,7 @@ bugs that result in short reads are detected and can be recovered.
 
         CC -o CRC CRC.C
 
-# TOPS-20 notes
+TOPS-20 notes:
 
 The PDP-10 mainframe is a big-endian 36-bit word-addressed system.
 Although TOPS-20 has various ways of encoding data, CRC uses the
@@ -513,9 +465,9 @@ nonets. You'll need to specify an appropriate --bits (or use
 --bits=auto) and --pad (or use --pad=auto) to get matching calculations
 for most foreign data (depending on how its stored) on the system.
 
-# Building for CP/M-80
+Building for CP/M-80:
 
-# Building with z88dk
+Building with z88dk:
 
 - To build a binary for CP/M-80 for Z80 systems, using a version of
   z88dk from 2026-07-10 or later (earlier versions have a bug which
@@ -543,13 +495,13 @@ the current z88dk.
       docker run --rm -v "$(pwd -P)":/src -w /src z88dk/z88dk:latest \
         zcc +cpm -SO3 -O3 -vn crc.c -clib=8080 -o crc.com
 
-# Building with Ack
+Building with Ack:
 
 - To build for 8080 CP/M-80 using Ack ...
 
       ack -mcpm -O3 -DCRC_CPM -D__ACK__ -DCPMDWC bdosack.s crc.c cpmdwc.c -o crc.com
 
-# Building with HI-TECH C Z80
+Building with HI-TECH C Z80:
 
 - To build for Z80 CP/M-80 using (MS-DOS hosted) HI-TECH C Z80 4.11 ...
 
@@ -564,7 +516,7 @@ the current z88dk.
 
       zc -CPM -O crc.c
 
-# CP/M-80 notes
+CP/M-80 notes:
 
 - CP/M-80 builds using supported compilers (z88dk, HI-TECH C Z80, and
   Ack) support internal wildcard expansion (i.e., * and ?). Other
@@ -575,14 +527,14 @@ the current z88dk.
   slightly lowering its memory usage, at the cost of a small increase in
   load time.
 
-# CP/M-80 memory usage
+CP/M-80 memory usage:
 
 - z88dk Z80 builds require ~32K TPA.
 - HI-TECH C Z80 builds require ~38K TPA.
 - z88dk 8080 builds require ~35K TPA.
 - Ack 8080 builds require ~45K TPA.
 
-# CP/M-80 performance
+CP/M-80 performance:
 
 - Z80 builds: z88dk binaries execute about ~2-8% faster than HI-TECH C
   Z80 binaries.
@@ -592,7 +544,7 @@ the current z88dk.
 - 8080 builds: z88dk binaries execute ~20% faster than Ack binaries.
 - z88dk Z80 binaries execute about twice as fast as z88dk 8080 binaries.
 
-# CP/M-80 LRBC (Last Record Byte Count)
+CP/M-80 LRBC (Last Record Byte Count):
 
 NB: If you need to verify CRCs on CP/M that were created on other
 systems, you should always constrain processing to the actual number of
@@ -645,7 +597,7 @@ If both --lrbc and --limit are given, the smaller (most restrictive) of
 the two limits applies. The LRBC is read using direct BDOS function
 calls, so this feature is only enabled when compiling for CP/M targets.
 
-# Building for CP/M-86
+Building for CP/M-86:
 
 To build the program for CP/M-86 we are using the most recent versions
 of the Aztec C cross-compiler from tsupplis.
@@ -670,7 +622,7 @@ of the Aztec C cross-compiler from tsupplis.
       aztec34_link -o crc.cmd crc.o cpmdwc.o -lc86
       pcdev_cmdinfo crc.cmd
 
-# CP/M-86 notes
+CP/M-86 notes:
 
 - CP/M-86 builds using supported compilers (Aztec C) support internal
   wildcard expansion (i.e., * and ?). Other compilers may need
@@ -685,7 +637,7 @@ of the Aztec C cross-compiler from tsupplis.
   - Instead of LZPACK, the UPX executable compressor, version 5.2.0 (or
     later) can be used to pack CP/M-86 binaries.
 
-# Building for CP/M-68K
+Building for CP/M-68K:
 
 To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 (which includes basic CP/M-68K support by David Lee).
@@ -701,7 +653,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
       c68 -o cpmdwc.r -DNOANSI cpmdwc.c
       ln68 +C 8100 -t cpm68k/cpm.r bdos.r crc.r cpmdwc.r -lcpm68k/c68k -T -O CRC.68K
 
-# CP/M-68K notes
+CP/M-68K notes:
 
   CP/M-68K is currently a work-in-progress!
 
@@ -712,13 +664,13 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 - All of the CP/M-80 notes, with the exception of executable
   compression, apply to CP/M-68K builds.
 
-# Building for ELKS
+Building for ELKS:
 
 - To build a binary for ELKS using IA16-GCC ...
 
       ia16-elf-gcc -march=i8086 -std=c89 -O3 -mregparmcall -melks -o crc crc.c
 
-# Building for AmigaOS
+Building for AmigaOS:
 
 - To build a binary for AmigaOS using Aztec C68K/Amiga 5.2a ...
 
@@ -734,7 +686,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
       m68k-amigaos-gcc -m68000 -mcrt=nix13 -O3 -std=gnu90 -DAOSDWC crc.c amigadwc.c -s -o crc
 
-# AmigaOS notes
+AmigaOS notes:
 
 - AmigaOS "classic" builds using supported compilers (including Vbcc
   +warpos and +powerup targets) perform UNIX-style internal wildcard
@@ -743,7 +695,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 - AmigaOS 4 builds do not support wildcard expansion at this time.
 
-# Building for Atari ST
+Building for Atari ST:
 
 - To build a binary for Atari ST (TOS) using Vbcc ...
 
@@ -753,7 +705,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
       m68k-atari-mintelf-gcc -march=68000 -std=c89 -O3 -mfastcall -DTOSDWC -s -o crc.ttp crc.c tosdwc.c
 
-# Atari ST notes
+Atari ST notes:
 
 - Atari ST builds using supported compilers perform internal wildcard
   expansion (i.e., * and ?). Builds using other Atari ST toolchains may
@@ -761,7 +713,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
 - Only the Vbcc and CrossMINT (GCC) toolchains are currently supported.
 
-# Building for MS-DOS
+Building for MS-DOS:
 
 - To build a binary for MS-DOS using IA16-GCC ...
 
@@ -852,7 +804,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 
       ix86-pc-msdosdjgpp-gcc -s -march=i386 -O3 -o crc.exe crc.c
 
-# MS-DOS notes
+MS-DOS notes:
 
 - MS-DOS builds using supported compilers perform internal wildcard
   expansion (i.e., * and ?). Builds using other MS-DOS toolchains may
@@ -879,19 +831,19 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
   due to other bugs that have been recently identified and fixed
   upstream.
 
-# Building for 2.11BSD
+Building for 2.11BSD:
 
 - To build a binary for 2.11BSD ...
 
       cc -O -o crc crc.c
 
-# 2.11BSD notes
+2.11BSD notes:
 
 - Tested with 2.11BSD PL482 (on a PDP-11/93).
 
 - Older distributions may require building with the -DNOANSI option.
 
-# Security
+Security:
 
 - The canonical home of this software is https://gitlab.com/dps8m/crc,
   with a mirror on GitHub.
@@ -899,7 +851,7 @@ To build the program for CP/M-68K we are using Aztec C68K/ROM 3.6b
 - If you find any security-related problems, please don't hesitate to
   open a GitLab Issue (or send an email to the author).
 
-# SAST and linters
+SAST and linters:
 
 The following static analysis and dynamic verification tools are used as
 part of the comprehensive testing process (with many invoked
@@ -920,6 +872,7 @@ automatically via the .lint.sh script) ...
                      GNU Global Source code indexing and tagging system
                    IBM AIX lint Checks C and C++ language programs for potential problems
                  NetBSD lint(1) A C (C90/C99/C11/C17/C23) program verifier
+
         Oracle Developer Studio Performance, security, and thread analysis tools for C, C++, and FORTRAN
                      PurifyPlus Run-time analysis tools for application reliability and performance
                           REUSE Verifies compliance with the REUSE software licensing guidelines
@@ -930,7 +883,7 @@ automatically via the .lint.sh script) ...
                        Valgrind Tools for memory debugging, memory leak detection, and profiling
     Visual Studio Code Analyzer Tools to analyze and improve C/C++ source code quality
 
-# License
+License:
 
 - This software is distributed under the terms of the permissive MIT No
   Attribution (MIT-0) License.

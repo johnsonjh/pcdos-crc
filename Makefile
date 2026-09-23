@@ -65,6 +65,20 @@ scc: README.md
 update-docs update-readme: README.md
 	"$${MAKE:-$(MAKE)}" scc
 	"$${MAKE:-$(MAKE)}" README.txt
+	"$${MAKE:-$(MAKE)}" README.info.txt
+	"$${MAKE:-$(MAKE)}" scc
+
+################################################################################
+
+README.info.txt: README.txt
+	sed 's/^# \(.*\)/\1:/' README.txt | \
+	awk '{ print } NF { count++ } !NF { count=0 } count == 15 \
+		{ \
+			print ""; \
+			count=0 \
+		}' | \
+	sed '1,/^Overview:$$/d' | \
+	awk 'NR==1 && /^$$/ { next } { print }' > README.info.txt
 
 ################################################################################
 
@@ -76,13 +90,22 @@ README.txt: README.md
 			print "(HEADERMARKER) " $$0; \
 			next \
 		} \
-		{ \
-			print \
-		}' README.md | \
+		{ print }' README.md | \
 	pandoc -f gfm -t plain | \
 	sed 's/^(HEADERMARKER)/#/' | \
 	iconv -f UTF-8 -t ASCII//TRANSLIT - | \
-	grep -v 'Code statistics' > README.txt
+	grep -v 'Code statistics' | \
+	awk '/^[[:space:]]*$$/ \
+		{ \
+			if (!blank) print ""; \
+			blank=1; \
+			next \
+		} \
+		{ \
+			print; \
+			blank=0 \
+		}' | \
+		sed 's|:$$| ...|' > README.txt
 
 ################################################################################
 
