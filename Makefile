@@ -62,6 +62,30 @@ scc: README.md
 
 ################################################################################
 
+update-docs update-readme: README.md
+	"$${MAKE:-$(MAKE)}" scc
+	"$${MAKE:-$(MAKE)}" README.txt
+
+################################################################################
+
+README.txt: README.md
+	awk \
+	'/^#+/	{ \
+			gsub(/`/, ""); \
+			sub(/^#+[ \t]*/, ""); \
+			print "(HEADERMARKER) " $$0; \
+			next \
+		} \
+		{ \
+			print \
+		}' README.md | \
+	pandoc -f gfm -t plain | \
+	sed 's/^(HEADERMARKER)/#/' | \
+	iconv -f UTF-8 -t ASCII//TRANSLIT - | \
+	grep -v 'Code statistics' > README.txt
+
+################################################################################
+
 tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out tag: crc.c
 	@command -v etags > /dev/null 2>&1 && \
 		{ { echo etags...; etags crc.c && exit 0; }; \
@@ -79,7 +103,7 @@ tags etags ctags gtags TAGS GPATH GRTAGS GTAGS cscope cscope.out tag: crc.c
 ################################################################################
 
 .PHONY: all clean distclean test lint tags etags ctags gtags TAGS GPATH GRTAGS \
-	GTAGS cscope cscope.out tag scc
+	GTAGS cscope cscope.out tag scc update-docs update-readme
 
 ################################################################################
 
