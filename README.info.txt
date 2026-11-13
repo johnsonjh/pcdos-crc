@@ -1,3 +1,5 @@
+2026-11-13  crc
+
 This program computes the same 32-bit CRC values as those produced by
 the IBM PC-DOS CRC.EXE utility.
 
@@ -20,13 +22,13 @@ platform with a C compiler, such as ...
 
 The only current requirements are ...
 
-- the C compiler must provide some storage type with a width at least as
-  wide as the 32-bit CRC,
+- the C compiler must provide some storage type with a width at least
+  as wide as the 32-bit CRC,
 - a character type with a width of at least 8 but no more than 32 bits,
   and
 - a minimal stdio implementation only needing to support 7 functions ...
-  - (1) fprintf or printf, (2) fopen, (3) fclose, (4) fgetc, (5) ferror, (6) feof,
-    (7) clearerr,
+  - (1) fprintf or printf, (2) fopen, (3) fclose, (4) fgetc, (5)
+    ferror, (6) feof, (7) clearerr,
   - and optionally: setbuf and fread.
 
 It has been tested on various exotic and retro platforms including
@@ -73,9 +75,10 @@ Usage:
 - If multiple --bits, --pad, or --limit options are provided, only the
   last value is effective.
 
-- If the specified --bits value is larger than the native character size
-  a warning is displayed at startup to indicate that each character read
-  from the file will be zero-filled to the requested size.
+- If the specified --bits value is larger than the native character
+  size a warning is displayed at startup to indicate that each
+  character read from the file will be zero-filled to the requested
+  size.
 
 Automatic bit-width detection:
 
@@ -87,14 +90,14 @@ When using --bits=auto, the program performs two passes on each file ...
 2.  The second pass actually calculates the CRC (using the detected
     bit-width).
 
-If a file contains only 7-bit ASCII data, --bits=auto will automatically
-process it using 7 bits per character, ensuring a consistent CRC
-regardless of whether the file is stored on system with a wider native
-character size, like a mainframe running Multics (which stores text
-7-bit ASCII characters in 9-bit nonets).
+If a file contains only 7-bit ASCII data, --bits=auto will
+automatically process it using 7 bits per character, ensuring a
+consistent CRC regardless of whether the file is stored on system with
+a wider native character size, like a mainframe running Multics (which
+stores text 7-bit ASCII characters in 9-bit nonets).
 
-If the detected bit-width differs from the host's native character size,
-the verbose output option is automatically enabled for that file.
+If the detected bit-width differs from the host's native character
+size, the verbose output option is automatically enabled for that file.
 
 If a file is empty, the program will default to using the native
 character width of the host system and add an empty note to the verbose
@@ -106,12 +109,12 @@ option, (and both options are enabled when the program is invoked with
 
 Automatic padding:
 
-When using --pad=auto, the program automatically applies zero-padding to
-the bitstream in the following scenarios ...
+When using --pad=auto, the program automatically applies zero-padding
+to the bitstream in the following scenarios ...
 
 1.  Dangling bits: If the file ends mid-character (e.g., a file with 11
-    bits when reading 8 bits per character), the final partial character
-    is zero-padded.
+    bits when reading 8 bits per character), the final partial
+    character is zero-padded.
 
 2.  Truncated limits: If an input --limit is reached mid-character, the
     program pads the remaining bits of that character.
@@ -132,14 +135,14 @@ processing information to the output (after a # character) ...
 
 Cross-platform consistency and bitstreams:
 
-This program calculates a CRC based on a continuous bitstream. To ensure
-the same CRC value is obtained for the same data across different
-platforms, you must understand how the bitstream is constructed from the
-host's storage characters.
+This program calculates a CRC based on a continuous bitstream. To
+ensure the same CRC value is obtained for the same data across
+different platforms, you must understand how the bitstream is
+constructed from the host's storage characters.
 
 The --bits=N option specifies how many bits to extract from each
-"storage character" (which is the native size of the "byte" or character
-type of the C compiler on that system).
+"storage character" (which is the native size of the "byte" or
+character type of the C compiler on that system).
 
 Bit-for-bit transfers:
 
@@ -171,26 +174,26 @@ character size, the --pad option affects behavior in two ways ...
 
 1.  Synthesizing data: If the specified --limit exceeds the file size,
     the program will synthesize zero-filled full 8-bit characters to
-    reach the limit. If the --limit is not a multiple of 8, any trailing
-    bits that cannot form a complete octet are discarded.
+    reach the limit. If the --limit is not a multiple of 8, any
+    trailing bits that cannot form a complete octet are discarded.
 
 2.  Partial character processing: If the --limit is reached within the
     file and falls mid-octet, the --pad option allows the program to
-    process that final partial octet by zero-padding the remaining bits.
-    Without --pad, the program warns and truncates to the last full
-    octet.
+    process that final partial octet by zero-padding the remaining
+    bits. Without --pad, the program warns and truncates to the last
+    full octet.
 
 Fallback mode:
 
 When using a non-8-bit character size via --bits or when running on a
-system with a non-8-bit native character size, the program operates in a
-bit-by-bit "fallback" mode.
+system with a non-8-bit native character size, the program operates in
+a bit-by-bit "fallback" mode.
 
 In this mode ...
 
-- The --limit is effectively rounded down to the nearest multiple of the
-  requested character processing size (--bits) unless the --pad option
-  is used.
+- The --limit is effectively rounded down to the nearest multiple of
+  the requested character processing size (--bits) unless the --pad
+  option is used.
 
 - The --pad option is used to zero-fill any remaining bits of the final
   character read from the file if the input ends mid-character, or to
@@ -279,9 +282,9 @@ Porting tips:
 
 - If you are using a non-ANSI C compiler, you may need to define NOANSI
   (i.e., -DNOANSI) or modify the source code to comment out the
-  #define ANSI_COMPILER directive. If you don't have stdlib.h you should
-  also define NOSTDLIB. If your non-ANSI compiler does support the const
-  keyword, then you should additionally define USE_CONST.
+  #define ANSI_COMPILER directive. If you don't have stdlib.h you
+  should also define NOSTDLIB. If your non-ANSI compiler does support
+  the const keyword, then you should additionally define USE_CONST.
 
 - If your environment has a missing or broken fread function, you may
   need to define NOFREAD or modify the source code to comment out the
@@ -300,7 +303,8 @@ Porting tips:
   sys_errlist / sys_nerr interface, you should define USE_PSYSERROR.
 
   - For purported ANSI compilers or environments lacking the C89/ANSI
-    defined strerror function or string.h, you should define NOSTRERROR.
+    defined strerror function or string.h, you should define
+    NOSTRERROR.
 
 - Defining HAVE_SYS_STAT indicates the availability of the POSIX stat
   function and the existence of the sys/types.h and sys/stat.h header
@@ -317,12 +321,12 @@ Porting tips:
       sed 's|^[[:space:]]*#[[:space:]]*|#|' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
 
-- If you have a C preprocessor that won't allow you to define away const
-  even when the compiler doesn't support it, like some older versions of
-  Aztec C, you should remove const from the source code using a global
-  search and replace operation (and somewhat unintuitively, you may need
-  to define USE_CONST when compiling). The required transformation is
-  easily performed using POSIX sed ...
+- If you have a C preprocessor that won't allow you to define away
+  const even when the compiler doesn't support it, like some older
+  versions of Aztec C, you should remove const from the source code
+  using a global search and replace operation (and somewhat
+  unintuitively, you may need to define USE_CONST when compiling). The
+  required transformation is easily performed using POSIX sed ...
 
       sed 's|const||g' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
@@ -345,8 +349,8 @@ The Makefile provides three convenience targets for developers ...
     should install all the optional tools and ensure that all the tests
     pass.
 
-3.  make test runs the .test.sh shell script, which runs a comprehensive
-    test suite.
+3.  make test runs the .test.sh shell script, which runs a
+    comprehensive test suite.
 
 The linting script and test suite are designed to run on any
 POSIX-conforming shell environment and are regularly tested on AIX,
@@ -366,8 +370,8 @@ compilers and platforms.
 It is highly recommended to use these exact compiler flags and tested
 compiler versions. In many cases (especially with older compilers),
 using different flags or more aggressive optimizations triggers nasty
-compiler bugs that result in subtle miscompilations that are very tricky
-to detect.
+compiler bugs that result in subtle miscompilations that are very
+tricky to detect.
 
 Building for Multics:
 
@@ -388,18 +392,18 @@ output ...
     NOTE: This system has a character size of 9-bits.
     Use '--bits=8' to process 8-bit input data on this system.
 
-As explained above, the --bits option specifies how many bits to extract
-from each native storage character. On Multics, the native character
-size is 9 bits. If a file was transferred "bit-for-bit" from an 8-bit
-system, you should use --bits=9 on Multics (which is the default on
-Multics if --bits is not specified) to pull all 9 bits from each storage
-nonet. Conversely, if you are processing 8-bit data that was stored "one
-byte per nonet" (leaving the 9th bit unused), you must use --bits=8 to
-skip that unused bit.
+As explained above, the --bits option specifies how many bits to
+extract from each native storage character. On Multics, the native
+character size is 9 bits. If a file was transferred "bit-for-bit" from
+an 8-bit system, you should use --bits=9 on Multics (which is the
+default on Multics if --bits is not specified) to pull all 9 bits from
+each storage nonet. Conversely, if you are processing 8-bit data that
+was stored "one byte per nonet" (leaving the 9th bit unused), you must
+use --bits=8 to skip that unused bit.
 
-Note that changing the number of bits processed per character will shift
-the bit-alignment of subsequent characters and result in a different CRC
-value.
+Note that changing the number of bits processed per character will
+shift the bit-alignment of subsequent characters and result in a
+different CRC value.
 
 As an additional hint, if the processing of a file ends with "dangling"
 bits (not a full character) then a warning message is displayed.
@@ -412,14 +416,15 @@ segment should be processed independently.
 
 To ensure proper functionality on Multics, the program uses a very
 specific read strategy to bypass several known bugs in the Multics C
-stdio library. The primary workaround addresses sign-extension bugs when
-detecting EOF by batching reads of full 36-bit words (whenever possible)
-as this is immune to sign-extension issues. For non-word-aligned data,
-we fall back on a "slow but safe" algorithm to process any remaining
-characters. Additionally, when using --bits=auto, the bit count as
-determined during the initial pass is compared with the actual number of
-bits processed during the CRC calculation, ensuring that system library
-bugs that result in short reads are detected and can be recovered.
+stdio library. The primary workaround addresses sign-extension bugs
+when detecting EOF by batching reads of full 36-bit words (whenever
+possible) as this is immune to sign-extension issues. For
+non-word-aligned data, we fall back on a "slow but safe" algorithm to
+process any remaining characters. Additionally, when using --bits=auto,
+the bit count as determined during the initial pass is compared with
+the actual number of bits processed during the CRC calculation,
+ensuring that system library bugs that result in short reads are
+detected and can be recovered.
 
 Building for TOPS-20:
 
@@ -438,8 +443,8 @@ Building for TOPS-20:
     line endings). The appropriate conversion should happen
     automatically if you use Kermit or ASCII-mode FTP for the file
     transfer. If you plan to transfer the file via other means, you
-    might need to convert the line endings first. You can do this easily
-    with the unix2dos utility or any POSIX-conforming awk
+    might need to convert the line endings first. You can do this
+    easily with the unix2dos utility or any POSIX-conforming awk
     implementation ...
 
         awk '{ sub(/\r?$/, "\r"); print }' crc.c | \
@@ -460,8 +465,8 @@ TOPS-20 notes:
 
 The PDP-10 mainframe is a big-endian 36-bit word-addressed system.
 Although TOPS-20 has various ways of encoding data, CRC uses the
-standard C I/O library provided by KCC, which treats characters as 9-bit
-nonets. You'll need to specify an appropriate --bits (or use
+standard C I/O library provided by KCC, which treats characters as
+9-bit nonets. You'll need to specify an appropriate --bits (or use
 --bits=auto) and --pad (or use --pad=auto) to get matching calculations
 for most foreign data (depending on how its stored) on the system.
 
@@ -482,8 +487,8 @@ Building with z88dk:
       zcc +cpm -SO3 -O3 -vn crc.c -clib=8080 -o crc.com
 
 If you are using a Linux system with Docker you can use the z88dk/z88dk
-Docker container to build without needing to locally compile and install
-the current z88dk.
+Docker container to build without needing to locally compile and
+install the current z88dk.
 
 - To build for Z80 CP/M-80 using z88dk via Docker ...
 
@@ -505,9 +510,9 @@ Building with HI-TECH C Z80:
 
 - To build for Z80 CP/M-80 using (MS-DOS hosted) HI-TECH C Z80 4.11 ...
 
-  First, transform the source appropriately using POSIX sed or a similar
-  tool (adjusting the #if HAS_INCLUDE(...) lines to #if 0) to work around
-  a bug in the HI-TECH C preprocessor ...
+  First, transform the source appropriately using POSIX sed or a
+  similar tool (adjusting the #if HAS_INCLUDE(...) lines to #if 0) to
+  work around a bug in the HI-TECH C preprocessor ...
 
       sed 's|if HAS_INCLUDE.*$|if 0|' crc.c | \
         { out=$(cat) || exit 1; : > crc.c && printf '%s\n' "$out" > crc.c; }
@@ -522,10 +527,10 @@ CP/M-80 notes:
   Ack) support internal wildcard expansion (i.e., * and ?). Other
   compilers may need adaptations.
 
-- The LZPACK utility can be used to transparently compress the generated
-  CP/M executable, reducing its on-disk size by approximately 50% and
-  slightly lowering its memory usage, at the cost of a small increase in
-  load time.
+- The LZPACK utility can be used to transparently compress the
+  generated CP/M executable, reducing its on-disk size by approximately
+  50% and slightly lowering its memory usage, at the cost of a small
+  increase in load time.
 
 CP/M-80 memory usage:
 
@@ -542,7 +547,8 @@ CP/M-80 performance:
     --max-allocs-per-node250000 option improves performance by ~6%, but
     increases compilation time (from several seconds to a few minutes).
 - 8080 builds: z88dk binaries execute ~20% faster than Ack binaries.
-- z88dk Z80 binaries execute about twice as fast as z88dk 8080 binaries.
+- z88dk Z80 binaries execute about twice as fast as z88dk 8080
+  binaries.
 
 CP/M-80 LRBC (Last Record Byte Count):
 
@@ -551,34 +557,34 @@ systems, you should always constrain processing to the actual number of
 significant bits. This can be done automatically only on CP/M 3.0 and
 later!
 
-On CP/M-80 systems, files do not have exact sizes but are stored on disk
-in fixed-size records of 1024 bits (i.e., 128 8-bit octets) each. Files
-transferred from other systems that are not a multiple of the CP/M
-record size will be padded with undefined data to fill a complete
+On CP/M-80 systems, files do not have exact sizes but are stored on
+disk in fixed-size records of 1024 bits (i.e., 128 8-bit octets) each.
+Files transferred from other systems that are not a multiple of the
+CP/M record size will be padded with undefined data to fill a complete
 record, and there is no universal EOF marker that can be used to find
 the true end of file.
 
 By default, the CRC.COM program will calculate the CRC for all records
 on disk associated with the file. If you transferred the file from
 another type of system that does support exact lengths (which is
-likely), you can specify the number of bits to process using the --limit
-flag.
+likely), you can specify the number of bits to process using the
+--limit flag.
 
 For example, assume DATA.DAT is file of 174,344 bits (21,793 8-bit
-octets) which produces a CRC of 0D03ABFA on an MS-DOS or UNIX system. On
-a CP/M-80 system this file will utilize 171 records of storage. Since
-21,793 octets is not a multiple of 128, the CRC calculation will not
-match unless constrained to process only 174,344 bits (i.e.,
+octets) which produces a CRC of 0D03ABFA on an MS-DOS or UNIX system.
+On a CP/M-80 system this file will utilize 171 records of storage.
+Since 21,793 octets is not a multiple of 128, the CRC calculation will
+not match unless constrained to process only 174,344 bits (i.e.,
 CRC --limit=174344 DATA.DAT). With no limit applied, all 175,104 bits
 (171 records x 128 octets x 8 bits) of data on disk would be processed.
 
 CP/M-80 3.0 added a new filesystem metadata field: Last Record Byte
-Count (or LRBC). Unfortunately, the LRBC is stored as a number between 0
-and 255, with no official documented interpretation. The DRI ISX
+Count (or LRBC). Unfortunately, the LRBC is stored as a number between
+0 and 255, with no official documented interpretation. The DRI ISX
 software uses this field to indicate the number of unused octets in the
-last record, while DRI DOS-PLUS uses the field to indicate the number of
-used octets in the last record, with a count of zero indicating 128 (a
-full final record) under either interpretation.
+last record, while DRI DOS-PLUS uses the field to indicate the number
+of used octets in the last record, with a count of zero indicating 128
+(a full final record) under either interpretation.
 
 When running on CP/M 3.0 or later, the --lrbc option uses this metadata
 to constrain processing to the file's exact length automatically, so no
@@ -590,12 +596,13 @@ select the DRI ISX (unused octets) interpretation. When the LRBC
 indicates a full final record or when running under CP/M 2.x, which has
 no LRBC all records are processed as before.
 
-For convenience, --auto also enables --lrbc (DOS-PLUS interpretation) on
-CP/M 3.0 and later. When --lrbc is requested explicitly on a host that
-predates CP/M 3.0, a warning is printed and all records are processed.
-If both --lrbc and --limit are given, the smaller (most restrictive) of
-the two limits applies. The LRBC is read using direct BDOS function
-calls, so this feature is only enabled when compiling for CP/M targets.
+For convenience, --auto also enables --lrbc (DOS-PLUS interpretation)
+on CP/M 3.0 and later. When --lrbc is requested explicitly on a host
+that predates CP/M 3.0, a warning is printed and all records are
+processed. If both --lrbc and --limit are given, the smaller (most
+restrictive) of the two limits applies. The LRBC is read using direct
+BDOS function calls, so this feature is only enabled when compiling for
+CP/M targets.
 
 Building for CP/M-86:
 
@@ -690,8 +697,8 @@ AmigaOS notes:
 
 - AmigaOS "classic" builds using supported compilers (including Vbcc
   +warpos and +powerup targets) perform UNIX-style internal wildcard
-  expansion (i.e., * and ?). Builds using other classic Amiga toolchains
-  may need adjustments.
+  expansion (i.e., * and ?). Builds using other classic Amiga
+  toolchains may need adjustments.
 
 - AmigaOS 4 builds do not support wildcard expansion at this time.
 
@@ -827,9 +834,9 @@ MS-DOS notes:
 - Ack versions before 2026-07-16 have a bug that prevents binary file
   I/O from working on MS-DOS targets. The problem was identified and a
   patch fixing the bug was accepted. It is highly recommended to always
-  use the very latest version of Ack (on all platforms, not just MS-DOS)
-  due to other bugs that have been recently identified and fixed
-  upstream.
+  use the very latest version of Ack (on all platforms, not just
+  MS-DOS) due to other bugs that have been recently identified and
+  fixed upstream.
 
 Building for 2.11BSD:
 
@@ -853,8 +860,8 @@ Security:
 
 SAST and linters:
 
-The following static analysis and dynamic verification tools are used as
-part of the comprehensive testing process (with many invoked
+The following static analysis and dynamic verification tools are used
+as part of the comprehensive testing process (with many invoked
 automatically via the .lint.sh script) ...
 
                            Tool Usage

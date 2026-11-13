@@ -72,6 +72,8 @@ update-docs update-readme: README.md
 ################################################################################
 
 README.info.txt: README.txt
+	date +"%Y-%m-%d  crc" > README.info.txt
+	printf '%s\n' "" >> README.info.txt
 	sed -e 's|:$$| ...|' -e 's/^# \(.*\)/\1:/' README.txt | \
 	awk '{ print } NF { count++ } !NF { count=0 } count == 15 \
 		{ \
@@ -79,7 +81,7 @@ README.info.txt: README.txt
 			count=0 \
 		}' | \
 	sed '1,/^Overview:$$/d' | \
-	awk 'NR==1 && /^$$/ { next } { print }' > README.info.txt
+	awk 'NR==1 && /^$$/ { next } { print }' >> README.info.txt
 
 ################################################################################
 
@@ -92,7 +94,7 @@ README.txt: README.md
 			next \
 		} \
 		{ print }' README.md | \
-	pandoc -f gfm -t plain | \
+	pandoc -f gfm -t plain --columns=71 --wrap=auto | \
 	sed 's/^(HEADERMARKER)/#/' | \
 	iconv -f UTF-8 -t ASCII//TRANSLIT - | \
 	grep -v 'Code statistics' | \
